@@ -13,7 +13,7 @@
 #'
 #' @export
 squared_error <- function(U, V) {
-  stopifnot( is.matrix(U), is.matrix(V), all(dim(U) == dim(V)) )
+  stopifnot(is.matrix(U), is.matrix(V), all(dim(U) == dim(V)))
   A <- U - V
-  return(matrixcalc::matrix.trace(tcrossprod(A))/dim(A)[1]/dim(A)[2])
+  return(matrixcalc::matrix.trace(tcrossprod(A)) / dim(A)[1] / dim(A)[2])
 }

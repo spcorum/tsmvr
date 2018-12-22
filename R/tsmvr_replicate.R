@@ -29,20 +29,20 @@
 #'
 #'
 #' @export
-tsmvr_replicate = function(X, Y, s1, s2, K = 10, reps = 1, b_type = "gd",
-                           omega_type = "min", eta1 = 0.01, eta2 = 0.01,
-                           epsilon = 1e-5, maxiter = 1000, quiet = FALSE,
-                           seed = NULL) {
+tsmvr_replicate <- function(X, Y, s1, s2, K = 10, reps = 1, b_type = "gd",
+                            omega_type = "min", eta1 = 0.01, eta2 = 0.01,
+                            epsilon = 1e-5, maxiter = 1000, quiet = FALSE,
+                            seed = NULL) {
 
   # Initialize objects.
-  n = nrow(X)
-  fold_error = rep(0,reps)
-  fold_sd = rep(0,reps)
+  n <- nrow(X)
+  fold_error <- rep(0, reps)
+  fold_sd <- rep(0, reps)
 
   # Header
   if (!quiet) {
-    cat('Truly Sparse multivariate regression with cross validation: reps = ',reps,', folds = ',K,'\n',sep='')
-    cat('rep\terror\t\ttime (s)\n')
+    cat("Truly Sparse multivariate regression with cross validation: reps = ", reps, ", folds = ", K, "\n", sep = "")
+    cat("rep\terror\t\ttime (s)\n")
   }
 
   # Iterate over reps.
@@ -51,25 +51,27 @@ tsmvr_replicate = function(X, Y, s1, s2, K = 10, reps = 1, b_type = "gd",
   for (r in 1:reps) {
 
     # For each rep, iterate over folds.
-    fold_result <- tsmvr_cv(X=X, Y=Y, s1=s1,  s2=s2,
-                            K = K, b_type = b_type,
-                            omega_type = omega_type,
-                            eta1 = eta1, eta2 = eta2,
-                            epsilon = epsilon, maxiter = maxiter,
-                            quiet = T)
+    fold_result <- tsmvr_cv(
+      X = X, Y = Y, s1 = s1, s2 = s2,
+      K = K, b_type = b_type,
+      omega_type = omega_type,
+      eta1 = eta1, eta2 = eta2,
+      epsilon = epsilon, maxiter = maxiter,
+      quiet = T
+    )
 
     # Record results.
     fold_error[r] <- fold_result$error
     fold_sd[r] <- fold_result$sd
 
     # Print to screen.
-    toc <- (Sys.time()-tic)
-    cat(r,'\t',fold_error[r],'\t',round(toc,3),'\n',sep='')
-
+    toc <- (Sys.time() - tic)
+    cat(r, "\t", fold_error[r], "\t", round(toc, 3), "\n", sep = "")
   }
 
   # Return results.
-  return (list(rep_error=mean(fold_error), rep_sd=sd(fold_error),
-               fold_errors=fold_error, fold_sds=fold_sd))
-
+  return(list(
+    rep_error = mean(fold_error), rep_sd = sd(fold_error),
+    fold_errors = fold_error, fold_sds = fold_sd
+  ))
 }
