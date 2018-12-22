@@ -8,7 +8,7 @@ The goal of tsmvr is to ...
 Development Status
 ==================
 
-[![Travis build status](https://travis-ci.org/spcorum/tsmvr.svg?branch=master)](https://travis-ci.org/spcorum/tsmvr)
+[![Coverage status](https://codecov.io/gh/spcorum/tsmvr/branch/master/graph/badge.svg)](https://codecov.io/github/spcorum/tsmvr?branch=master) [![Travis build status](https://travis-ci.org/spcorum/tsmvr.svg?branch=master)](https://travis-ci.org/spcorum/tsmvr) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/spcorum/tsmvr?branch=master&svg=true)](https://ci.appveyor.com/project/spcorum/tsmvr)
 
 Installation
 ------------

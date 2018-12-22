@@ -18,6 +18,9 @@ LinkingTo:
     Rcpp, RcppArmadillo
 Imports: 
     Rcpp, RcppArmadillo
-Suggests: tsmvrextras
+Suggests: 
+    tsmvrextras,
+    covr,
+    testthat
 RdMacros: Rdpack
 RoxygenNote: 6.1.0
