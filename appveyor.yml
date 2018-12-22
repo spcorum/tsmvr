@@ -46,5 +46,7 @@ artifacts:
 
 environment:
   use_rtools: true
+  not_cran: true
+  gcc_path: mingw64
 
 
