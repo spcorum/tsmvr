@@ -23,9 +23,10 @@ Imports:
     Rdpack,
     matrixcalc
 Suggests: 
-    tsmvrextras,
     covr,
     testthat
+Remotes:
+    spcorum/tsmvrextras
 RdMacros: 
     Rdpack
 RoxygenNote: 6.1.0
