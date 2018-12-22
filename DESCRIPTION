@@ -1,6 +1,6 @@
 Package: tsmvr
 Title: Truly Sparse Multivariate Regression
-Version: 0.0.0.9000
+Version: 0.0.1.1
 Authors@R: person("Sean", "Corum",
                   email = "spcorum@gmail.com",
                   role = c("aut", "cre")
