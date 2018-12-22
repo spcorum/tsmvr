@@ -13,10 +13,10 @@ Development Status
 Installation
 ------------
 
-You can install the released version of tsmvr from [CRAN](https://CRAN.R-project.org) with:
+You can install the development version of tsmvr from [Github](github.com) with:
 
 ``` r
-install.packages("tsmvr")
+devtools::install_github("spcorum/tsmvr")
 ```
 
 Example
