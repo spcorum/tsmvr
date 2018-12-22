@@ -4,9 +4,9 @@
 \alias{tsmvr_replicate}
 \title{Replicated k-fold cross-validation for tsmvr}
 \usage{
-tsmvr_replicate(X, Y, s1, s2, K = 10, reps = 1, b_type = "gd",
-  omega_type = "min", eta1 = 0.01, eta2 = 0.01, epsilon = 1e-05,
-  maxiter = 1000, quiet = FALSE, seed = NULL)
+tsmvr_replicate(X, Y, s1, s2, k = 10, reps = 1, B_type = "gd",
+  Omega_type = "min", eta1 = 0.01, eta2 = 0.01, epsilon = 1e-05,
+  max_iter = 1000, quiet = FALSE, seed = NULL)
 }
 \arguments{
 \item{X}{design matrix (n-by-p)}
@@ -17,13 +17,13 @@ tsmvr_replicate(X, Y, s1, s2, K = 10, reps = 1, b_type = "gd",
 
 \item{s2}{covariance matrix sparsity (positive integer)}
 
-\item{K}{number of folds (integer greater than 1)}
+\item{k}{number of k-folds (integer greater than 1)}
 
 \item{reps}{number of replications (positive integer)}
 
-\item{b_type}{B-step descent type (string: 'gd')}
+\item{B_type}{B-step descent type (string: 'gd')}
 
-\item{omega_type}{Omega-step descent type (string: 'gd' or 'min')}
+\item{Omega_type}{Omega-step descent type (string: 'gd' or 'min')}
 
 \item{eta1}{B-step learning rate (positive numeric)}
 
@@ -31,7 +31,7 @@ tsmvr_replicate(X, Y, s1, s2, K = 10, reps = 1, b_type = "gd",
 
 \item{epsilon}{convergence parameter (positive numeric)}
 
-\item{maxiter}{maximum number of allowed iterations (positive integer)}
+\item{max_iter}{maximum number of allowed iterations (positive integer)}
 
 \item{quiet}{quiet mode (bool)}
 
@@ -41,7 +41,7 @@ tsmvr_replicate(X, Y, s1, s2, K = 10, reps = 1, b_type = "gd",
 A list containing the \code{mean} and \code{sd} of the
 error over the replicates as well as the means and standard
 deviations of the errors across each fold.
-See also \code{\link{squared_error}}, \code{\link{kfolds}},
+See also \code{\link{squared_error}}, \code{\link{k_folds}},
 \code{\link{tsmvr_cv}}, and \code{\link{tsmvr_solve}}.
 }
 \description{

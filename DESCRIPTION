@@ -15,12 +15,17 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 LinkingTo: 
-    Rcpp, RcppArmadillo
+    Rcpp,
+    RcppArmadillo
 Imports: 
-    Rcpp, RcppArmadillo
+    Rcpp, 
+    RcppArmadillo,
+    Rdpack,
+    matrixcalc
 Suggests: 
     tsmvrextras,
     covr,
     testthat
-RdMacros: Rdpack
+RdMacros: 
+    Rdpack
 RoxygenNote: 6.1.0

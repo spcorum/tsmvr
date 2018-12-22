@@ -4,8 +4,8 @@
 \alias{tsmvr_solve}
 \title{Truly Sparse Multivariate Regression}
 \usage{
-tsmvr_solve(X, Y, s1, s2, BType = "gd", OmegaType = "gd",
-  eta1 = 0.001, eta2 = 0.001, epsilon = 1e-04, maxiter = 1000L,
+tsmvr_solve(X, Y, s1, s2, B_type = "gd", Omega_type = "gd",
+  eta1 = 0.001, eta2 = 0.001, epsilon = 1e-04, max_iter = 1000L,
   skip = 10L, quiet = FALSE)
 }
 \arguments{
@@ -17,9 +17,9 @@ tsmvr_solve(X, Y, s1, s2, BType = "gd", OmegaType = "gd",
 
 \item{s2}{sparsity parameter for covariance matrix (positive integer)}
 
-\item{BType}{type of descent for regression steps (string: 'gd')}
+\item{B_type}{type of descent for regression steps (string: 'gd')}
 
-\item{OmegaType}{(string: 'gd' or 'min')}
+\item{Omega_type}{(string: 'gd' or 'min')}
 
 \item{eta1}{B-step learning rate (positive numeric)}
 
@@ -27,7 +27,7 @@ tsmvr_solve(X, Y, s1, s2, BType = "gd", OmegaType = "gd",
 
 \item{epsilon}{convergence parameter (positve numeric)}
 
-\item{maxiter}{maximum number of iterations (positive integer)}
+\item{max_iter}{maximum number of iterations (positive integer)}
 
 \item{skip}{iteration skip frequency for printing to screen (postive integer)}
 
@@ -36,15 +36,15 @@ tsmvr_solve(X, Y, s1, s2, BType = "gd", OmegaType = "gd",
 \value{
 A list of algorithm output, including:
 
-\code{B.hat} - final iterate of the regression matrix \cr
-\code{Omega.hat} - final iterate of the precision matrix \cr
+\code{B_hat} - final iterate of the regression matrix \cr
+\code{Omega_hat} - final iterate of the precision matrix \cr
 \code{objective} - final value of the objective function \cr
-\code{B.history} - list of all regression matrix iterates \cr
-\code{Omega.history} - list of all precision matrix iterates \cr
-\code{objective.history} - list of the objective function values for each iteration \cr
+\code{B_history} - list of all regression matrix iterates \cr
+\code{Omega_history} - list of all precision matrix iterates \cr
+\code{objective_history} - list of the objective function values for each iteration \cr
 \code{iterations} - number of iterations \cr
 \code{time} - algorithm time (seconds) \cr
-\code{Y.hat} - fitted response, given by \code{X*B.hat} \cr
+\code{Y_hat} - fitted response, given by \code{X*B_hat} \cr
 \code{residuls} - difference between the actual and fitted responses
 }
 \description{
@@ -53,18 +53,18 @@ matrix estimation and absolute sparsity contraints.
 }
 \details{
 The tsmvr solver works by alternating blockwise coordinate descent,
-where in each iteration there is an update of the regressor matrix 
+where in each iteration there is an update of the regressor matrix
 (the B-step) followed by an update of the precision matrix (the Omega-step).
-While the B-step update is always made by gradient descent, 
-for the Omega-step the user has the freedom to choose either 
+While the B-step update is always made by gradient descent,
+for the Omega-step the user has the freedom to choose either
 gradient descent or direct minimization. In this package
 the first method is called 'gd-gd' and the second method is
-called 'gd-min'. While gd-min is faster than gd-gd, for some 
-problems direct minimization causes the solution to explode in a 
+called 'gd-min'. While gd-min is faster than gd-gd, for some
+problems direct minimization causes the solution to explode in a
 manner similar to that of gradient descent with a too large learning
-rate. As usual, setting the learning rate too large for gradient 
+rate. As usual, setting the learning rate too large for gradient
 descent itself will also cause the solution to explode. The best way
-to find a solution is to use trial and error (or some more principled 
+to find a solution is to use trial and error (or some more principled
 method) to find the largest learning rate(s) that yield convergence
 in either gd-gd mode or gd-min mode.
 
@@ -76,15 +76,15 @@ is rare that larger values will ever work on any problem. For most
 problems \code{eta1} and \code{eta2} will need to be set to lower
 value, anywhere from 0.1 down to 0.0001.
 
-The sparsity parameters \code{s1} and \code{s2} specify the 
+The sparsity parameters \code{s1} and \code{s2} specify the
 sparsity for B and Omega matrices as the algorithm iterates.
 They act as regularizers, contraining the space of possible
 solutions at each iteration. For real-world problems, the best
-values of \code{s1} and \code{s2} need to be found by 
-cross-validation and gridsearch. \code{s2} is lower bounded by 
+values of \code{s1} and \code{s2} need to be found by
+cross-validation and gridsearch. \code{s2} is lower bounded by
 \code{q}, since the covariance matrix must at least be diagonal.
 
-10E-4 is usually a good value for \code{epsilon}. The author 
+10E-4 is usually a good value for \code{epsilon}. The author
 rarely finds problems where smaller values of \code{epsilon} gave
 solutions with better at out-of-sample prediction.
 Altertativley, good predictively solutions can often be found

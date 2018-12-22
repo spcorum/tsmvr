@@ -4,7 +4,7 @@
 #' a dataset.
 #'
 #' @param n number of data points (positive integer)
-#' @param K number of folds (integer K >= 2)
+#' @param k number of k-folds (integer > 1)
 #' @param seed sets random seed for reproducibility (positive integer)
 #' @return A list of length two, each entry itself being a list of
 #' length \code{K} containing the training (validation) indices.
@@ -12,7 +12,7 @@
 #' @note See also \code{\link{tsmvr_cv}}.
 #'
 #' @export
-kfolds <- function(n, K, seed = NULL) {
+k_folds <- function(n, k, seed = NULL) {
 
   # Create random permutation of the data indices.
   set.seed(seed)
@@ -20,14 +20,14 @@ kfolds <- function(n, K, seed = NULL) {
 
   # Calculate the cv-fold indeces by making K evenly sized splits of
   # the permuted indices.
-  cv_list <- split(full_list, ceiling(seq_along(full_list) / (n / K)))
+  cv_list <- split(full_list, ceiling(seq_along(full_list) / (n / k)))
   names(cv_list) <- NULL
 
   # Use set difference to calculate the training indices for each
   # fold: set(train) = set(full) - set(cv).
   train_list <- NULL
-  for (k in 1:K) {
-    train_list <- c(train_list, list(setdiff(full_list, cv_list[[k]])))
+  for (i in 1:k) {
+    train_list <- c(train_list, list(setdiff(full_list, cv_list[[i]])))
   }
 
   # Return the lists of training and cv indices as a named list.

@@ -4,8 +4,8 @@
 \alias{tsmvr_cv}
 \title{k-fold cross-validation for tsmvr}
 \usage{
-tsmvr_cv(X, Y, s1, s2, K = 10, b_type = "gd", omega_type = "min",
-  eta1 = 0.01, eta2 = 0.01, epsilon = 1e-05, maxiter = 1000,
+tsmvr_cv(X, Y, s1, s2, k = 10, B_type = "gd", Omega_type = "min",
+  eta1 = 0.01, eta2 = 0.01, epsilon = 1e-05, max_iter = 1000,
   quiet = FALSE, seed = NULL)
 }
 \arguments{
@@ -17,11 +17,11 @@ tsmvr_cv(X, Y, s1, s2, K = 10, b_type = "gd", omega_type = "min",
 
 \item{s2}{covariance matrix sparsity (positive integer)}
 
-\item{K}{number of folds (integer greater than 1)}
+\item{k}{number of k-folds (integer greater than 1)}
 
-\item{b_type}{B-step descent type (string: 'gd')}
+\item{B_type}{B-step descent type (string: 'gd')}
 
-\item{omega_type}{Omega-step descent type (string: 'gd' or 'min')}
+\item{Omega_type}{Omega-step descent type (string: 'gd' or 'min')}
 
 \item{eta1}{B-step learning rate (positive numeric)}
 
@@ -29,7 +29,7 @@ tsmvr_cv(X, Y, s1, s2, K = 10, b_type = "gd", omega_type = "min",
 
 \item{epsilon}{convergence parameter (positive numeric)}
 
-\item{maxiter}{maximum number of allowed iterations (positive integer)}
+\item{max_iter}{maximum number of allowed iterations (positive integer)}
 
 \item{quiet}{quiet mode (bool)}
 
@@ -47,6 +47,6 @@ error between the true response and the predicted response
 on a given cross-validation set.
 }
 \note{
-See also \code{\link{squared_error}}, \code{\link{kfolds}},
+See also \code{\link{squared_error}}, \code{\link{k_folds}},
 \code{\link{tsmvr_solve}}.
 }
