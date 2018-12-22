@@ -41,10 +41,10 @@ arma::mat mvLasso(const arma::mat &X, const arma::mat &Y, const double &lam) {
      * solution to B (p-by-q)
      *
      * Multivariate Lasso problem: min{ 1/n ||Y-X*B||^2 + lam*|B|_11 }
+     *
+     * The multivariate Lasso solution is calculated by soft-
+     * thresholding the ordinary least squares solution.
     */
-
-    // The multivariate Lasso solution is calculated by soft- \
-    // thresholding the ordinary least squares solution.
     return st(solve(X.t()*X,X.t()*Y,solve_opts::fast),lam);
 }
 
@@ -460,24 +460,28 @@ List tsmvr_solve(const arma::mat &X, const arma::mat &Y, const int &s1,
 
     // Print header.
 
-    // if (B_type == 'gd') {
-    //     BStep = "B-step: gradient descent (eta1=" + to_string(eta1) \
-    //     + ")";
-    // }
-    // if (Omega_type == 'gd') {
-    //     OmegaStep = "Omega-step: gradient descent (eta2=" + \
-    //         to_string(eta2) + ")";
-    // } else if (Omega_type == 'min') {
-    //     OmegaStep = "Omega-step: direct minimization";
-    // }
+    /*
+      if (B_type == 'gd') {
+         BStep = "B-step: gradient descent (eta1=" + to_string(eta1) \
+          + ")";
+      }
+      if (Omega_type == 'gd') {
+          OmegaStep = "Omega-step: gradient descent (eta2=" + \
+              to_string(eta2) + ")";
+      } else if (Omega_type == 'min') {
+          OmegaStep = "Omega-step: direct minimization";
+      }
+    */
 
     if (!quiet) {
         Rcpp::Rcout << "Truly Sparse multivariate regression." << endl;
-        // Rcpp::Rcout << "B-step: gradient descent (eta1=" << eta1 \
-        //      << ") | Omega-step: gradient descent (eta2=" << eta2 \
-        //      << ")" << endl;
-        // Rcpp::Rcout << B_type << "|" << OmegaStep << endl;
+        /* Rcpp::Rcout << "B-step: gradient descent (eta1=" << eta1 \
+             << ") | Omega-step: gradient descent (eta2=" << eta2 \
+             << ")" << endl;
+
+        cout << B_type << "|" << Omega_type << endl;
         Rcpp::Rcout << "t\tobj\t||\u0394B||\t\t||\u0394\u03A9||\ttime (ms)" << endl;
+         */
     }
 
     // Start clock.
