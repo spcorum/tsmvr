@@ -1,14 +1,23 @@
 Package: tsmvr
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com")
-Description: What the package does (one paragraph).
-License: What license it uses
+Title: Truly Sparse Multivariate Regression
+Version: 0.0.0.0000
+Authors@R: person("Sean", "Corum",
+                  email = "spcorum@gmail.com",
+                  role = c("aut", "cre")
+                  )
+Description: This package is a solver for truly sparse multivariate
+             regression (tsmvr). The main algorithm also estimates the error covariacne,
+             which yields gives more accurate regressions. Functions for 
+             performing k-fold and replicated k-fold cross-validtion are also
+             included.
+Language: en-US
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/spcorum/tsmvr
-BugReports: https://github.com/spcorum/tsmvr/issues
+LinkingTo: 
+    Rcpp, RcppArmadillo
+Imports: 
+    Rcpp, RcppArmadillo
+Suggests: tsmvrextras
+RdMacros: Rdpack
+RoxygenNote: 6.1.0
