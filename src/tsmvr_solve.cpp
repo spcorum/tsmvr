@@ -445,9 +445,6 @@ List tsmvr_solve(const arma::mat &X, const arma::mat &Y, const int &s1,
     long now;
     int itrs;
 
-    double ss;
-    // int df;
-    // double se;
     arma::mat fv;
     arma::mat res;
 
@@ -541,10 +538,10 @@ List tsmvr_solve(const arma::mat &X, const arma::mat &Y, const int &s1,
     // Statistics
     fv = X*B;
     res = Y-fv;
-    ss = norm(fv,"fro");
-    // df = n-(p+q+q^2);    // df = # obs - (coefficents + responses +
+    double ss = norm(fv,"fro");
+    // int df = n-(p+q+q^2);    // df = # obs - (coefficents + responses +
                             //  size of precision matrix) [correct ?]
-    // se = ss/std::sqrt(df);  // standard error, not impelented ..
+    // double se = ss/std::sqrt(df);  // standard error, not impelented ..
 
     // Warn if maximum iterations reached & resize history fields
     // with the same control flow.
