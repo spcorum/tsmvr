@@ -45,6 +45,6 @@ artifacts:
     name: Bits
 
 environment:
-  - use_rtools: true
+  use_rtools: true
 
 
