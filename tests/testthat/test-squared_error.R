@@ -69,13 +69,12 @@ test_that("dimensions of V and V must be equal", {
 
 test_that("3x3 example with identity covariance gives pencel and
           paper result", {
-            expect_equal(
-              squared_error(
-                U = matrix(c(1, -1, -1, 1, 0, 0, 5, 3, 7), 3, 3),
-                V = matrix(c(2, 10, sqrt(2), 0, -1, 1, 0.5, 2, -2), 3, 3)
-              ),
-              matrixcalc::matrix.trace(matrix(c(2 - 1, 10 + 1, sqrt(2) + 1, -1, -1, 1, -4.5, -1, -9), 3, 3) %*%
-                                         t(matrix(c(2 - 1, 10 + 1, sqrt(2) + 1, -1, -1, 1, -4.5, -1, -9), 3, 3))) / 3 / 3
-            )
-            })
-
+  expect_equal(
+    squared_error(
+      U = matrix(c(1, -1, -1, 1, 0, 0, 5, 3, 7), 3, 3),
+      V = matrix(c(2, 10, sqrt(2), 0, -1, 1, 0.5, 2, -2), 3, 3)
+    ),
+    matrixcalc::matrix.trace(matrix(c(2 - 1, 10 + 1, sqrt(2) + 1, -1, -1, 1, -4.5, -1, -9), 3, 3) %*%
+      t(matrix(c(2 - 1, 10 + 1, sqrt(2) + 1, -1, -1, 1, -4.5, -1, -9), 3, 3))) / 3 / 3
+  )
+})
