@@ -7,11 +7,11 @@
 k_folds(n, k, seed = NULL)
 }
 \arguments{
-\item{n}{number of data points (positive integer)}
+\item{n}{number of data points (integer valued numeric > 1)}
 
-\item{k}{number of k-folds (integer > 1)}
+\item{k}{number of k-folds (integer valued numeric > 1)}
 
-\item{seed}{sets random seed for reproducibility (positive integer)}
+\item{seed}{sets random seed for reproducibility (numeric)}
 }
 \value{
 A list of length two, each entry itself being a list of

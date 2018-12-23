@@ -13,7 +13,6 @@
 #'
 #' @export
 k_folds <- function(n, k, seed = NULL) {
-
   stopifnot(
     n %% 1 == 0, n > 1, k %% 1 == 0, k > 1
   )
