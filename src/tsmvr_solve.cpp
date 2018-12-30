@@ -428,35 +428,13 @@ List tsmvr_solve(const arma::mat &X, const arma::mat &Y, const int &s1,
     // const int n = X.n_rows;
     // const int p = X.n_cols;
     // const int q = Y.n_cols;
-
     const arma::mat S = X.t()*X;
     const arma::mat H = X.t()*Y;
-    arma::mat BOld;
-    arma::mat OmegaOld;
-
-    double gamma = std::numeric_limits<double>::infinity();
-    double obj = std::numeric_limits<double>::infinity();
-    double objOld;
-
-    double dBNorm;
-    double dOmegaNorm;
-
-    double time;
-    long now;
-    int itrs;
-
-    arma::mat fv;
-    arma::mat res;
-
-    field<arma::mat> BHist(max_iter);
-    field<arma::mat> OmegaHist(max_iter);
-    field<double> objHist(max_iter);
-
-    // string BStep;
-    // string OmegaStep;
 
     // Print header.
 
+    // string BStep;
+    // string OmegaStep;
     /*
       if (B_type == 'gd') {
          BStep = "B-step: gradient descent (eta1=" + to_string(eta1) \
@@ -472,21 +450,40 @@ List tsmvr_solve(const arma::mat &X, const arma::mat &Y, const int &s1,
 
     if (!quiet) {
         Rcpp::Rcout << "Truly Sparse multivariate regression." << endl;
-        /* Rcpp::Rcout << "B-step: gradient descent (eta1=" << eta1 \
-             << ") | Omega-step: gradient descent (eta2=" << eta2 \
-             << ")" << endl;
-
-        cout << B_type << "|" << Omega_type << endl;
-        Rcpp::Rcout << "t\tobj\t||\u0394B||\t\t||\u0394\u03A9||\ttime (ms)" << endl;
-         */
+        // Rcpp::Rcout << "B-step: gradient descent (eta1=" << eta1 \
+        //     << ") | Omega-step: gradient descent (eta2=" << eta2 \
+        //     << ")" << endl;
+        // cout << B_type << "|" << Omega_type << endl;
+        // Rcpp::Rcout << "t\tobj\t||\u0394B||\t\t||\u0394\u03A9||\ttime (ms)" << endl;
     }
 
-    // Start clock.
-    clock_t start = clock();
+    // For recording history of iterates.
+    field<arma::mat> BHist(max_iter);
+    field<arma::mat> OmegaHist(max_iter);
+    field<double> objHist(max_iter);
+
+    // For caching previous iterates.
+    arma::mat BOld;
+    arma::mat OmegaOld;
+    double objOld;
+
+    // For determining convergence.
+    int itrs;
+    double dBNorm;
+    double dOmegaNorm;
+    double gamma = std::numeric_limits<double>::infinity();
 
     // Initial iterates.
     arma::mat B = initializeB(S,H,s1);
     arma::mat Omega = initializeOmega(B,X,Y,s2);
+    double obj = std::numeric_limits<double>::infinity();
+
+    // For keeping time.
+    double time;
+    long now;
+
+    // Start the clock.
+    clock_t start = clock();
 
     // Main loop of tsmvr algorithm.
     for (int k=1; k<=max_iter; k=k+1) {
@@ -497,7 +494,6 @@ List tsmvr_solve(const arma::mat &X, const arma::mat &Y, const int &s1,
         objOld = obj;
 
         // Update current iterate.
-        // B = ht(updateB(B,Omega,X,Y,S,H,B_type,eta1,cgdstep,cgdeps),s1);
         B = ht(updateB(B,Omega,X,Y,S,H,B_type,eta1),s1);
         Omega = ht(updateOmega(B,Omega,X,Y,Omega_type,eta2),s2);
         obj = objective(B,Omega,X,Y);
@@ -510,7 +506,7 @@ List tsmvr_solve(const arma::mat &X, const arma::mat &Y, const int &s1,
         dBNorm = norm(B-BOld,"fro");
         dOmegaNorm = norm(Omega-OmegaOld,"fro");
 
-        // Print results to screen if not quiet.
+        // If not quiet, print results to screen.
         if(quiet == false && k % skip == 0) {
             now = ( clock() - start ) / (double) CLOCKS_PER_SEC * 1000;
             Rcpp::Rcout <<  k << "\t" \
@@ -535,16 +531,16 @@ List tsmvr_solve(const arma::mat &X, const arma::mat &Y, const int &s1,
     // Time duration
     time = ( clock() - start ) / (double) CLOCKS_PER_SEC;
 
-    // Statistics
-    fv = X*B;
-    res = Y-fv;
+    // Statistics.
+    arma::mat fv = X*B;
+    arma::mat res = Y-fv;
     double ss = norm(fv,"fro");
     // int df = n-(p+q+q^2);    // df = # obs - (coefficents + responses +
                             //  size of precision matrix) [correct ?]
     // double se = ss/std::sqrt(df);  // standard error, not impelented ..
 
     // Warn if maximum iterations reached & resize history fields
-    // with the same control flow.
+    // within the same control flow.
     field<arma::mat> BHist2(itrs);
     field<arma::mat> OmegaHist2(itrs);
     field<double> objHist2(itrs);
@@ -573,6 +569,7 @@ List tsmvr_solve(const arma::mat &X, const arma::mat &Y, const int &s1,
                         Named("time") = time,
                         Named("Y_hat") = fv,
                         Named("residuals") = res,
+                        Named("sum_of_squares") = ss,
                         Named("B_history") = BHist2,
                         Named("Omega_history") = OmegaHist2,
                         Named("objective_history") = objHist2);
