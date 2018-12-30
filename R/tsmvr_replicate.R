@@ -74,17 +74,22 @@ tsmvr_replicate <- function(X, Y, s1, s2, k = 10, reps = 1, B_type = "gd",
     )
 
     # Record results.
-    fold_error[r] <- fold_result$error
-    fold_sd[r] <- fold_result$sd
+    fold_error[r] <- fold_result$error_mean
+    fold_sd[r] <- fold_result$error_sd
+    toc <- (Sys.time() - tic)
 
     # Print to screen.
-    toc <- (Sys.time() - tic)
-    cat(r, "\t", fold_error[r], "\t", round(toc, 3), "\n", sep = "")
+    if (!quiet) {
+      cat(r, "\t", fold_error[r], "\t", round(toc, 3), "\n",
+        sep = "")
+    }
+
   }
 
   # Return results.
   return(list(
-    rep_error = mean(fold_error), rep_sd = sd(fold_error),
-    fold_errors = fold_error, fold_sds = fold_sd
+    rep_error_mean = mean(fold_error), rep_error_sd = sd(fold_error),
+    fold_error_means = fold_error, fold_error_sds = fold_sd,
+    folds = k, reps = reps
   ))
 }
