@@ -51,8 +51,8 @@ tsmvr_cv <- function(X, Y, s1, s2, k = 10, B_type = "gd",
       epsilon = epsilon, max_iter = max_iter, quiet = quiet
     )$B_hat
 
-    Y_pred <- X_train %*% B_hat
-    error[i] <- squared_error(Y_train, Y_pred)
+    Y_pred <- X_cv %*% B_hat
+    error[i] <- squared_error(Y_cv, Y_pred)
   }
 
   # Compute results.
