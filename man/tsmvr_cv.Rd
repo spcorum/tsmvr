@@ -4,8 +4,8 @@
 \alias{tsmvr_cv}
 \title{k-fold cross-validation for tsmvr}
 \usage{
-tsmvr_cv(X, Y, s1, s2, k = 10, B_type = "gd", Omega_type = "min",
-  eta1 = 0.01, eta2 = 0.01, epsilon = 1e-05, max_iter = 1000,
+tsmvr_cv(X, Y, s1, s2, k = 10, B_type = "gd", Omega_type = "gd",
+  eta1 = 0.01, eta2 = 0.01, epsilon = 1e-04, max_iter = 1000,
   quiet = FALSE, seed = NULL)
 }
 \arguments{

@@ -8,9 +8,17 @@
 */
 
 /* .Call calls */
+extern SEXP _tsmvr_RcppExport_registerCCallable();
 extern SEXP _tsmvr_tsmvr_solve(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_tsmvr_tsmvr_solve", (DL_FUNC) &_tsmvr_tsmvr_solve, 12},
+    {"_tsmvr_RcppExport_registerCCallable", (DL_FUNC) &_tsmvr_RcppExport_registerCCallable,  0},
+    {"_tsmvr_tsmvr_solve",                  (DL_FUNC) &_tsmvr_tsmvr_solve,                  12},
     {NULL, NULL, 0}
 };
+
+void R_init_tsmvr(DllInfo *dll)
+{
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}

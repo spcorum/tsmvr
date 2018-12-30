@@ -77,6 +77,10 @@
 #'
 #' @export
 tsmvr_solve <- function(X, Y, s1, s2, B_type = "gd", Omega_type = "gd", eta1 = 0.001, eta2 = 0.001, epsilon = 1e-4, max_iter = 1000L, skip = 10L, quiet = FALSE) {
-    .Call('_tsmvr_tsmvr_solve', PACKAGE = 'tsmvr', X, Y, s1, s2, B_type, Omega_type, eta1, eta2, epsilon, max_iter, skip, quiet)
+    .Call(`_tsmvr_tsmvr_solve`, X, Y, s1, s2, B_type, Omega_type, eta1, eta2, epsilon, max_iter, skip, quiet)
 }
 
+# Register entry points for exported C++ functions
+methods::setLoadAction(function(ns) {
+    .Call('_tsmvr_RcppExport_registerCCallable', PACKAGE = 'tsmvr')
+})

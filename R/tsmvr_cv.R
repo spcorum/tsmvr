@@ -28,10 +28,22 @@
 #' @importFrom stats sd
 #'
 #' @export
-tsmvr_cv <- function(X, Y, s1, s2, k = 10, B_type = "gd",
-                     Omega_type = "min", eta1 = 0.01, eta2 = 0.01,
-                     epsilon = 1e-5, max_iter = 1000, quiet = FALSE,
+tsmvr_cv <- function(X, Y, s1, s2, k = 10, B_type = 'gd',
+                     Omega_type = 'gd', eta1 = 0.01, eta2 = 0.01,
+                     epsilon = 1e-4, max_iter = 1000, quiet = FALSE,
                      seed = NULL) {
+
+  stopifnot(
+    is.numeric(X), is.matrix(Y), is.numeric(Y), is.matrix(Y),
+    is.numeric(s1), s1 >= 0, is.numeric(s2), s2 >= dim(Y)[2],
+    s1 <= dim(X)[2] * dim(Y)[2], s2 <= (dim(Y)[2])^2,
+    is.character(B_type), is.character(Omega_type),
+    B_type %in% c('gd'), Omega_type %in% c('gd', 'min'),
+    is.numeric(epsilon), epsilon > 0,
+    is.numeric(max_iter), max_iter > 0, max_iter %% 1 == 0,
+    is.null(seed) || is.numeric(seed)
+  )
+
   error <- rep(0, k)
 
   # Compute folds.
@@ -42,8 +54,8 @@ tsmvr_cv <- function(X, Y, s1, s2, k = 10, B_type = "gd",
   for (i in 1:k) {
     X_train <- X[fold_list$train[[i]], ]
     Y_train <- Y[fold_list$train[[i]], ]
-    X_cv <- X[fold_list$cv[[i]], ]
-    Y_cv <- Y[fold_list$cv[[i]], ]
+    X_val <- X[fold_list$val[[i]], ]
+    Y_val <- Y[fold_list$val[[i]], ]
 
     B_hat <- tsmvr_solve(
       X = X_train, Y = Y_train, s1 = s1, s2 = s2, B_type = B_type,
@@ -51,10 +63,10 @@ tsmvr_cv <- function(X, Y, s1, s2, k = 10, B_type = "gd",
       epsilon = epsilon, max_iter = max_iter, quiet = quiet
     )$B_hat
 
-    Y_pred <- X_cv %*% B_hat
-    error[i] <- squared_error(Y_cv, Y_pred)
+    Y_pred <- X_val %*% B_hat
+    error[i] <- squared_error(Y_val, Y_pred)
   }
 
   # Compute results.
-  return(list(error = mean(error), sd = sd(error)))
+  return(list(error_mean = mean(error), error_sd = sd(error), num_folds = k))
 }

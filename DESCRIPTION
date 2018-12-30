@@ -18,10 +18,11 @@ LinkingTo:
     Rcpp,
     RcppArmadillo
 Imports: 
-    Rcpp, 
+    Rcpp,
     RcppArmadillo,
     Rdpack,
-    matrixcalc
+    matrixcalc,
+    stringi
 Suggests: 
     covr,
     testthat
