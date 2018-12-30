@@ -450,8 +450,7 @@ List tsmvr_solve(const arma::mat &X, const arma::mat &Y, const int &s1,
 
     field<arma::mat> BHist(max_iter);
     field<arma::mat> OmegaHist(max_iter);
-    // field<double> objHist(max_iter);
-    Col<double> objHist(max_iter);
+    field<double> objHist(max_iter);
 
     // string BStep;
     // string OmegaStep;
@@ -548,8 +547,7 @@ List tsmvr_solve(const arma::mat &X, const arma::mat &Y, const int &s1,
     // with the same control flow.
     field<arma::mat> BHist2(itrs);
     field<arma::mat> OmegaHist2(itrs);
-    // field<double> objHist2(itrs);
-    Col<double> objHist2(itrs);
+    field<double> objHist2(itrs);
     if (itrs == max_iter) {
         Rcpp::Rcout << "Warning: maximum number of iterations achieved without convergence." \
         << endl;
