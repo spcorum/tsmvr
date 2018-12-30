@@ -106,6 +106,64 @@ test_that("s2 cannot greater than (dim(Y)[2])^2", {
   )
 })
 
+test_that("k cannot be a character string", {
+  expect_error(
+    tsmvr_cv(X = matrix(rep(0,4),2,2), Y = matrix(rep(0,4),2,2),
+             s1 = 2, s2 = 2, k = '')
+  )
+})
+
+test_that("s2 cannot be a list()", {
+  expect_error(
+    tsmvr_cv(X = matrix(rep(0,4),2,2), Y = matrix(rep(0,4),2,2),
+             s1 = 2, s2 = 2, k = list())
+  )
+})
+
+test_that("s1 cannot be non-integer numeric", {
+  expect_error(
+    tsmvr_cv(X = matrix(rep(0,4),2,2), Y = matrix(rep(0,4),2,2),
+             s1 = 1.5, s2 = 2)
+  )
+})
+
+test_that("s2 cannot be non-integer numeric", {
+  expect_error(
+    tsmvr_cv(X = matrix(rep(0,4),2,2), Y = matrix(rep(0,4),2,2),
+             s1 = 2, s2 = 2.5)
+  )
+})
+
+test_that("k cannot be non-integer valued", {
+  expect_error(
+    tsmvr_cv(X = matrix(rep(0,4),2,2), Y = matrix(rep(0,4),2,2),
+             s1 = 2, s2 = 2, k = 2.5)
+  )
+})
+
+test_that("k cannot be negative", {
+  expect_error(
+    tsmvr_cv(X = matrix(rep(0,4),2,2), Y = matrix(rep(0,4),2,2),
+             s1 = 2, s2 = 2, k = -1)
+  )
+})
+
+
+test_that("k cannot be 0", {
+  expect_error(
+    tsmvr_cv(X = matrix(rep(0,4),2,2), Y = matrix(rep(0,4),2,2),
+             s1 = 2, s2 = 2, k = 2.5)
+  )
+})
+
+test_that("k cannot be 1", {
+  expect_error(
+    tsmvr_cv(X = matrix(rep(0,4),2,2), Y = matrix(rep(0,4),2,2),
+             s1 = 2, s2 = 2, k = 2.5)
+  )
+})
+
+
 test_that("B_type cannot numeric", {
   expect_error(
     tsmvr_cv(X = matrix(rep(0,4),2,2), Y = matrix(rep(0,2),2,2),
