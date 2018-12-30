@@ -29,10 +29,11 @@
 #'
 #'
 #' @export
-tsmvr_replicate <- function(X, Y, s1, s2, k = 10, reps = 1, B_type = "gd",
-                            Omega_type = "min", eta1 = 0.01, eta2 = 0.01,
-                            epsilon = 1e-5, max_iter = 1000, quiet = FALSE,
-                            seed = NULL) {
+tsmvr_replicate <- function(X, Y, s1, s2, k = 10, reps = 1,
+                            B_type = "gd", Omega_type = "min",
+                            eta1 = 0.001, eta2 = 0.001,
+                            epsilon = 1e-5, max_iter = 1000,
+                            quiet = FALSE, seed = NULL) {
 
   stopifnot(
     is.numeric(X), is.matrix(Y), is.numeric(Y), is.matrix(Y),

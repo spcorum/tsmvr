@@ -29,7 +29,7 @@
 #'
 #' @export
 tsmvr_cv <- function(X, Y, s1, s2, k = 10, B_type = 'gd',
-                     Omega_type = 'gd', eta1 = 0.01, eta2 = 0.01,
+                     Omega_type = 'gd', eta1 = 0.001, eta2 = 0.001,
                      epsilon = 1e-4, max_iter = 1000, quiet = FALSE,
                      seed = NULL) {
 

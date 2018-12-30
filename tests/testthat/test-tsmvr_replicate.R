@@ -420,7 +420,7 @@ test_that("the listed item labeled 'folds' is numeric", {
   expect_true(is.numeric(z$folds))
 })
 
-test_that("the listed item labeled 'fold_error_sds' is a list", {
+test_that("the listed item labeled 'fold_error_sds' is numeric", {
   X = matrix(rnorm(n = 1000, sd = 0.1),100,10)
   Y = matrix(rnorm(n = 300, mean = 1),100,3)
   z = tsmvr_replicate(
