@@ -392,7 +392,7 @@ test_that("the listed item labeled 'fold_error_means' has length reps", {
     max_iter = 20000,
     quiet = T
   )
-  expect_equal(length(z$fold_error_means), reps)
+  expect_equal(length(z$fold_error_means), 2)
 })
 
 test_that("the listed item labeled 'fold_error_sds' has length reps", {
@@ -404,7 +404,7 @@ test_that("the listed item labeled 'fold_error_sds' has length reps", {
     max_iter = 20000,
     quiet = T
   )
-  expect_equal(length(z$fold_error_sds),reps)
+  expect_equal(length(z$fold_error_sds),2)
 })
 
 
