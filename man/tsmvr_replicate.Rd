@@ -5,7 +5,7 @@
 \title{Replicated k-fold cross-validation for tsmvr}
 \usage{
 tsmvr_replicate(X, Y, s1, s2, k = 10, reps = 1, B_type = "gd",
-  Omega_type = "min", eta1 = 0.01, eta2 = 0.01, epsilon = 1e-05,
+  Omega_type = "min", eta1 = 0.001, eta2 = 0.001, epsilon = 1e-05,
   max_iter = 1000, quiet = FALSE, seed = NULL)
 }
 \arguments{

@@ -28,11 +28,10 @@
 #' @importFrom stats sd
 #'
 #' @export
-tsmvr_cv <- function(X, Y, s1, s2, k = 10, B_type = 'gd',
-                     Omega_type = 'gd', eta1 = 0.001, eta2 = 0.001,
+tsmvr_cv <- function(X, Y, s1, s2, k = 10, B_type = "gd",
+                     Omega_type = "gd", eta1 = 0.001, eta2 = 0.001,
                      epsilon = 1e-4, max_iter = 1000, quiet = FALSE,
                      seed = NULL) {
-
   stopifnot(
     is.numeric(X), is.matrix(Y), is.numeric(Y), is.matrix(Y),
     is.numeric(s1), s1 >= 0, is.numeric(s2), s2 >= dim(Y)[2],
@@ -40,7 +39,7 @@ tsmvr_cv <- function(X, Y, s1, s2, k = 10, B_type = 'gd',
     s1 %% 1 == 0, s2 %% 1 == 0,
     k %% 1 == 0, k > 1,
     is.character(B_type), is.character(Omega_type),
-    B_type %in% c('gd'), Omega_type %in% c('gd', 'min'),
+    B_type %in% c("gd"), Omega_type %in% c("gd", "min"),
     is.numeric(epsilon), epsilon > 0,
     is.numeric(max_iter), max_iter > 0, max_iter %% 1 == 0,
     is.null(seed) || is.numeric(seed)
