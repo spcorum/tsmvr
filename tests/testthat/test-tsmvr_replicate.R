@@ -394,39 +394,41 @@ test_that("seed cannot be a character string", {
 })
 
 test_that("tsmvr_replicate returns a list", {
-  set.seed(1)
+  seed = 1
+  set.seed(seed)
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-
-    quiet = T
+    quiet = T, seed = seed
   )
   expect_true(is.list(z))
 })
 
 test_that("tsmvr_replicate returns a list of length 6", {
-  set.seed(1)
+  seed = 1
+  set.seed(seed)
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T
+    quiet = T, seed = seed
   )
   expect_equal(length(z), 6)
 })
 
 test_that("the labels of the list returned by tsmvr_replicate are as
           expected", {
-            set.seed(1)
+            seed = 1
+            set.seed(seed)
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T
+    quiet = T, seed = seed
   )
   expect_true(all(labels(z) ==
     c(
@@ -437,110 +439,119 @@ test_that("the labels of the list returned by tsmvr_replicate are as
 })
 
 test_that("the listed item labeled 'rep_error_mean' is numeric", {
-  set.seed(1)
+  seed = 1
+  set.seed(seed)
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T
+    quiet = T, seed = seed
   )
   expect_true(is.numeric(z$rep_error_mean))
 })
 
 test_that("the listed item labeled 'rep_error_sd' is numeric", {
-  set.seed(1)
+  seed = 1
+  set.seed(seed)
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T
+    quiet = T, seed = seed
   )
   expect_true(is.numeric(z$rep_error_sd))
 })
 
 test_that("the listed item labeled 'fold_error_means' has length reps", {
-  set.seed(1)
+  seed = 1
+  set.seed(seed)
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T
+    quiet = T, seed = seed
   )
   expect_equal(length(z$fold_error_means), 2)
 })
 
 test_that("the listed item labeled 'fold_error_sds' has length reps", {
-  set.seed(1)
+  seed = 1
+  set.seed(seed)
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T
+    quiet = T, max_iter= 40000, seed = seed
   )
   expect_equal(length(z$fold_error_sds), 2)
 })
 
 
 test_that("the listed item labeled 'folds' is numeric", {
-  set.seed(1)
+  seed = 1
+  set.seed(seed)
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T
+    quiet = T, seed = seed
   )
   expect_true(is.numeric(z$folds))
 })
 
 test_that("the listed item labeled 'fold_error_sds' is numeric", {
-  set.seed(1)
+  seed = 1
+  set.seed(seed)
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T
+    quiet = T, seed = seed
   )
   expect_true(is.numeric(z$reps))
 })
 
 test_that("the listed item labeled 'folds' is integer valued", {
-  set.seed(1)
+  seed = 1
+  set.seed(seed)
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T
+    quiet = T, seed = seed
   )
   expect_true(z$folds %% 1 == 0)
 })
 
 test_that("the listed item labeled 'reps' is integer valued", {
-  set.seed(1)
+  seed = 1
+  set.seed(seed)
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T
+    quiet = T, seed = seed
   )
   expect_true(z$reps %% 1 == 0)
 })
 
 test_that("lines covered by quiet = F can execute", {
-  set.seed(1)
+  seed = 1
+  set.seed(seed)
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = F
+    quiet = F, seed = seed
   )
   expect_true(is.list(z))
 })

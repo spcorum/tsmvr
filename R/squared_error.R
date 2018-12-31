@@ -14,7 +14,6 @@
 #' @useDynLib tsmvr, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
 #'
-#'
 #' @export
 squared_error <- function(U, V) {
   stopifnot(is.matrix(U), is.matrix(V), all(dim(U) == dim(V)))

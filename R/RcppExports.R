@@ -4,7 +4,7 @@
 #' Truly Sparse Multivariate Regression
 #'
 #' Solver for multivariate regression with covariance/precision
-#' matrix estimation and absolute sparsity contraints.
+#' matrix estimation and absolute sparsity constraints.
 #'
 #' The tsmvr solver works by alternating blockwise coordinate descent,
 #' where in each iteration there is an update of the regressor matrix
@@ -32,7 +32,7 @@
 #'
 #' The sparsity parameters \code{s1} and \code{s2} specify the
 #' sparsity for B and Omega matrices as the algorithm iterates.
-#' They act as regularizers, contraining the space of possible
+#' They act as regularizers, constraining the space of possible
 #' solutions at each iteration. For real-world problems, the best
 #' values of \code{s1} and \code{s2} need to be found by
 #' cross-validation and gridsearch. \code{s2} is lower bounded by
@@ -41,22 +41,22 @@
 #' 10E-4 is usually a good value for \code{epsilon}. The author
 #' rarely finds problems where smaller values of \code{epsilon} gave
 #' solutions with better at out-of-sample prediction.
-#' Altertativley, good predictively solutions can often be found
+#' Alternatively, good predictive solutions can often be found
 #' using values of 10E-3 or even 10E-2.
 #'
 #' For speed, tsmvr_solve is implemented in Rcpp.
 #'
 #' @param X design matrix (n-by-p)
 #' @param Y response matrix (n-by-q)
-#' @param s1 sparsity parameter for regression matrix (postive integer)
+#' @param s1 sparsity parameter for regression matrix (positive integer)
 #' @param s2 sparsity parameter for covariance matrix (positive integer)
 #' @param B_type type of descent for regression steps (string: 'gd')
 #' @param Omega_type (string: 'gd' or 'min')
 #' @param eta1 B-step learning rate (positive numeric)
 #' @param eta2 Omega-step learning rate (positive numeric)
-#' @param epsilon convergence parameter (positve numeric)
+#' @param epsilon convergence parameter (positive numeric)
 #' @param max_iter maximum number of iterations (positive integer)
-#' @param skip iteration skip frequency for printing to screen (postive integer)
+#' @param skip iteration skip frequency for printing to screen (positive integer)
 #' @param quiet bool
 #'
 #' @references \insertRef{chen2016high}{tsmvr}

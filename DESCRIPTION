@@ -6,9 +6,9 @@ Authors@R: person("Sean", "Corum",
                   role = c("aut", "cre")
                   )
 Description: This package is a solver for truly sparse multivariate
-             regression (tsmvr). The main algorithm also estimates the error covariacne,
+             regression (tsmvr). The main algorithm also estimates the error covariance,
              which yields gives more accurate regressions. Functions for 
-             performing k-fold and replicated k-fold cross-validtion are also
+             performing k-fold and replicated k-fold cross-validation are also
              included.
 Language: en-US
 License: GPL-3
@@ -16,7 +16,8 @@ Encoding: UTF-8
 LazyData: true
 LinkingTo: 
     Rcpp,
-    RcppArmadillo
+    RcppArmadillo,
+    testthat
 Imports: 
     Rcpp,
     RcppArmadillo,
@@ -25,9 +26,14 @@ Imports:
     stringi
 Suggests: 
     covr,
-    testthat
+    testthat,
+    knitr,
+    rmarkdown
 Remotes:
     spcorum/tsmvrextras
 RdMacros: 
     Rdpack
 RoxygenNote: 6.1.0
+URL: https://github.com/spcorum/tsmvr
+BugReports: https://github.com/spcorum/tsmvr/issues
+VignetteBuilder: knitr

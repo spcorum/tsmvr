@@ -45,8 +45,8 @@ See also \code{\link{squared_error}}, \code{\link{k_folds}},
 \code{\link{tsmvr_cv}}, and \code{\link{tsmvr_solve}}.
 }
 \description{
-Calculates the mean and standard deviation of fold-avereged errors
-derived from replcated tsmvr k-fold cross-validation experiments.
+Calculates the mean and standard deviation of fold-averaged errors
+derived from replicated tsmvr k-fold cross-validation experiments.
 The error for each base model is the normalized squared
 error between the true response and the predicted response
 on a given cross-validation set.

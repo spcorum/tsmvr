@@ -1,7 +1,7 @@
 #' Replicated k-fold cross-validation for tsmvr
 #'
-#' Calculates the mean and standard deviation of fold-avereged errors
-#' derived from replcated tsmvr k-fold cross-validation experiments.
+#' Calculates the mean and standard deviation of fold-averaged errors
+#' derived from replicated tsmvr k-fold cross-validation experiments.
 #' The error for each base model is the normalized squared
 #' error between the true response and the predicted response
 #' on a given cross-validation set.
@@ -70,7 +70,7 @@ tsmvr_replicate <- function(X, Y, s1, s2, k = 10, reps = 1,
       Omega_type = Omega_type,
       eta1 = eta1, eta2 = eta2,
       epsilon = epsilon, max_iter = max_iter,
-      quiet = T
+      quiet = T, seed = seed
     )
 
     # Record results.

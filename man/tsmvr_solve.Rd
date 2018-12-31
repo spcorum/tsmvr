@@ -13,7 +13,7 @@ tsmvr_solve(X, Y, s1, s2, B_type = "gd", Omega_type = "gd",
 
 \item{Y}{response matrix (n-by-q)}
 
-\item{s1}{sparsity parameter for regression matrix (postive integer)}
+\item{s1}{sparsity parameter for regression matrix (positive integer)}
 
 \item{s2}{sparsity parameter for covariance matrix (positive integer)}
 
@@ -25,11 +25,11 @@ tsmvr_solve(X, Y, s1, s2, B_type = "gd", Omega_type = "gd",
 
 \item{eta2}{Omega-step learning rate (positive numeric)}
 
-\item{epsilon}{convergence parameter (positve numeric)}
+\item{epsilon}{convergence parameter (positive numeric)}
 
 \item{max_iter}{maximum number of iterations (positive integer)}
 
-\item{skip}{iteration skip frequency for printing to screen (postive integer)}
+\item{skip}{iteration skip frequency for printing to screen (positive integer)}
 
 \item{quiet}{bool}
 }
@@ -49,7 +49,7 @@ A list of algorithm output, including:
 }
 \description{
 Solver for multivariate regression with covariance/precision
-matrix estimation and absolute sparsity contraints.
+matrix estimation and absolute sparsity constraints.
 }
 \details{
 The tsmvr solver works by alternating blockwise coordinate descent,
@@ -78,7 +78,7 @@ value, anywhere from 0.1 down to 0.0001.
 
 The sparsity parameters \code{s1} and \code{s2} specify the
 sparsity for B and Omega matrices as the algorithm iterates.
-They act as regularizers, contraining the space of possible
+They act as regularizers, constraining the space of possible
 solutions at each iteration. For real-world problems, the best
 values of \code{s1} and \code{s2} need to be found by
 cross-validation and gridsearch. \code{s2} is lower bounded by
@@ -87,7 +87,7 @@ cross-validation and gridsearch. \code{s2} is lower bounded by
 10E-4 is usually a good value for \code{epsilon}. The author
 rarely finds problems where smaller values of \code{epsilon} gave
 solutions with better at out-of-sample prediction.
-Altertativley, good predictively solutions can often be found
+Alternatively, good predictive solutions can often be found
 using values of 10E-3 or even 10E-2.
 
 For speed, tsmvr_solve is implemented in Rcpp.
