@@ -367,9 +367,8 @@ test_that("tsmvr_cv returns a list", {
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_cv(
-    X = X, Y = Y, k = 10,
+    X = X, Y = Y, k = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    max_iter = 1000,
     quiet = T
   )
   expect_true(is.list(z))
@@ -379,9 +378,8 @@ test_that("tsmvr_cv returns a list of length 2", {
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_cv(
-    X = X, Y = Y, k = 10,
+    X = X, Y = Y, k = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    max_iter = 1000,
     quiet = T
   )
   expect_equal(length(z), 3)
@@ -392,9 +390,8 @@ test_that("the labels of the list returned by tsmvr_cv are as
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_cv(
-    X = X, Y = Y, k = 10,
+    X = X, Y = Y, k = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    max_iter = 1000,
     quiet = T
   )
   expect_true(all(labels(z) ==
@@ -405,9 +402,8 @@ test_that("the returned sublist labeled 'error_mean' is numeric", {
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_cv(
-    X = X, Y = Y, k = 10,
+    X = X, Y = Y, k = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    max_iter = 1000,
     quiet = T
   )
   expect_true(is.numeric(z$error_mean))
@@ -417,9 +413,8 @@ test_that("the returned sublist labeled 'error_mean' is numeric", {
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_cv(
-    X = X, Y = Y, k = 10,
+    X = X, Y = Y, k = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    max_iter = 1000,
     quiet = T
   )
   expect_true(is.numeric(z$error_sd))
@@ -429,9 +424,8 @@ test_that("the returned sublist labeled 'num_folds' is numeric", {
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_cv(
-    X = X, Y = Y, k = 10,
+    X = X, Y = Y, k = 2,
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    max_iter = 1000,
     quiet = T
   )
   expect_true(is.numeric(z$num_folds))

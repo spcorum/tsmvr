@@ -416,13 +416,17 @@ arma::mat updateOmega(const arma::mat &B, arma::mat Omega, const arma::mat &X, c
 //'
 //' @export
 // [[Rcpp::export]]
-List tsmvr_solve(const arma::mat &X, const arma::mat &Y, const int &s1,
-                 const int &s2,
-                 const String &B_type = "gd", const String &Omega_type = "gd",
-                 const double &eta1 = 0.001, const double &eta2 = 0.001,
-                 const double &epsilon = 1e-4, const int &max_iter = 1000,
-                 const int &skip = 10, const bool &quiet = false) {
-
+List tsmvr_solve(const arma::mat &X,
+                 const arma::mat &Y,
+                 const int &s1, const int &s2,
+                 const String &B_type = "gd",
+                 const String &Omega_type = "gd",
+                 const double &eta1 = 0.01,
+                 const double &eta2 = 0.01,
+                 const double &epsilon = 1e-4,
+                 const int &max_iter = 2000,
+                 const int &skip = 10,
+                 const bool &quiet = false) {
 
     // Initialize objects.
 
@@ -546,11 +550,12 @@ List tsmvr_solve(const arma::mat &X, const arma::mat &Y, const int &s1,
     field<arma::mat> OmegaHist2(itrs);
     field<double> objHist2(itrs);
     if (itrs == max_iter) {
-        Rcpp::Rcout << "Warning: maximum number of iterations achieved without convergence." \
-        << endl;
+        // Rcpp::Rcout << "Warning: maximum number of iterations achieved without convergence." \
+        // << endl;
         BHist2 = BHist;
         OmegaHist2 = OmegaHist;
         objHist2 = objHist;
+        Rcpp::warning("maximum number of iterations achieved without convergence");
     }
     else {
         for (int k=0; k<itrs; k=k+1) {
