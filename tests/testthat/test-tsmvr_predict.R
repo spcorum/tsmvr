@@ -13,7 +13,7 @@ test_that("tsmvr_list cannot a character string", {
 })
 
 test_that("tsmvr_list cannot have an arbritrary named element", {
-  seed = 1
+  seed <- 1
   set.seed(seed)
   X <- matrix(sample.int(20, 32, replace = T) - 10, 8, 4)
   tsmvr_list <- list()
@@ -22,7 +22,7 @@ test_that("tsmvr_list cannot have an arbritrary named element", {
 })
 
 test_that("tsmvr_list$B_hat cannot be a list", {
-  seed = 1
+  seed <- 1
   set.seed(seed)
   X <- matrix(sample.int(20, 32, replace = T) - 10, 8, 4)
   tsmvr_list <- list()
@@ -50,7 +50,7 @@ test_that("X be a character string", {
 })
 
 test_that("the inner dimensions of X and tsmvr_list$B_hat cannot be different", {
-  seed = 1
+  seed <- 1
   set.seed(seed)
   X <- matrix(sample.int(20, 24, replace = T) - 10, 8, 3)
   tsmvr_list <- list()
@@ -59,7 +59,7 @@ test_that("the inner dimensions of X and tsmvr_list$B_hat cannot be different", 
 })
 
 test_that("tsmvr_predict gives the right answer", {
-  seed = 1
+  seed <- 1
   set.seed(seed)
   X <- matrix(sample.int(20, 32, replace = T) - 10, 8, 4)
   tsmvr_list <- list()
