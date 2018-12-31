@@ -13,7 +13,7 @@
 tsmvr_predict <- function(tsmvr_list, X) {
   stopifnot(
     is.list(tsmvr_list),
-    'B_hat' %in% names(tsmvr_list),
+    "B_hat" %in% names(tsmvr_list),
     is.numeric(tsmvr_list$B_hat),
     is.matrix(tsmvr_list$B_hat),
     is.numeric(X),

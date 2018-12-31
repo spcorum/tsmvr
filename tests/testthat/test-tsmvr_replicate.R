@@ -532,6 +532,18 @@ test_that("the listed item labeled 'reps' is integer valued", {
   expect_true(z$reps %% 1 == 0)
 })
 
+test_that("lines covered by quiet = F can execute", {
+  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
+  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
+  z <- tsmvr_replicate(
+    X = X, Y = Y, k = 2, reps = 2,
+    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
+    max_iter = 20000,
+    quiet = F
+  )
+  expect_true(is.list(z))
+})
+
 # test_that("the returned sublist labeled 'num_folds' is numeric", {
 #   X = matrix(rnorm(n = 1000, sd = 0.1),100,10)
 #   Y = matrix(rnorm(n = 300, mean = 1),100,3)
