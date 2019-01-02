@@ -8,108 +8,6 @@ using namespace Rcpp;
 using namespace arma;
 using namespace std;
 
-
-// arma::mat st_offdiag(const arma::mat &X, const double &lam) {
-//     /*
-//      * Soft threshold of a matrix X with parameter lam.
-//      * Diagonal is ignored in this version.
-//      */
-//     arma::mat Xdiag = diagmat(X);
-//     arma::mat Xoffdiag = X - Xdiag;
-//     Xoffdiag = ppmat(Xoffdiag-lam) - ppmat(-Xoffdiag-lam);
-//     return Xdiag + Xoffdiag;
-// }
-//
-// arma::mat mvLasso(const arma::mat &X, const arma::mat &Y, const double &lam) {
-//     /*
-//      * Solution to multivariate Lasso problem. Given matrices X (p-by-
-//      * n) and Y (q-by-n) and numeric constant lam, returns the Lasso
-//      * solution to B (p-by-q)
-//      *
-//      * Multivariate Lasso problem: min{ 1/n ||Y-X*B||^2 + lam*|B|_11 }
-//      *
-//      * The multivariate Lasso solution is calculated by soft-
-//      * thresholding the ordinary least squares solution.
-//     */
-//     return st(solve(X.t()*X,X.t()*Y,solve_opts::fast),lam);
-// }
-//
-// arma::mat SigmaR(const arma::mat &B, const arma::mat &X,
-//                  const arma::mat &Y) {
-//    /*
-//     * Regression covariance matrix.
-//     *
-//     * Given regressor matrix B (p-by-q), design matrix X (p-by-n),
-//     * and response matrix Y (q-by-n), returns the value of the tsmvrRcpp
-//     * regression covariance matrix (q-by-q).
-//     *
-//     *       SigmaR = 1/n (Y-X*B)^2
-//     */
-//     arma::mat A = Y-X*B;
-//     return A.st()*A/X.n_rows;
-// }
-//
-// arma::mat cgd(arma::mat &B0, const arma::mat &S, const arma::mat &H, int max_iter=100,
-//         double epsilon=1, bool quiet=false) {
-//
-//     /*
-//      * Conjugate gradient descent method for solving the matrix
-//      * equation SB = H.
-//      *
-//      * Inputs:
-//      *  B, initial guess of solution (p-by-q matrix)
-//      *  S, p-by-p matrix
-//      *  H, p-by-q matrix
-//      *  max_iter, number of iterations (int)
-//      *
-//      * Returns:
-//      *  B, solution (p-by-q matrix)
-//      */
-//
-//     // Initialize.
-//     double alpha;
-//     double beta;
-//     double gamma;
-//     arma::mat B = B0;
-//     arma::mat R = H-S*B;
-//     arma::mat P = R;
-//     arma::mat Rold;
-//
-//     // Print header.
-//     if (!quiet) Rcpp::Rcout << "t\t||R||" << endl;
-//
-//     // CGD algorithm for solving S*B = H.
-//     for (int k=1; k<=max_iter; k=k+1) {
-//
-//         Rold = R;
-//         alpha = trace(Rold.st()*Rold)/trace(P.st()*S*P);
-//         B = B + alpha*P;
-//         R = R - alpha*S*P;
-//
-//         // Test for convergence.
-//         gamma = norm(R,"fro");
-//         if (!quiet) Rcpp::Rcout << k << "\t" << gamma << endl;
-//         if (gamma < epsilon) break;
-//
-//         beta = trace(R.st()*R)/trace(Rold.st()*Rold);
-//         P = R + beta*P;
-//
-//     }
-//
-//     return B;
-// }
-//
-// arma::mat minB(const arma::mat &S, const arma::mat &H) {
-//   /*
-//   * Direct minimization of tsmvrRcpp objective function with respect to
-//   * to the regressor matrix R.
-//   *
-//   * Given matrices S and H, returns B the linear solution to SB=H.
-//   *
-//   */
-//   return solve(S,H);
-// }
-
 arma::mat ppmat(const arma::mat &X) {
     /*
      * Positive part of matrix. Given matrix x, is positive part
@@ -123,6 +21,32 @@ arma::mat st(const arma::mat &X, const double &lam) {
      * Soft threshold of a matrix X with parameter lam.
      */
     return ppmat(X-lam) - ppmat(-X-lam);
+}
+
+arma::mat st_offdiag(const arma::mat &X, const double &lam) {
+    /*
+     * Soft threshold of a matrix X with parameter lam.
+     * Diagonal is ignored in this version.
+     */
+    arma::mat Xdiag = diagmat(X);
+    arma::mat Xoffdiag = X - Xdiag;
+    Xoffdiag = ppmat(Xoffdiag-lam) - ppmat(-Xoffdiag-lam);
+    return Xdiag + Xoffdiag;
+}
+
+
+arma::mat mvLasso(const arma::mat &X, const arma::mat &Y, const double &lam) {
+    /*
+     * Solution to multivariate Lasso problem. Given matrices X (p-by-
+     * n) and Y (q-by-n) and numeric constant lam, returns the Lasso
+     * solution to B (p-by-q)
+     *
+     * Multivariate Lasso problem: min{ 1/n ||Y-X*B||^2 + lam*|B|_11 }
+     *
+     * The multivariate Lasso solution is calculated by soft-
+     * thresholding the ordinary least squares solution.
+    */
+    return st(solve(X.t()*X,X.t()*Y,solve_opts::fast),lam);
 }
 
 arma::mat htHelper(arma::mat X, const int &s) {
@@ -184,6 +108,32 @@ arma::mat ht(arma::mat X, int s, bool ss = false) {
     return X;
 }
 
+arma::mat SigmaR(const arma::mat &B, const arma::mat &X,
+                 const arma::mat &Y) {
+   /*
+    * Regression covariance matrix.
+    *
+    * Given regressor matrix B (p-by-q), design matrix X (p-by-n),
+    * and response matrix Y (q-by-n), returns the value of the tsmvrRcpp
+    * regression covariance matrix (q-by-q).
+    *
+    *       SigmaR = 1/n (Y-X*B)^2
+    */
+    arma::mat A = Y-X*B;
+    return A.st()*A/X.n_rows;
+}
+
+arma::mat minB(const arma::mat &S, const arma::mat &H) {
+    /*
+     * Direct minimization of tsmvrRcpp objective function with respect to
+     * to the regressor matrix R.
+     *
+     * Given matrices S and H, returns B the linear solution to SB=H.
+     *
+     */
+    return solve(S,H);
+}
+
 arma::mat minOmega(const arma::mat &B, const arma::mat &X, const arma::mat &Y) {
    /*
     * Direct minimization of tsmvrRcpp objective function with respect to
@@ -242,9 +192,8 @@ double objective(const arma::mat &B, const arma::mat &Omega, const arma::mat &X,
     return trace(A*Omega*A.st())/X.n_rows - real(log_det(Omega));
 }
 
-arma::mat dgdB(const arma::mat &B, const arma::mat &Omega,
-               const arma::mat &S, const arma::mat &H,
-               const int &n)
+arma::mat dgdB(const arma::mat &B, const arma::mat &Omega, const arma::mat &S, const arma::mat &H,
+         const int &n)
     {
     /*
     * Marginal derivative of tsmvrRcpp objective function with respect to
@@ -274,7 +223,58 @@ arma::mat dgdOmega(const arma::mat &B, const arma::mat &Omega, const arma::mat &
     *       dgdOmega = 1/n ||X*B-Y||^2 - inv(Omega)
     */
     arma::mat A = X*B-Y;
-    return A.st()*A/X.n_rows-inv_sympd(Omega);
+    arma::mat temp = A.st()*A/X.n_rows-inv_sympd(Omega);
+    return temp;
+}
+
+arma::mat cgd(arma::mat &B0, const arma::mat &S, const arma::mat &H, int max_iter=100,
+        double epsilon=1, bool quiet=false) {
+
+    /*
+     * Conjugate gradient descent method for solving the matrix
+     * equation SB = H.
+     *
+     * Inputs:
+     *  B, initial guess of solution (p-by-q matrix)
+     *  S, p-by-p matrix
+     *  H, p-by-q matrix
+     *  max_iter, number of iterations (int)
+     *
+     * Returns:
+     *  B, solution (p-by-q matrix)
+     */
+
+    // Initialize.
+    double alpha;
+    double beta;
+    double gamma;
+    arma::mat B = B0;
+    arma::mat R = H-S*B;
+    arma::mat P = R;
+    arma::mat Rold;
+
+    // Print header.
+    if (!quiet) Rcpp::Rcout << "t\t||R||" << endl;
+
+    // CGD algorithm for solving S*B = H.
+    for (int k=1; k<=max_iter; k=k+1) {
+
+        Rold = R;
+        alpha = trace(Rold.st()*Rold)/trace(P.st()*S*P);
+        B = B + alpha*P;
+        R = R - alpha*S*P;
+
+        // Test for convergence.
+        gamma = norm(R,"fro");
+        if (!quiet) Rcpp::Rcout << k << "\t" << gamma << endl;
+        if (gamma < epsilon) break;
+
+        beta = trace(R.st()*R)/trace(Rold.st()*Rold);
+        P = R + beta*P;
+
+    }
+
+    return B;
 }
 
 arma::mat updateB(arma::mat B, const arma::mat &Omega, const arma::mat &X, const arma::mat &Y,
@@ -328,10 +328,15 @@ arma::mat updateOmega(const arma::mat &B, arma::mat Omega, const arma::mat &X, c
     * via the gradient descent method.
     */
 
-    if (type == "gd") Omega = Omega - eta*dgdOmega(B,Omega,X,Y);
-    else if (type == "min") Omega = minOmega(B,X,Y);
-    else throw Rcpp::exception("Omega_type' must be 'gd' or 'min'.",
-                               false);
+    if (type == "gd") {
+        Omega = Omega - eta*dgdOmega(B,Omega,X,Y);
+    }
+    else if (type == "min") {
+        Omega = minOmega(B,X,Y);
+    }
+    else {
+        throw "Omega-step 'type' must be 'gd' or 'min'.";
+    }
     return Omega;
 }
 
@@ -423,48 +428,69 @@ List tsmvr_solve(const arma::mat &X,
                  const int &skip = 10,
                  const bool &quiet = false) {
 
-    // Helpful nomenclature:
-    // n = X.n_rows = Y.n_rows, p = X.n_cols, q = Y.n_cols;
+    // Initialize objects.
 
-    // Header
-    if (!quiet) {
-        Rcpp::Rcout << "Truly Sparse Multivariate Regression." << endl;
-        Rcpp::Rcout << "t\tobj\t||\u0394B||\t\t||\u0394\u03A9||\ttime (ms)" << endl;
-    }
-
-    // Initialize ..
-
-    // Matrix constants
+    // const int n = X.n_rows;
+    // const int p = X.n_cols;
+    // const int q = Y.n_cols;
     const arma::mat S = X.t()*X;
     const arma::mat H = X.t()*Y;
 
-    // For recording history of iterates
+    // Print header.
+
+    // string BStep;
+    // string OmegaStep;
+    /*
+      if (B_type == 'gd') {
+         BStep = "B-step: gradient descent (eta1=" + to_string(eta1) \
+          + ")";
+      }
+      if (Omega_type == 'gd') {
+          OmegaStep = "Omega-step: gradient descent (eta2=" + \
+              to_string(eta2) + ")";
+      } else if (Omega_type == 'min') {
+          OmegaStep = "Omega-step: direct minimization";
+      }
+    */
+
+    if (!quiet) {
+        Rcpp::Rcout << "Truly Sparse multivariate regression." << endl;
+        // Rcpp::Rcout << "B-step: gradient descent (eta1=" << eta1 \
+        //     << ") | Omega-step: gradient descent (eta2=" << eta2 \
+        //     << ")" << endl;
+        // cout << B_type << "|" << Omega_type << endl;
+        // Rcpp::Rcout << "t\tobj\t||\u0394B||\t\t||\u0394\u03A9||\ttime (ms)" << endl;
+    }
+
+    // For recording history of iterates.
     field<arma::mat> BHist(max_iter);
     field<arma::mat> OmegaHist(max_iter);
     field<double> objHist(max_iter);
 
-    // For caching previous iterates
+    // For caching previous iterates.
     arma::mat BOld;
     arma::mat OmegaOld;
     double objOld;
 
-    // For determining convergence
+    // For determining convergence.
     int itrs;
     double dBNorm;
     double dOmegaNorm;
     double gamma = std::numeric_limits<double>::infinity();
 
-    // For keeping time.
-    double time;
-    long now;
-
-    // Initial iterates
+    // Initial iterates.
     arma::mat B = initializeB(S,H,s1);
     arma::mat Omega = initializeOmega(B,X,Y,s2);
     double obj = std::numeric_limits<double>::infinity();
 
+    // For keeping time.
+    double time;
+    long now;
+
+    // Start the clock.
+    clock_t start = clock();
+
     // Main loop of tsmvr algorithm.
-    clock_t start = clock();  // start clock
     for (int k=1; k<=max_iter; k=k+1) {
 
         // Cache previous iterate.
@@ -506,21 +532,26 @@ List tsmvr_solve(const arma::mat &X,
         if (gamma < epsilon) break;
 
     }
-    time = ( clock() - start ) / (double) CLOCKS_PER_SEC; // end clock
+
+    // Time duration
+    time = ( clock() - start ) / (double) CLOCKS_PER_SEC;
 
     // Statistics.
     arma::mat fv = X*B;
     arma::mat res = Y-fv;
-    double ss = pow(norm(fv,"fro"), 2);
-    // df = ?
-    // double se = ss/std::sqrt(df);  ?
+    double ss = norm(fv,"fro");
+    // int df = n-(p+q+q^2);    // df = # obs - (coefficents + responses +
+                            //  size of precision matrix) [correct ?]
+    // double se = ss/std::sqrt(df);  // standard error, not impelented ..
 
-    // If maximum iterations reached, warn.
-    // Else, resize history fields for cleaner output.
+    // Warn if maximum iterations reached & resize history fields
+    // within the same control flow.
     field<arma::mat> BHist2(itrs);
     field<arma::mat> OmegaHist2(itrs);
     field<double> objHist2(itrs);
     if (itrs == max_iter) {
+        // Rcpp::Rcout << "Warning: maximum number of iterations achieved without convergence." \
+        // << endl;
         BHist2 = BHist;
         OmegaHist2 = OmegaHist;
         objHist2 = objHist;
@@ -533,6 +564,8 @@ List tsmvr_solve(const arma::mat &X,
             objHist2(k) = objHist(k);
         }
     }
+
+    // Rcpp::Rcout << BHist2 << endl;
 
     // Return.
     return List::create(Named("B_hat") = B,
