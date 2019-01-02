@@ -1,10 +1,10 @@
 ---
-title: "Getting Started with tsmvr"
-author: "Sean Corum"
+title: "Vignette Title"
+author: "Vignette Author"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Getting Started with tsmvr}
+  %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
