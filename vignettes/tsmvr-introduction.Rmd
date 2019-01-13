@@ -53,7 +53,7 @@ The function \code{tsmvr_solve} solves the regression problem using hard-thresho
 
 ```{r first-solution-gd-gd}
 library(tsmvr)
-solution = tsmvr::tsmvr_solve(
+gd_gd_solution = tsmvr::tsmvr_solve(
   X = data$X, Y = data$Y, s1 = s1, s2 = s2, 
   Omega_type = 'gd', eta1 = 0.05, eta2 = 0.2,
   skip = 50
@@ -63,9 +63,9 @@ solution = tsmvr::tsmvr_solve(
 For some problems like this one, an equally good solution instead may be found using alternating gradient descent-direct minimization.
 
 ```{r first-solution-gd-min, eval = F}
-solution = tsmvr::tsmvr_solve(
+gd_min_solution = tsmvr::tsmvr_solve(
   X = data$X, Y = data$Y, s1 = s1, s2 = s2, 
-  Omega_type = 'min', eta1 = 0.002,
+  Omega_type = 'min', eta1 = 0.001,
   skip = 50
 )
 ```
@@ -74,11 +74,11 @@ solution = tsmvr::tsmvr_solve(
 
 k-fold cross validation may be performed using the function \code{tsmvr_cv}
 
-```{r cross-validated}
+```{r cross-validated, eval = F}
 set.seed(1)
 validated = tsmvr::tsmvr_cv(
   X = data$X, Y = data$Y, s1 = s1, s2 = s2, k = 5,
-  Omega_type = 'gd', eta1 = 0.05, eta2 = 0.2
+  Omega_type = 'gd', eta1 = 0.02, eta2 = 0.2
 )
 ```
 
@@ -86,16 +86,29 @@ validated = tsmvr::tsmvr_cv(
 
 Similarly, replicated k-fold cross validation may be performed using the function \code{tsmvr_replicate}
 
-```{r replicated}
+```{r replicated, eval = F}
 set.seed(3)
 replicated = tsmvr::tsmvr_replicate(
   X = data$X, Y = data$Y, s1 = s1, s2 = s2, k = 5, reps = 3,
-  Omega_type = 'gd', eta1 = 0.02, eta2 = 0.2
+  Omega_type = 'gd', eta1 = 0.05, eta2 = 0.2
 )
 ```
 
 ## Gridsearch
 
+Finally, replicated k-fold cross validation may be used to search a space of \code{s1} and \code{s2} values to find the pair of values that minimizes the cross validation error.
+
+```{r gridsearch, eval = F}
+s1_grid = round(p*q*exp(log(seq(0.1,0.2,length.out = 8))))
+# s2_grid = round(seq(q,4*q,length.out = 10))
+s2_grid = round(seq(2*q,4*q,length.out = 8))
+set.seed(5)
+grid = tsmvr_gridsearch(
+  X = data$X, Y = data$Y, s1_grid = s1_grid, s2_grid = s2_grid, 
+  k = 2, reps = 20, Omega_type = 'gd', eta1 = 0.001, eta2 = 0.001,
+  quiet = F
+)
+```
 
 Also a quote using `>`:
 

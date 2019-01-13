@@ -3,6 +3,7 @@
 export(k_folds)
 export(squared_error)
 export(tsmvr_cv)
+export(tsmvr_gridsearch)
 export(tsmvr_predict)
 export(tsmvr_replicate)
 export(tsmvr_solve)

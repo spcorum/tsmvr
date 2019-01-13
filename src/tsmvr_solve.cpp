@@ -189,7 +189,6 @@ arma::mat ht(arma::mat X, int s, bool ss = false) {
 }
 
 
-
 arma::mat minOmega(const arma::mat &B, const arma::mat &X, const arma::mat &Y) {
    /*
     * Direct minimization of tsmvrRcpp objective function with respect to
@@ -248,8 +247,9 @@ double objective(const arma::mat &B, const arma::mat &Omega, const arma::mat &X,
     return trace(A*Omega*A.st())/X.n_rows - real(log_det(Omega));
 }
 
-arma::mat dgdB(const arma::mat &B, const arma::mat &Omega, const arma::mat &S, const arma::mat &H,
-         const int &n)
+arma::mat dgdB(const arma::mat &B, const arma::mat &Omega,
+               const arma::mat &S, const arma::mat &H,
+               const int &n)
     {
     /*
     * Marginal derivative of tsmvrRcpp objective function with respect to
@@ -265,8 +265,8 @@ arma::mat dgdB(const arma::mat &B, const arma::mat &Omega, const arma::mat &S, c
     return 2*(S*B-H)*Omega/n;
 }
 
-arma::mat dgdOmega(const arma::mat &B, const arma::mat &Omega, const arma::mat &X,
-             const arma::mat &Y)
+arma::mat dgdOmega(const arma::mat &B, const arma::mat &Omega,
+                   const arma::mat &X, const arma::mat &Y)
     {
     /*
     * Marginal derivative of tsmvrRcpp objective function with respect to
@@ -278,10 +278,50 @@ arma::mat dgdOmega(const arma::mat &B, const arma::mat &Omega, const arma::mat &
     *
     *       dgdOmega = 1/n ||X*B-Y||^2 - inv(Omega)
     */
-    arma::mat A = X*B-Y;
-    arma::mat temp = A.st()*A/X.n_rows-inv_sympd(Omega);
-    return temp;
+  const arma::mat A = X*B-Y;
+  return A.st()*A/X.n_rows-inv_sympd(Omega);
 }
+
+arma::mat lsB(const arma::mat &B, const arma::mat &Omega,
+              const arma::mat &S, const arma::mat &H,
+              const int &n, double eta,
+              double alpha, double beta)
+{
+  /*
+  * Linesearch for gradient descent with resepct to B.
+  *
+  * Given regressor matrix B (p-by-q), covariance matrix Omega
+  * (q-by-n), and matrices S = X'X (p-by-p) and H = Y'X (q-by-q),
+  * number of observations n, initial step size eta, and linesearch
+  * parameters alpha and beta, returns the derivative of the
+  * objective function with respect to B (p-by-q matrix) with
+  * largest step size for which gradient descent to converge.
+  *
+  *       dgdB = 2/n (S*B-H)*Omega
+  */
+  return 2*(S*B-H)*Omega/n;
+}
+
+arma::mat lsOmega(const arma::mat &B, const arma::mat &Omega,
+                  const arma::mat &X, const arma::mat &Y,
+                  double eta, double alpha, double beta)
+{
+  /*
+   * Linesearch for gradient descent with resepct to Omega.
+   *
+   * Given regressor matrix B (p-by-q), covariance matrix
+   * Omega (q-by-n), design matrix X (n-by-p), response matrix
+   * Y (q-by-n) initial step size eta, and linesearch parameters
+   * alpha and beta, returns the derivative of the objective
+   * function with respect to Omega (p-by-q matrix) with largest
+   * step size eta for which gradient descent converges.
+   *
+   *       dgdOmega = 1/n ||X*B-Y||^2 - inv(Omega)
+   */
+  const arma::mat A = X*B-Y;
+  return A.st()*A/X.n_rows-inv_sympd(Omega);
+}
+
 
 arma::mat updateB(arma::mat B, const arma::mat &Omega, const arma::mat &X, const arma::mat &Y,
             const arma::mat &S, const arma::mat &H, const String &type = "gd",
