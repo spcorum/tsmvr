@@ -25,7 +25,7 @@ namespace tsmvr {
         }
     }
 
-    inline List tsmvr_solve(const arma::mat& X, const arma::mat& Y, const int& s1, const int& s2, const String& B_type = "gd", const String& Omega_type = "gd", const double& eta1 = 0.01, const double& eta2 = 0.01, const double& epsilon = 1e-4, const int& max_iter = 2000, const int& skip = 10, const bool& quiet = false) {
+    inline List tsmvr_solve(const arma::mat& X, const arma::mat& Y, const int& s1, const int& s2, const String& B_type = "gd", const String& Omega_type = "gd", const double& eta1 = 0.05, const double& eta2 = 0.2, const double& epsilon = 1e-3, const int& max_iter = 2000, const int& skip = 10, const bool& quiet = false) {
         typedef SEXP(*Ptr_tsmvr_solve)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_tsmvr_solve p_tsmvr_solve = NULL;
         if (p_tsmvr_solve == NULL) {

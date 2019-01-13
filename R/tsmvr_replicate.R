@@ -29,9 +29,9 @@
 #'
 #'
 #' @export
-tsmvr_replicate <- function(X, Y, s1, s2, k = 10, reps = 1,
-                            B_type = "gd", Omega_type = "min",
-                            eta1 = 0.01, eta2 = 0.01,
+tsmvr_replicate <- function(X, Y, s1, s2, k = 10, reps = 10,
+                            B_type = "gd", Omega_type = "gd",
+                            eta1 = 0.05, eta2 = 0.2,
                             epsilon = 1e-5, max_iter = 40000,
                             quiet = FALSE, seed = NULL) {
   stopifnot(
@@ -54,7 +54,10 @@ tsmvr_replicate <- function(X, Y, s1, s2, k = 10, reps = 1,
 
   # Header
   if (!quiet) {
-    cat("Truly Sparse multivariate regression with cross validation: reps = ", reps, ", folds = ", k, "\n", sep = "")
+    if (Omega_type == "gd")
+      cat("Solver mode 'gd-gd' with eta1 = ", eta1, " and eta2 = ", eta2, ".\n", sep ='')
+    else if (Omega_type == "min")
+      cat("Solver mode 'gd-min' with eta1 = ", eta1, ".\n", sep = '')
     cat("rep\terror\t\ttime (s)\n")
   }
 
@@ -86,10 +89,20 @@ tsmvr_replicate <- function(X, Y, s1, s2, k = 10, reps = 1,
     }
   }
 
+  toc <- (Sys.time() - tic)
+  rep_error_mean = mean(fold_error)
+  rep_error_sd = sd(fold_error)
+
+  # Print final result to screen.
+  if (!quiet) {
+    cat('Replicate mean = ', rep_error_mean, '\n', sep = '')
+    cat('Replicate sd = ', rep_error_sd, '\n', sep = '')
+  }
+
   # Return results.
   return(list(
-    rep_error_mean = mean(fold_error), rep_error_sd = sd(fold_error),
+    rep_error_mean = rep_error_mean, rep_error_sd = rep_error_sd,
     fold_error_means = fold_error, fold_error_sds = fold_sd,
-    folds = k, reps = reps
+    folds = k, reps = reps, time = toc
   ))
 }

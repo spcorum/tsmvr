@@ -23,7 +23,8 @@ Imports:
     RcppArmadillo,
     Rdpack,
     matrixcalc,
-    stringi
+    stringi,
+    prettydoc
 Suggests: 
     covr,
     testthat,

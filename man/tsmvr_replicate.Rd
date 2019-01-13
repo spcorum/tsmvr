@@ -4,8 +4,8 @@
 \alias{tsmvr_replicate}
 \title{Replicated k-fold cross-validation for tsmvr}
 \usage{
-tsmvr_replicate(X, Y, s1, s2, k = 10, reps = 1, B_type = "gd",
-  Omega_type = "min", eta1 = 0.01, eta2 = 0.01, epsilon = 1e-05,
+tsmvr_replicate(X, Y, s1, s2, k = 10, reps = 10, B_type = "gd",
+  Omega_type = "gd", eta1 = 0.05, eta2 = 0.2, epsilon = 1e-05,
   max_iter = 40000, quiet = FALSE, seed = NULL)
 }
 \arguments{

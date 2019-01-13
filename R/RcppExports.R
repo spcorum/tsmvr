@@ -76,7 +76,7 @@
 #'
 #'
 #' @export
-tsmvr_solve <- function(X, Y, s1, s2, B_type = "gd", Omega_type = "gd", eta1 = 0.01, eta2 = 0.01, epsilon = 1e-4, max_iter = 2000L, skip = 10L, quiet = FALSE) {
+tsmvr_solve <- function(X, Y, s1, s2, B_type = "gd", Omega_type = "gd", eta1 = 0.05, eta2 = 0.2, epsilon = 1e-3, max_iter = 2000L, skip = 10L, quiet = FALSE) {
     .Call(`_tsmvr_tsmvr_solve`, X, Y, s1, s2, B_type, Omega_type, eta1, eta2, epsilon, max_iter, skip, quiet)
 }
 

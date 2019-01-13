@@ -29,8 +29,8 @@
 #'
 #' @export
 tsmvr_cv <- function(X, Y, s1, s2, k = 10, B_type = "gd",
-                     Omega_type = "gd", eta1 = 0.01, eta2 = 0.01,
-                     epsilon = 1e-4, max_iter = 2000, quiet = FALSE,
+                     Omega_type = "gd", eta1 = 0.05, eta2 = 0.2,
+                     epsilon = 1e-3, max_iter = 2000, quiet = FALSE,
                      seed = NULL) {
   stopifnot(
     is.numeric(X), is.matrix(Y), is.numeric(Y), is.matrix(Y),
@@ -47,11 +47,21 @@ tsmvr_cv <- function(X, Y, s1, s2, k = 10, B_type = "gd",
 
   error <- rep(0, k)
 
+  # Print header.
+  if (!quiet) {
+    if (Omega_type == "gd")
+      cat("Solver mode 'gd-gd' with eta1 = ", eta1, " and eta2 = ", eta2, ".\n", sep ='')
+    else if (Omega_type == "min")
+      cat("Solver mode 'gd-min' with eta1 = ", eta1, ".\n", sep = '')
+    cat('Fold\tError\t\ttime (s)\n')
+  }
+
   # Compute folds.
   set.seed(seed)
   fold_list <- k_folds(nrow(X), k)
 
-  # Compute fold results.
+  # For each fold, solve and compute result.
+  tic <- Sys.time()
   for (i in 1:k) {
     X_train <- X[fold_list$train[[i]], ]
     Y_train <- Y[fold_list$train[[i]], ]
@@ -61,13 +71,31 @@ tsmvr_cv <- function(X, Y, s1, s2, k = 10, B_type = "gd",
     B_hat <- tsmvr_solve(
       X = X_train, Y = Y_train, s1 = s1, s2 = s2, B_type = B_type,
       Omega_type = Omega_type, eta1 = eta1, eta2 = eta2,
-      epsilon = epsilon, max_iter = max_iter, quiet = quiet
+      epsilon = epsilon, max_iter = max_iter, quiet = T
     )$B_hat
 
     Y_pred <- X_val %*% B_hat
     error[i] <- squared_error(Y_val, Y_pred)
+    toc <- (Sys.time() - tic)
+
+    # Print fold result to screen.
+    if (!quiet) {
+      cat(i, '\t', error[i], '\t', round(toc,3), '\n', sep = '')
+    }
+
+  }
+  toc <- (Sys.time() - tic)
+
+  error_mean = mean(error)
+  error_sd = sd(error)
+
+  # Print final result to screen.
+  if (!quiet) {
+    cat('Fold mean = ', error_mean, '\n', sep = '')
+    cat('Fold sd = ', error_sd, '\n', sep = '')
   }
 
   # Compute results.
-  return(list(error_mean = mean(error), error_sd = sd(error), num_folds = k))
+  return(list(error_mean = error_mean, error_sd = error_sd,
+              num_folds = k, time = toc))
 }

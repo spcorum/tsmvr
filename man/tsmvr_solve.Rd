@@ -5,7 +5,7 @@
 \title{Truly Sparse Multivariate Regression}
 \usage{
 tsmvr_solve(X, Y, s1, s2, B_type = "gd", Omega_type = "gd",
-  eta1 = 0.01, eta2 = 0.01, epsilon = 1e-04, max_iter = 2000L,
+  eta1 = 0.05, eta2 = 0.2, epsilon = 0.001, max_iter = 2000L,
   skip = 10L, quiet = FALSE)
 }
 \arguments{
