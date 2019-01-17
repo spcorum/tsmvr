@@ -300,7 +300,7 @@ arma::mat gdB(const arma::mat &B, const arma::mat &Omega,
   */
   // const arma::mat dgdB = 2.0/n*(S*B-H)*Omega;
   // return (B - eta*dgdB(B,Omega,S,H,n));
-  return (B - 2*eta/n*(S*B-H)*Omega);
+  return (B - 2.0*eta*(S*B-H)*Omega/n);
 }
 
 // [[Rcpp::export]]
@@ -359,40 +359,40 @@ arma::mat gdOmega(const arma::mat &B, const arma::mat &Omega,
 //    */
 //   return ht(gdOmega(B,Omega,X,Y,eta),s);
 // }
+//
+// double aux_func_B(const arma::mat &B, const arma::mat &Omega,
+//                   const arma::mat &X, const arma::mat &Y,
+//                   const arma::mat &S, const arma::mat &H,
+//                   const int &n, const double &eta,
+//                   const int&s, const double&rho)
+// {
+//   /*
+//   * Auxillary function with respect to B. Used for linesearch.
+//   *
+//   */
+//   arma::mat Z = ht(gdB(B,Omega,S,H,n,eta),s) - B;
+//   return objective(B,Omega,X,Y) - rho / 2 * trace(Z.t()*Z);
+// }
+//
+// double aux_func_Omega(const arma::mat &B, const arma::mat &Omega,
+//                   const arma::mat &X, const arma::mat &Y,
+//                   const arma::mat &S, const arma::mat &H,
+//                   const int &n, const double &eta,
+//                   const int&s, const double&rho)
+// {
+//   /*
+//    * Auxillary function with respect to Omega. Used for linesearch.
+//    *
+//    */
+//   arma::mat Z = ht(gdOmega(B,Omega,X,Y,eta),s,true) - Omega;
+//   return objective(B,Omega,X,Y) - rho / 2 * trace(Z.t()*Z);
+// }
 
-double aux_func_B(const arma::mat &B, const arma::mat &Omega,
-                  const arma::mat &X, const arma::mat &Y,
-                  const arma::mat &S, const arma::mat &H,
-                  const int &n, const double &eta,
-                  const int&s, const double&rho)
-{
-  /*
-  * Auxillary function with respect to B. Used for linesearch.
-  *
-  */
-  arma::mat Z = ht(gdB(B,Omega,S,H,n,eta),s) - B;
-  return objective(B,Omega,X,Y) - rho / 2 * trace(Z.t()*Z);
-}
-
-double aux_func_Omega(const arma::mat &B, const arma::mat &Omega,
-                  const arma::mat &X, const arma::mat &Y,
-                  const arma::mat &S, const arma::mat &H,
-                  const int &n, const double &eta,
-                  const int&s, const double&rho)
-{
-  /*
-   * Auxillary function with respect to Omega. Used for linesearch.
-   *
-   */
-  arma::mat Z = ht(gdOmega(B,Omega,X,Y,eta),s,true) - Omega;
-  return objective(B,Omega,X,Y) - rho / 2 * trace(Z.t()*Z);
-}
-
-arma::mat lsB(arma::mat B, const arma::mat &Omega,
+arma::mat lsB(const arma::mat &B, const arma::mat &Omega,
               const arma::mat &S, const arma::mat &H,
               const arma::mat &X, const arma::mat &Y,
-              const int &n, double eta, const int &s,
-              const double &rho, const double &beta)
+              const int &s, double eta = 0.1,
+              const double &rho = 1e2, const double &beta = 0.5)
 {
   /*
   * Generalized linesearch for with resepct to B.
@@ -400,11 +400,12 @@ arma::mat lsB(arma::mat B, const arma::mat &Omega,
   */
   arma::mat B_test;
   arma::mat B_diff;
+  arma::mat temp;
   int q = -1;
   do {
     q++;
     eta = eta*pow(beta,q);
-    B_test = ht(gdB(B,Omega,S,H,n,eta),s);
+    B_test = ht(gdB(B,Omega,S,H,X.n_rows,eta),s);
     B_diff = B_test - B;
   } while (
       objective(B_test,Omega,X,Y) >
@@ -416,8 +417,8 @@ arma::mat lsB(arma::mat B, const arma::mat &Omega,
 
 arma::mat lsOmega(arma::mat B, const arma::mat &Omega,
               const arma::mat &X, const arma::mat &Y,
-              double eta, const int &s,
-              const double &rho, const double &beta)
+              const int &s, double eta = 0.1,
+              const double &rho = 1e2, const double &beta = 0.5)
 {
   /*
   * Generalized linesearch for with resepct to Omega.
@@ -460,13 +461,10 @@ arma::mat updateB(arma::mat B, const arma::mat &Omega,
     */
     if (type == "gd") {
       // B = B - eta*dgdB(B,Omega,S,H,X.n_rows);
-      // B = composite_B(B,Omega,S,H,X.n_rows,eta,s);
-      B = ht(gdB(B,Omega,S,H,X.n_rows,eta),s);
+      B = ht( gdB(B, Omega, S, H, X.n_rows, eta), s);
     }
     else if (type == "ls") {
-
-      // B = lsB(B,Omega,X,Y,S,H,X.n_rows,eta,s,rho,beta);
-      B = lsB(B,Omega,X,Y,S,H,X.n_rows,eta,s,rho,beta);
+      B = lsB(B, Omega, S, H, X, Y, X.n_rows, s, eta, 1e2);
     }
     else {
       throw std::range_error("B-step type must be 'gd' or 'ls'.");
@@ -497,7 +495,7 @@ arma::mat updateOmega(const arma::mat &B, arma::mat Omega,
       Omega = ht(gdOmega(B,Omega,X,Y,eta),s,true);
     }
     else if (type == "ls") {
-      Omega = lsOmega(B,Omega,X,Y,eta,s,rho,beta);
+      Omega = lsOmega(B,Omega,X,Y,s,eta,1e2,0.5);
     }
     else if (type == "min") {
       Omega = ht(minOmega(B,X,Y),s,true);
