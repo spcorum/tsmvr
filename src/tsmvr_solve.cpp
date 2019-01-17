@@ -124,11 +124,7 @@ arma::mat st(const arma::mat &X, const double &lam) {
     return ppmat(X-lam) - ppmat(-X-lam);
 }
 
-
-
-
-
-
+// [[Rcpp::export]]
 arma::mat htHelper(arma::mat X, const int &s) {
     /*
      * Support set matrix. Given matrix X and integer 0 <= s <= |X|
@@ -153,14 +149,19 @@ arma::mat htHelper(arma::mat X, const int &s) {
     }
     else if (s < N) {
 
-        int p = N - s;                      // p is # of elements to set to 0
+        // int p = N - s;                      // p is # of elements to set to 0
+        // arma::mat absX = abs(X);
+        // vec x = sort(vectorise(absX));      // x = sorted vectorized abs(X)
+        // X.elem(find(absX < x(p))).zeros();  // find elements of abs(X) <=
+        //                                     // value of x at position p - 1 &
+        //                                     // set them to zero. The
+        //                                     // result is the support set
+        //                                     // matrix of X.
+
+        int p = N - s;
         arma::mat absX = abs(X);
-        vec x = sort(vectorise(absX));      // x = sorted vectorized abs(X)
-        X.elem(find(absX < x(p))).zeros();  // find elements of abs(X) <=
-                                            // value of x at position p - 1 &
-                                            // set them to zero. The
-                                            // result is the support set
-                                            // matrix of X.
+        arma::vec x = sort(vectorise(absX));
+        X.elem(find(absX < x(p))).zeros();
     }
     else {
         // The remaining logical case s == N returns the input matrix.
@@ -168,6 +169,7 @@ arma::mat htHelper(arma::mat X, const int &s) {
     return X;
 }
 
+// [[Rcpp::export]]
 arma::mat ht(arma::mat X, int s, bool ss = false) {
     /*
      * Hard threshold operator. Given a matrix, sparsity paramter s
@@ -188,7 +190,6 @@ arma::mat ht(arma::mat X, int s, bool ss = false) {
     return X;
 }
 
-
 arma::mat minOmega(const arma::mat &B, const arma::mat &X, const arma::mat &Y) {
    /*
     * Direct minimization of tsmvrRcpp objective function with respect to
@@ -205,7 +206,7 @@ arma::mat minOmega(const arma::mat &B, const arma::mat &X, const arma::mat &Y) {
     return inv_sympd(A.st()*A/X.n_rows);
 }
 
-arma::mat initializeB(const arma::mat &S, const arma::mat &H, const int &s,
+arma::mat initialize_B(const arma::mat &S, const arma::mat &H, const int &s,
                 const double &lam = 0.1) {
    /*
     * This function intializes in the initial iterates B
@@ -217,7 +218,7 @@ arma::mat initializeB(const arma::mat &S, const arma::mat &H, const int &s,
     return ht(st(solve(S,H,solve_opts::fast),lam),s);
 }
 
-arma::mat initializeOmega(const arma::mat &B0, const arma::mat &X, const arma::mat &Y,
+arma::mat initialize_Omega(const arma::mat &B0, const arma::mat &X, const arma::mat &Y,
                     const int &s, const double &lam = 0.1) {
    /*
     * This function intializes in the initial iterates B
@@ -227,7 +228,7 @@ arma::mat initializeOmega(const arma::mat &B0, const arma::mat &X, const arma::m
     * sparsity parameter integer s >= 0, and Lasso paramter double
     * lam > 0.
     */
-    return ht(st(minOmega(B0,X,Y),lam),s);
+    return ht(st(minOmega(B0,X,Y),lam),s,true);
 }
 
 double objective(const arma::mat &B, const arma::mat &Omega, const arma::mat &X,
@@ -247,87 +248,206 @@ double objective(const arma::mat &B, const arma::mat &Omega, const arma::mat &X,
     return trace(A*Omega*A.st())/X.n_rows - real(log_det(Omega));
 }
 
-arma::mat dgdB(const arma::mat &B, const arma::mat &Omega,
+// arma::mat dgdB(const arma::mat &B, const arma::mat &Omega,
+//                const arma::mat &S, const arma::mat &H,
+//                const int &n)
+//     {
+//     /*
+//     * Marginal derivative of tsmvrRcpp objective function with respect to
+//     * regressor matrix B.
+//     *
+//     * Given regressor matrix B (p-by-q), covariance matrix Omega (q-by-
+//     * n), and matrices S = X'X (p-by-p) and H = Y'X (q-by-q), returns
+//     * the derivative of the tsmvrRcpp objective function with respect to B
+//     * (p-by-q matrix).
+//     *
+//     *       dgdB = 2/n (S*B-H)*Omega
+//     */
+//     return 2*(S*B-H)*Omega/n;
+// }
+
+// arma::mat dgdOmega(const arma::mat &B, const arma::mat &Omega,
+//                    const arma::mat &X, const arma::mat &Y)
+//     {
+//     /*
+//     * Marginal derivative of tsmvrRcpp objective function with respect to
+//     * the covariance matrix Omega.
+//     *
+//     * n), design matrix X (p-by-n), and response matrix (q-by-n),
+//     * returns the marginal derivative of the tsmvrRcpp objective function as a
+//     * with respect to Omega (q-by-q matrix).
+//     *
+//     *       dgdOmega = 1/n ||X*B-Y||^2 - inv(Omega)
+//     */
+//   const arma::mat A = Y-X*B;
+//   return A.st()*A/X.n_rows-inv_sympd(Omega);
+// }
+
+// [[Rcpp::export]]
+arma::mat gdB(const arma::mat &B, const arma::mat &Omega,
                const arma::mat &S, const arma::mat &H,
-               const int &n)
-    {
-    /*
-    * Marginal derivative of tsmvrRcpp objective function with respect to
-    * regressor matrix B.
-    *
-    * Given regressor matrix B (p-by-q), covariance matrix Omega (q-by-
-    * n), and matrices S = X'X (p-by-p) and H = Y'X (q-by-q), returns
-    * the derivative of the tsmvrRcpp objective function with respect to B
-    * (p-by-q matrix).
-    *
-    *       dgdB = 2/n (S*B-H)*Omega
-    */
-    return 2*(S*B-H)*Omega/n;
-}
-
-arma::mat dgdOmega(const arma::mat &B, const arma::mat &Omega,
-                   const arma::mat &X, const arma::mat &Y)
-    {
-    /*
-    * Marginal derivative of tsmvrRcpp objective function with respect to
-    * the covariance matrix Omega.
-    *
-    * n), design matrix X (p-by-n), and response matrix (q-by-n),
-    * returns the marginal derivative of the tsmvrRcpp objective function as a
-    * with respect to Omega (q-by-q matrix).
-    *
-    *       dgdOmega = 1/n ||X*B-Y||^2 - inv(Omega)
-    */
-  const arma::mat A = X*B-Y;
-  return A.st()*A/X.n_rows-inv_sympd(Omega);
-}
-
-arma::mat lsB(const arma::mat &B, const arma::mat &Omega,
-              const arma::mat &S, const arma::mat &H,
-              const int &n, double eta,
-              double alpha, double beta)
+               const int &n, const double &eta)
 {
   /*
-  * Linesearch for gradient descent with resepct to B.
+  * Gradient step with respect to B
   *
-  * Given regressor matrix B (p-by-q), covariance matrix Omega
-  * (q-by-n), and matrices S = X'X (p-by-p) and H = Y'X (q-by-q),
-  * number of observations n, initial step size eta, and linesearch
-  * parameters alpha and beta, returns the derivative of the
-  * objective function with respect to B (p-by-q matrix) with
-  * largest step size for which gradient descent to converge.
+  * Given regressor matrix B (p-by-q), covariance matrix Omega (q-by-
+  * n), and matrices S = X'X (p-by-p) and H = Y'X (q-by-q), number
+  * of observations n, and learning rate eta, returns the gradient
+  * descent step of B, B_new (a p-by-matrix)
   *
-  *       dgdB = 2/n (S*B-H)*Omega
+  *       B_new = B - eta*dgdB(B,Omega,S,H,n)
   */
-  return 2*(S*B-H)*Omega/n;
+  // const arma::mat dgdB = 2.0/n*(S*B-H)*Omega;
+  // return (B - eta*dgdB(B,Omega,S,H,n));
+  return (B - 2*eta/n*(S*B-H)*Omega);
 }
 
-arma::mat lsOmega(const arma::mat &B, const arma::mat &Omega,
-                  const arma::mat &X, const arma::mat &Y,
-                  double eta, double alpha, double beta)
+// [[Rcpp::export]]
+arma::mat gdOmega(const arma::mat &B, const arma::mat &Omega,
+              const arma::mat &X, const arma::mat &Y,
+              const double &eta)
 {
   /*
-   * Linesearch for gradient descent with resepct to Omega.
+  * Gradient step with respect to Omega.
+  *
+  * Given regressor matrix B (p-by-q), covariance matrix Omega (q-by-
+  * n), matrices X (n-by-p) and Y (q-by-n), and learning rate eta,
+  * returns the gradient descent step of Omega,
+  * Omega_new (a p-by-matrix).
+  *
+  *       Omega_new = Omega - eta*dgdB(B,Omega,X,Y)
+  */
+  const arma::mat A = Y-X*B;
+  // const arma::mat dgdOmega = A.st()*A/X.n_rows-inv_sympd(Omega);
+  // return (B - eta*dgdOmega(B,Omega,X,Y));
+  return (Omega - eta * (A.st()*A/X.n_rows-inv_sympd(Omega)));
+}
+
+// arma::mat composite_B(const arma::mat &B, const arma::mat &Omega,
+//               const arma::mat &S, const arma::mat &H,
+//               const int &n, const double &eta, const int&s)
+// {
+//   /*
+//   * Gradient step with respect to B
+//   *
+//   * Given regressor matrix B (p-by-q), covariance matrix Omega (q-by-
+//   * n), matrices S = X'X (p-by-p) and H = Y'X (q-by-q), number
+//   * of observations n, learning rate eta, and sparsity s,
+//   * returns the composite of hard threshold with gradient
+//   * descent of B, B_new (a p-by-n, matrix)
+//   *
+//   *       B_new = ht(B - eta*dgdB(B,Omega,S,H,n),s)
+//   */
+//   return ht(gdB(B,Omega,S,H,n,eta),s);
+// }
+//
+// arma::mat composite_Omega(const arma::mat &B, const arma::mat &Omega,
+//                      const arma::mat &X, const arma::mat &Y,
+//                      const double &eta, const int&s)
+// {
+//   /*
+//    * Composite of hardthreshold and gradient descent with respect
+//    * to Omega
+//    *
+//    * Given regressor matrix B (p-by-q), covariance matrix Omega (q-by-
+//    * n), X (p-by-n), Y (q-by-n), number learning rate eta,
+//    * and sparsity s, returns the composite of hard threshold with
+//    * gradient descent of Omega, Omega_comp (a p-by-n, matrix)
+//    *
+//    *       Omega_comp = ht(gdOmega(B,Omega,X,Y,eta),s)
+//    */
+//   return ht(gdOmega(B,Omega,X,Y,eta),s);
+// }
+
+double aux_func_B(const arma::mat &B, const arma::mat &Omega,
+                  const arma::mat &X, const arma::mat &Y,
+                  const arma::mat &S, const arma::mat &H,
+                  const int &n, const double &eta,
+                  const int&s, const double&rho)
+{
+  /*
+  * Auxillary function with respect to B. Used for linesearch.
+  *
+  */
+  arma::mat Z = ht(gdB(B,Omega,S,H,n,eta),s) - B;
+  return objective(B,Omega,X,Y) - rho / 2 * trace(Z.t()*Z);
+}
+
+double aux_func_Omega(const arma::mat &B, const arma::mat &Omega,
+                  const arma::mat &X, const arma::mat &Y,
+                  const arma::mat &S, const arma::mat &H,
+                  const int &n, const double &eta,
+                  const int&s, const double&rho)
+{
+  /*
+   * Auxillary function with respect to Omega. Used for linesearch.
    *
-   * Given regressor matrix B (p-by-q), covariance matrix
-   * Omega (q-by-n), design matrix X (n-by-p), response matrix
-   * Y (q-by-n) initial step size eta, and linesearch parameters
-   * alpha and beta, returns the derivative of the objective
-   * function with respect to Omega (p-by-q matrix) with largest
-   * step size eta for which gradient descent converges.
-   *
-   *       dgdOmega = 1/n ||X*B-Y||^2 - inv(Omega)
    */
-  const arma::mat A = X*B-Y;
-  return A.st()*A/X.n_rows-inv_sympd(Omega);
+  arma::mat Z = ht(gdOmega(B,Omega,X,Y,eta),s,true) - Omega;
+  return objective(B,Omega,X,Y) - rho / 2 * trace(Z.t()*Z);
+}
+
+arma::mat lsB(arma::mat B, const arma::mat &Omega,
+              const arma::mat &S, const arma::mat &H,
+              const arma::mat &X, const arma::mat &Y,
+              const int &n, double eta, const int &s,
+              const double &rho, const double &beta)
+{
+  /*
+  * Generalized linesearch for with resepct to B.
+  *
+  */
+  arma::mat B_test;
+  arma::mat B_diff;
+  int q = -1;
+  do {
+    q++;
+    eta = eta*pow(beta,q);
+    B_test = ht(gdB(B,Omega,S,H,n,eta),s);
+    B_diff = B_test - B;
+  } while (
+      objective(B_test,Omega,X,Y) >
+        objective(B,Omega,X,Y) - rho/2*trace(B_diff.t()*B_diff)
+  );
+  return(B_test);
 }
 
 
-arma::mat updateB(arma::mat B, const arma::mat &Omega, const arma::mat &X, const arma::mat &Y,
-            const arma::mat &S, const arma::mat &H, const String &type = "gd",
-            const double &eta = 0.01
-            // , const int &cgdstep = 100, const int &cgdeps = 1
-            )
+arma::mat lsOmega(arma::mat B, const arma::mat &Omega,
+              const arma::mat &X, const arma::mat &Y,
+              double eta, const int &s,
+              const double &rho, const double &beta)
+{
+  /*
+  * Generalized linesearch for with resepct to Omega.
+  *
+  */
+  arma::mat Omega_test;
+  arma::mat Omega_diff;
+  int q = -1;
+  do {
+    q++;
+    eta = eta*pow(beta,q);
+    Omega_test = ht(gdOmega(B,Omega,X,Y,eta),s,true);
+    Omega_diff = Omega_test - B;
+  } while (
+      objective(B,Omega_test,X,Y) >
+        objective(B,Omega,X,Y) +
+        rho/2*trace(Omega_diff.t()*Omega_diff)
+  );
+  return(Omega_test);
+}
+
+// [[Rcpp::export]]
+arma::mat updateB(arma::mat B, const arma::mat &Omega,
+                  const arma::mat &X, const arma::mat &Y,
+                  const arma::mat &S, const arma::mat &H,
+                  const String &type,
+                  const int &s,
+                  const double &eta = 0.01,
+                  const double &rho = 0.5,
+                  const double &beta = 0.5)
     {
     /*
     * tsmvrRcpp regressor matrix iterate update via the gradient descent
@@ -338,31 +458,30 @@ arma::mat updateB(arma::mat B, const arma::mat &Omega, const arma::mat &X, const
     * eta (eta > 0), returns the updated iterate B (p-by-q matrix)
     * via the gradient descent method.
     */
-
     if (type == "gd") {
-        B = B - eta*dgdB(B,Omega,S,H,X.n_rows);
+      // B = B - eta*dgdB(B,Omega,S,H,X.n_rows);
+      // B = composite_B(B,Omega,S,H,X.n_rows,eta,s);
+      B = ht(gdB(B,Omega,S,H,X.n_rows,eta),s);
     }
-    // else if (type == "cgd") {
-    //     B = cgd(B,S,H,cgdstep,cgdeps,true);
-    // }
-    // else if (type == "bfgs") {
-        // B = bfgs(B,S,H);
-    // }
-    // else if (type == "min") {
-    //     B = minB(S,H);
-    // }
-    // else {
-    //     throw "B-step type must be 'gd', 'cg', or 'bfgs'.";
-    // }
+    else if (type == "ls") {
+
+      // B = lsB(B,Omega,X,Y,S,H,X.n_rows,eta,s,rho,beta);
+      B = lsB(B,Omega,X,Y,S,H,X.n_rows,eta,s,rho,beta);
+    }
     else {
-        throw std::range_error("B-step type must be 'gd'.");
+      throw std::range_error("B-step type must be 'gd' or 'ls'.");
     }
     return B;
 }
 
-arma::mat updateOmega(const arma::mat &B, arma::mat Omega, const arma::mat &X, const arma::mat &Y,
-                const String &type = "gd", const double &eta = 0.01)
-    {
+// [[Rcpp::export]]
+arma::mat updateOmega(const arma::mat &B, arma::mat Omega,
+                      const arma::mat &X, const arma::mat &Y,
+                      const String &type,
+                      const int &s,
+                      const double &eta = 0.01,
+                      const double &rho = 0.5,
+                      const double &beta = 0.5) {
     /*
     * tsmvrRcpp covariance matrix iterate update via the gradient descent
     * method.
@@ -373,12 +492,15 @@ arma::mat updateOmega(const arma::mat &B, arma::mat Omega, const arma::mat &X, c
     * eta (eta > 0), returns the updated iterate Omega (q-by-q matrix)
     * via the gradient descent method.
     */
-
     if (type == "gd") {
-        Omega = Omega - eta*dgdOmega(B,Omega,X,Y);
+      // Omega = Omega - eta*dgdOmega(B,Omega,X,Y);
+      Omega = ht(gdOmega(B,Omega,X,Y,eta),s,true);
+    }
+    else if (type == "ls") {
+      Omega = lsOmega(B,Omega,X,Y,eta,s,rho,beta);
     }
     else if (type == "min") {
-        Omega = minOmega(B,X,Y);
+      Omega = ht(minOmega(B,X,Y),s,true);
     }
     else {
         throw std::range_error("Omega-step 'type' must be 'gd' or 'min'.");
@@ -474,16 +596,7 @@ List tsmvr_solve(const arma::mat &X,
                  const int &skip = 10,
                  const bool &quiet = false) {
 
-    // Initialize objects.
-
-    // const int n = X.n_rows;
-    // const int p = X.n_cols;
-    // const int q = Y.n_cols;
-    const arma::mat S = X.t()*X;
-    const arma::mat H = X.t()*Y;
-
     // Print header.
-
     if (!quiet) {
         if (Omega_type == "gd") {
           Rcpp::Rcout << "Solver mode 'gd-gd' with ";
@@ -496,6 +609,10 @@ List tsmvr_solve(const arma::mat &X,
         }
         Rcpp::Rcout << "t\tobj\t||\u0394B||\t\t||\u0394\u03A9||\ttime (ms)" << endl;
     }
+
+    // Pre-compute constant matrices.
+    const arma::mat S = X.t()*X;
+    const arma::mat H = X.t()*Y;
 
     // For recording history of iterates.
     field<arma::mat> BHist(max_iter);
@@ -514,8 +631,8 @@ List tsmvr_solve(const arma::mat &X,
     double gamma = std::numeric_limits<double>::infinity();
 
     // Initial iterates.
-    arma::mat B = initializeB(S,H,s1);
-    arma::mat Omega = initializeOmega(B,X,Y,s2);
+    arma::mat B = initialize_B(S,H,s1);
+    arma::mat Omega = initialize_Omega(B,X,Y,s2);
     double obj = std::numeric_limits<double>::infinity();
 
     // For keeping time.
@@ -534,15 +651,16 @@ List tsmvr_solve(const arma::mat &X,
         objOld = obj;
 
         // Update current iterate.
-        B = ht(updateB(B,Omega,X,Y,S,H,B_type,eta1),s1);
-        Omega = ht(updateOmega(B,Omega,X,Y,Omega_type,eta2),s2);
+        B = updateB(B,Omega,X,Y,S,H,B_type,s1,eta1);
+        Omega = updateOmega(B,Omega,X,Y,Omega_type,s2,eta2);
         obj = objective(B,Omega,X,Y);
 
         // Throw error if solution diverges.
         if (obj > objOld) {
-            throw std::runtime_error("Solution diverged.");
+            throw std::runtime_error("solution diverged");
         }
 
+        // Norms of differences.
         dBNorm = norm(B-BOld,"fro");
         dOmegaNorm = norm(Omega-OmegaOld,"fro");
 
@@ -572,25 +690,23 @@ List tsmvr_solve(const arma::mat &X,
     time = ( clock() - start ) / (double) CLOCKS_PER_SEC;
 
     // Statistics.
-    arma::mat fv = X*B;
-    arma::mat res = Y-fv;
-    double ss = norm(fv,"fro");
+    arma::mat Y_hat = X*B;
+    arma::mat res = Y-Y_hat;
+    double ss = trace(res.t()*res);
     // int df = n-(p+q+q^2);    // df = # obs - (coefficents + responses +
                             //  size of precision matrix) [correct ?]
     // double se = ss/std::sqrt(df);  // standard error, not impelented ..
 
-    // Warn if maximum iterations reached & resize history fields
-    // within the same control flow.
+    // Resize fields to return cleaner objects to user. If maximum
+    // number of iterations is reached, warn.
     field<arma::mat> BHist2(itrs);
     field<arma::mat> OmegaHist2(itrs);
     field<double> objHist2(itrs);
     if (itrs == max_iter) {
-        // Rcpp::Rcout << "Warning: maximum number of iterations achieved without convergence." \
-        // << endl;
         BHist2 = BHist;
         OmegaHist2 = OmegaHist;
         objHist2 = objHist;
-        Rcpp::warning("maximum number of iterations achieved without convergence");
+        Rcpp::warning("warning: Maximum number of iterations achieved without convergence.\n");
     }
     else {
         for (int k=0; k<itrs; k=k+1) {
@@ -600,18 +716,20 @@ List tsmvr_solve(const arma::mat &X,
         }
     }
 
-    // Rcpp::Rcout << BHist2 << endl;
-
     // Return.
     return List::create(Named("B_hat") = B,
                         Named("Omega_hat") = Omega,
-                        Named("objective") = obj,
-                        Named("iterations") = itrs,
-                        Named("time") = time,
-                        Named("Y_hat") = fv,
+                        Named("Y_hat") = Y_hat,
                         Named("residuals") = res,
                         Named("sum_of_squares") = ss,
+                        Named("num_obs") = X.n_rows,
+                        Named("num_predictors") = X.n_cols,
+                        Named("num_responses") = Y.n_cols,
+                        Named("iterations") = itrs,
+                        Named("time") = time,
                         Named("B_history") = BHist2,
                         Named("Omega_history") = OmegaHist2,
+                        Named("objective") = obj,
                         Named("objective_history") = objHist2);
+
 }

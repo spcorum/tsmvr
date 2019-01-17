@@ -88,8 +88,8 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
 
       # Print this result to screen.
       if (!quiet) {
-        cat(i, "\t", j, "\t", error[i,j], "\t", round(toc, 3), "\n",
-            sep = ""
+        cat(s1_grid[i], "\t", s2_grid[j], "\t", error[i,j], "\t",
+            round(toc, 3), "\n", sep = ""
         )
       }
     }
@@ -100,8 +100,8 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
   error_min = min(error)
   error_min_idx = which(error == min(error), arr.ind = T)
   error_min_sd = sd(error_min_idx)
-  s1_min = s1_grid(error_min_idx[1])
-  s2_min = s2_grid(error_min_idx[2])
+  s1_min = s1_grid[error_min_idx[1]]
+  s2_min = s2_grid[error_min_idx[2]]
 
   # Print final result to screen.
   if (!quiet) {

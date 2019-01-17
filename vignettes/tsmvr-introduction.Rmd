@@ -53,7 +53,105 @@ The function \code{tsmvr_solve} solves the regression problem using hard-thresho
 
 ```{r first-solution-gd-gd}
 library(tsmvr)
-gd_gd_solution = tsmvr::tsmvr_solve(
+gd_gd_solution = tsmvr_solve(
+  X = data$X, Y = data$Y, s1 = s1, s2 = s2, 
+  Omega_type = 'gd', eta1 = 0.05, eta2 = 0.2,
+  skip = 50
+)
+```
+
+```{r first-solution-ls-ls}
+library(tsmvr)
+gd_gd_solution = tsmvr_solve(
+  X = data$X, Y = data$Y, s1 = s1, s2 = s2, 
+  B_type = 'ls', Omega_type = 'gd', 
+  eta1 = 0.1, eta2 = 0.2,
+  skip = 50
+)
+```
+
+
+```{r test}
+library(tsmvr)
+library(tsmvrextras)
+
+# A = matrix(c(1,0,0,0,1,0,0,0,1),3,3)
+# B = matrix(c(1,1,0,1,1,1,0,1,1),3,3)
+C = matrix(c(2,1,0.5,1,2,1,0.5,1,2),3,3)
+
+# htHelper(A,1)
+# htHelper(A,2)
+
+# htHelper(B,1)
+# htHelper(B,2)
+
+htHelper(C,1)
+htHelper(C,2)
+htHelper(C,3)
+htHelper(C,4)
+htHelper(C,5)
+htHelper(C,6)
+htHelper(C,7)
+htHelper(C,8)
+htHelper(C,9)
+
+ht(C,1,ss=T)
+ht(C,2,ss=T)
+ht(C,3,ss=T)
+ht(C,4,ss=T)
+ht(C,5,ss=T)
+ht(C,6,ss=T)
+ht(C,7,ss=T)
+ht(C,8,ss=T)
+ht(C,9,ss=T)
+
+data = tsmvrextras::make_data(
+  n = 10, p = 3, q = 3, b1 = 1, b2 = 1
+)[[1]]
+
+data$B
+ht(data$B,1)
+ht(data$B,2)
+ht(data$B,3)
+ht(data$B,4)
+ht(data$B,5)
+ht(data$B,6)
+ht(data$B,7)
+ht(data$B,8)
+ht(data$B,9)
+
+data$Omega
+ht(data$Omega,1)
+ht(data$Omega,2)
+ht(data$Omega,3)
+ht(data$Omega,4)
+ht(data$Omega,5)
+ht(data$Omega,6)
+ht(data$Omega,7)
+ht(data$Omega,8)
+ht(data$Omega,9)
+
+ht(data$Omega,1,ss=T)
+ht(data$Omega,2,ss=T)
+ht(data$Omega,3,ss=T)
+ht(data$Omega,4,ss=T)
+ht(data$Omega,5,ss=T)
+ht(data$Omega,6,ss=T)
+ht(data$Omega,7,ss=T)
+ht(data$Omega,8,ss=T)
+ht(data$Omega,9,ss=T)
+
+n = 1000
+p = 100
+q = 10
+sparsity = 0.1
+s1 = round(p * q * sparsity * 1.1)
+s2 = 3 * q - 4
+data = tsmvrextras::make_data(
+  n = n, p = p, q = q, b1 = sqrt(sparsity), b2 = sqrt(sparsity)
+)[[1]]
+
+test_solution = tsmvr::tsmvr_solve(
   X = data$X, Y = data$Y, s1 = s1, s2 = s2, 
   Omega_type = 'gd', eta1 = 0.05, eta2 = 0.2,
   skip = 50
@@ -65,8 +163,8 @@ For some problems like this one, an equally good solution instead may be found u
 ```{r first-solution-gd-min, eval = F}
 gd_min_solution = tsmvr::tsmvr_solve(
   X = data$X, Y = data$Y, s1 = s1, s2 = s2, 
-  Omega_type = 'min', eta1 = 0.001,
-  skip = 50
+  Omega_type = 'min', eta1 = 0.01,
+  skip = 5
 )
 ```
 
@@ -90,7 +188,7 @@ Similarly, replicated k-fold cross validation may be performed using the functio
 set.seed(3)
 replicated = tsmvr::tsmvr_replicate(
   X = data$X, Y = data$Y, s1 = s1, s2 = s2, k = 5, reps = 3,
-  Omega_type = 'gd', eta1 = 0.05, eta2 = 0.2
+  Omega_type = 'gd', eta1 = 0.02, eta2 = 0.2
 )
 ```
 
@@ -99,13 +197,16 @@ replicated = tsmvr::tsmvr_replicate(
 Finally, replicated k-fold cross validation may be used to search a space of \code{s1} and \code{s2} values to find the pair of values that minimizes the cross validation error.
 
 ```{r gridsearch, eval = F}
+s1_grid = p*q*0.11
+s2_grid = 3*q-4
+
 s1_grid = round(p*q*exp(log(seq(0.1,0.2,length.out = 8))))
-# s2_grid = round(seq(q,4*q,length.out = 10))
 s2_grid = round(seq(2*q,4*q,length.out = 8))
 set.seed(5)
+
 grid = tsmvr_gridsearch(
   X = data$X, Y = data$Y, s1_grid = s1_grid, s2_grid = s2_grid, 
-  k = 2, reps = 20, Omega_type = 'gd', eta1 = 0.001, eta2 = 0.001,
+  k = 5, reps = 3, Omega_type = 'gd', eta1 = 0.0001, eta2 = 0.0001,
   quiet = F
 )
 ```
