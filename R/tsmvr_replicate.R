@@ -41,7 +41,7 @@ tsmvr_replicate <- function(X, Y, s1, s2, k = 10, reps = 10,
     s1 %% 1 == 0, s2 %% 1 == 0,
     k %% 1 == 0, k > 1, reps %% 1 == 0, reps > 0,
     is.character(B_type), is.character(Omega_type),
-    B_type %in% c("gd"), Omega_type %in% c("gd", "min"),
+    B_type %in% c("gd", "ls"), Omega_type %in% c("gd", "min", "ls"),
     is.numeric(epsilon), epsilon > 0,
     is.numeric(max_iter), max_iter > 0, max_iter %% 1 == 0,
     is.null(seed) || is.numeric(seed)
