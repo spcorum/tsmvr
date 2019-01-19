@@ -9,242 +9,8 @@
 
 using namespace Rcpp;
 
-// htHelper
-arma::mat htHelper(arma::mat X, const int& s);
-static SEXP _tsmvr_htHelper_try(SEXP XSEXP, SEXP sSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
-    Rcpp::traits::input_parameter< const int& >::type s(sSEXP);
-    rcpp_result_gen = Rcpp::wrap(htHelper(X, s));
-    return rcpp_result_gen;
-END_RCPP_RETURN_ERROR
-}
-RcppExport SEXP _tsmvr_htHelper(SEXP XSEXP, SEXP sSEXP) {
-    SEXP rcpp_result_gen;
-    {
-        Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_tsmvr_htHelper_try(XSEXP, sSEXP));
-    }
-    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
-    if (rcpp_isInterrupt_gen) {
-        UNPROTECT(1);
-        Rf_onintr();
-    }
-    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
-    if (rcpp_isLongjump_gen) {
-        Rcpp::internal::resumeJump(rcpp_result_gen);
-    }
-    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
-    if (rcpp_isError_gen) {
-        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
-        UNPROTECT(1);
-        Rf_error(CHAR(rcpp_msgSEXP_gen));
-    }
-    UNPROTECT(1);
-    return rcpp_result_gen;
-}
-// ht
-arma::mat ht(arma::mat X, int s, bool ss);
-static SEXP _tsmvr_ht_try(SEXP XSEXP, SEXP sSEXP, SEXP ssSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
-    Rcpp::traits::input_parameter< int >::type s(sSEXP);
-    Rcpp::traits::input_parameter< bool >::type ss(ssSEXP);
-    rcpp_result_gen = Rcpp::wrap(ht(X, s, ss));
-    return rcpp_result_gen;
-END_RCPP_RETURN_ERROR
-}
-RcppExport SEXP _tsmvr_ht(SEXP XSEXP, SEXP sSEXP, SEXP ssSEXP) {
-    SEXP rcpp_result_gen;
-    {
-        Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_tsmvr_ht_try(XSEXP, sSEXP, ssSEXP));
-    }
-    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
-    if (rcpp_isInterrupt_gen) {
-        UNPROTECT(1);
-        Rf_onintr();
-    }
-    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
-    if (rcpp_isLongjump_gen) {
-        Rcpp::internal::resumeJump(rcpp_result_gen);
-    }
-    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
-    if (rcpp_isError_gen) {
-        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
-        UNPROTECT(1);
-        Rf_error(CHAR(rcpp_msgSEXP_gen));
-    }
-    UNPROTECT(1);
-    return rcpp_result_gen;
-}
-// gdB
-arma::mat gdB(const arma::mat& B, const arma::mat& Omega, const arma::mat& S, const arma::mat& H, const int& n, const double& eta);
-static SEXP _tsmvr_gdB_try(SEXP BSEXP, SEXP OmegaSEXP, SEXP SSEXP, SEXP HSEXP, SEXP nSEXP, SEXP etaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type B(BSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Omega(OmegaSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type S(SSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type H(HSEXP);
-    Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
-    Rcpp::traits::input_parameter< const double& >::type eta(etaSEXP);
-    rcpp_result_gen = Rcpp::wrap(gdB(B, Omega, S, H, n, eta));
-    return rcpp_result_gen;
-END_RCPP_RETURN_ERROR
-}
-RcppExport SEXP _tsmvr_gdB(SEXP BSEXP, SEXP OmegaSEXP, SEXP SSEXP, SEXP HSEXP, SEXP nSEXP, SEXP etaSEXP) {
-    SEXP rcpp_result_gen;
-    {
-        Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_tsmvr_gdB_try(BSEXP, OmegaSEXP, SSEXP, HSEXP, nSEXP, etaSEXP));
-    }
-    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
-    if (rcpp_isInterrupt_gen) {
-        UNPROTECT(1);
-        Rf_onintr();
-    }
-    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
-    if (rcpp_isLongjump_gen) {
-        Rcpp::internal::resumeJump(rcpp_result_gen);
-    }
-    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
-    if (rcpp_isError_gen) {
-        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
-        UNPROTECT(1);
-        Rf_error(CHAR(rcpp_msgSEXP_gen));
-    }
-    UNPROTECT(1);
-    return rcpp_result_gen;
-}
-// gdOmega
-arma::mat gdOmega(const arma::mat& B, const arma::mat& Omega, const arma::mat& X, const arma::mat& Y, const double& eta);
-static SEXP _tsmvr_gdOmega_try(SEXP BSEXP, SEXP OmegaSEXP, SEXP XSEXP, SEXP YSEXP, SEXP etaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type B(BSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Omega(OmegaSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const double& >::type eta(etaSEXP);
-    rcpp_result_gen = Rcpp::wrap(gdOmega(B, Omega, X, Y, eta));
-    return rcpp_result_gen;
-END_RCPP_RETURN_ERROR
-}
-RcppExport SEXP _tsmvr_gdOmega(SEXP BSEXP, SEXP OmegaSEXP, SEXP XSEXP, SEXP YSEXP, SEXP etaSEXP) {
-    SEXP rcpp_result_gen;
-    {
-        Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_tsmvr_gdOmega_try(BSEXP, OmegaSEXP, XSEXP, YSEXP, etaSEXP));
-    }
-    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
-    if (rcpp_isInterrupt_gen) {
-        UNPROTECT(1);
-        Rf_onintr();
-    }
-    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
-    if (rcpp_isLongjump_gen) {
-        Rcpp::internal::resumeJump(rcpp_result_gen);
-    }
-    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
-    if (rcpp_isError_gen) {
-        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
-        UNPROTECT(1);
-        Rf_error(CHAR(rcpp_msgSEXP_gen));
-    }
-    UNPROTECT(1);
-    return rcpp_result_gen;
-}
-// updateB
-arma::mat updateB(arma::mat B, const arma::mat& Omega, const arma::mat& X, const arma::mat& Y, const arma::mat& S, const arma::mat& H, const String& type, const int& s, const double& eta, const double& rho, const double& beta);
-static SEXP _tsmvr_updateB_try(SEXP BSEXP, SEXP OmegaSEXP, SEXP XSEXP, SEXP YSEXP, SEXP SSEXP, SEXP HSEXP, SEXP typeSEXP, SEXP sSEXP, SEXP etaSEXP, SEXP rhoSEXP, SEXP betaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type B(BSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Omega(OmegaSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type S(SSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type H(HSEXP);
-    Rcpp::traits::input_parameter< const String& >::type type(typeSEXP);
-    Rcpp::traits::input_parameter< const int& >::type s(sSEXP);
-    Rcpp::traits::input_parameter< const double& >::type eta(etaSEXP);
-    Rcpp::traits::input_parameter< const double& >::type rho(rhoSEXP);
-    Rcpp::traits::input_parameter< const double& >::type beta(betaSEXP);
-    rcpp_result_gen = Rcpp::wrap(updateB(B, Omega, X, Y, S, H, type, s, eta, rho, beta));
-    return rcpp_result_gen;
-END_RCPP_RETURN_ERROR
-}
-RcppExport SEXP _tsmvr_updateB(SEXP BSEXP, SEXP OmegaSEXP, SEXP XSEXP, SEXP YSEXP, SEXP SSEXP, SEXP HSEXP, SEXP typeSEXP, SEXP sSEXP, SEXP etaSEXP, SEXP rhoSEXP, SEXP betaSEXP) {
-    SEXP rcpp_result_gen;
-    {
-        Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_tsmvr_updateB_try(BSEXP, OmegaSEXP, XSEXP, YSEXP, SSEXP, HSEXP, typeSEXP, sSEXP, etaSEXP, rhoSEXP, betaSEXP));
-    }
-    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
-    if (rcpp_isInterrupt_gen) {
-        UNPROTECT(1);
-        Rf_onintr();
-    }
-    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
-    if (rcpp_isLongjump_gen) {
-        Rcpp::internal::resumeJump(rcpp_result_gen);
-    }
-    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
-    if (rcpp_isError_gen) {
-        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
-        UNPROTECT(1);
-        Rf_error(CHAR(rcpp_msgSEXP_gen));
-    }
-    UNPROTECT(1);
-    return rcpp_result_gen;
-}
-// updateOmega
-arma::mat updateOmega(const arma::mat& B, arma::mat Omega, const arma::mat& X, const arma::mat& Y, const String& type, const int& s, const double& eta, const double& rho, const double& beta);
-static SEXP _tsmvr_updateOmega_try(SEXP BSEXP, SEXP OmegaSEXP, SEXP XSEXP, SEXP YSEXP, SEXP typeSEXP, SEXP sSEXP, SEXP etaSEXP, SEXP rhoSEXP, SEXP betaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type B(BSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type Omega(OmegaSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const String& >::type type(typeSEXP);
-    Rcpp::traits::input_parameter< const int& >::type s(sSEXP);
-    Rcpp::traits::input_parameter< const double& >::type eta(etaSEXP);
-    Rcpp::traits::input_parameter< const double& >::type rho(rhoSEXP);
-    Rcpp::traits::input_parameter< const double& >::type beta(betaSEXP);
-    rcpp_result_gen = Rcpp::wrap(updateOmega(B, Omega, X, Y, type, s, eta, rho, beta));
-    return rcpp_result_gen;
-END_RCPP_RETURN_ERROR
-}
-RcppExport SEXP _tsmvr_updateOmega(SEXP BSEXP, SEXP OmegaSEXP, SEXP XSEXP, SEXP YSEXP, SEXP typeSEXP, SEXP sSEXP, SEXP etaSEXP, SEXP rhoSEXP, SEXP betaSEXP) {
-    SEXP rcpp_result_gen;
-    {
-        Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_tsmvr_updateOmega_try(BSEXP, OmegaSEXP, XSEXP, YSEXP, typeSEXP, sSEXP, etaSEXP, rhoSEXP, betaSEXP));
-    }
-    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
-    if (rcpp_isInterrupt_gen) {
-        UNPROTECT(1);
-        Rf_onintr();
-    }
-    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
-    if (rcpp_isLongjump_gen) {
-        Rcpp::internal::resumeJump(rcpp_result_gen);
-    }
-    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
-    if (rcpp_isError_gen) {
-        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
-        UNPROTECT(1);
-        Rf_error(CHAR(rcpp_msgSEXP_gen));
-    }
-    UNPROTECT(1);
-    return rcpp_result_gen;
-}
 // tsmvr_solve
-List tsmvr_solve(const arma::mat& X, const arma::mat& Y, const int& s1, const int& s2, const String& B_type, const String& Omega_type, const double& eta1, const double& eta2, const double& epsilon, const int& max_iter, const int& skip, const bool& quiet);
+List tsmvr_solve(const arma::mat& X, const arma::mat& Y, const int& s1, const int& s2, const std::string& B_type, const std::string& Omega_type, const double& eta1, const double& eta2, const double& epsilon, const int& max_iter, const int& skip, const bool& quiet);
 static SEXP _tsmvr_tsmvr_solve_try(SEXP XSEXP, SEXP YSEXP, SEXP s1SEXP, SEXP s2SEXP, SEXP B_typeSEXP, SEXP Omega_typeSEXP, SEXP eta1SEXP, SEXP eta2SEXP, SEXP epsilonSEXP, SEXP max_iterSEXP, SEXP skipSEXP, SEXP quietSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -252,8 +18,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type Y(YSEXP);
     Rcpp::traits::input_parameter< const int& >::type s1(s1SEXP);
     Rcpp::traits::input_parameter< const int& >::type s2(s2SEXP);
-    Rcpp::traits::input_parameter< const String& >::type B_type(B_typeSEXP);
-    Rcpp::traits::input_parameter< const String& >::type Omega_type(Omega_typeSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type B_type(B_typeSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type Omega_type(Omega_typeSEXP);
     Rcpp::traits::input_parameter< const double& >::type eta1(eta1SEXP);
     Rcpp::traits::input_parameter< const double& >::type eta2(eta2SEXP);
     Rcpp::traits::input_parameter< const double& >::type epsilon(epsilonSEXP);
@@ -293,25 +59,13 @@ RcppExport SEXP _tsmvr_tsmvr_solve(SEXP XSEXP, SEXP YSEXP, SEXP s1SEXP, SEXP s2S
 static int _tsmvr_RcppExport_validate(const char* sig) { 
     static std::set<std::string> signatures;
     if (signatures.empty()) {
-        signatures.insert("arma::mat(*htHelper)(arma::mat,const int&)");
-        signatures.insert("arma::mat(*ht)(arma::mat,int,bool)");
-        signatures.insert("arma::mat(*gdB)(const arma::mat&,const arma::mat&,const arma::mat&,const arma::mat&,const int&,const double&)");
-        signatures.insert("arma::mat(*gdOmega)(const arma::mat&,const arma::mat&,const arma::mat&,const arma::mat&,const double&)");
-        signatures.insert("arma::mat(*updateB)(arma::mat,const arma::mat&,const arma::mat&,const arma::mat&,const arma::mat&,const arma::mat&,const String&,const int&,const double&,const double&,const double&)");
-        signatures.insert("arma::mat(*updateOmega)(const arma::mat&,arma::mat,const arma::mat&,const arma::mat&,const String&,const int&,const double&,const double&,const double&)");
-        signatures.insert("List(*tsmvr_solve)(const arma::mat&,const arma::mat&,const int&,const int&,const String&,const String&,const double&,const double&,const double&,const int&,const int&,const bool&)");
+        signatures.insert("List(*tsmvr_solve)(const arma::mat&,const arma::mat&,const int&,const int&,const std::string&,const std::string&,const double&,const double&,const double&,const int&,const int&,const bool&)");
     }
     return signatures.find(sig) != signatures.end();
 }
 
 // registerCCallable (register entry points for exported C++ functions)
 RcppExport SEXP _tsmvr_RcppExport_registerCCallable() { 
-    R_RegisterCCallable("tsmvr", "_tsmvr_htHelper", (DL_FUNC)_tsmvr_htHelper_try);
-    R_RegisterCCallable("tsmvr", "_tsmvr_ht", (DL_FUNC)_tsmvr_ht_try);
-    R_RegisterCCallable("tsmvr", "_tsmvr_gdB", (DL_FUNC)_tsmvr_gdB_try);
-    R_RegisterCCallable("tsmvr", "_tsmvr_gdOmega", (DL_FUNC)_tsmvr_gdOmega_try);
-    R_RegisterCCallable("tsmvr", "_tsmvr_updateB", (DL_FUNC)_tsmvr_updateB_try);
-    R_RegisterCCallable("tsmvr", "_tsmvr_updateOmega", (DL_FUNC)_tsmvr_updateOmega_try);
     R_RegisterCCallable("tsmvr", "_tsmvr_tsmvr_solve", (DL_FUNC)_tsmvr_tsmvr_solve_try);
     R_RegisterCCallable("tsmvr", "_tsmvr_RcppExport_validate", (DL_FUNC)_tsmvr_RcppExport_validate);
     return R_NilValue;

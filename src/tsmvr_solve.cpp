@@ -144,6 +144,7 @@ using namespace std;
 //   return A.st()*A/X.n_rows-inv_sympd(Omega);
 // }
 
+// // [[Rcpp::export]]
 arma::mat ppmat(const arma::mat &X) {
     /*
      * Positive part of matrix. Given matrix x, is positive part
@@ -152,6 +153,7 @@ arma::mat ppmat(const arma::mat &X) {
     return clamp(X,0,X.max());
 }
 
+// // [[Rcpp::export]]
 arma::mat st(const arma::mat &X, const double &lam) {
     /*
      * Soft threshold of a matrix X with parameter lam.
@@ -159,7 +161,7 @@ arma::mat st(const arma::mat &X, const double &lam) {
     return ppmat(X-lam) - ppmat(-X-lam);
 }
 
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 arma::mat htHelper(arma::mat X, const int &s) {
     /*
      * Support set matrix. Given matrix X and integer 0 <= s <= |X|
@@ -199,7 +201,7 @@ arma::mat htHelper(arma::mat X, const int &s) {
     return X;
 }
 
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 arma::mat ht(arma::mat X, int s, bool ss = false) {
     /*
      * Hard threshold operator. Given a matrix, sparsity paramter s
@@ -220,6 +222,7 @@ arma::mat ht(arma::mat X, int s, bool ss = false) {
     return X;
 }
 
+// // [[Rcpp::export]]
 arma::mat minOmega(const arma::mat &B, const arma::mat &X, const arma::mat &Y) {
    /*
     * Direct minimization of tsmvrRcpp objective function with respect to
@@ -237,6 +240,7 @@ arma::mat minOmega(const arma::mat &B, const arma::mat &X, const arma::mat &Y) {
     return temp;
 }
 
+// // [[Rcpp::export]]
 arma::mat initialize_B(const arma::mat &S, const arma::mat &H, const int &s,
                 const double &lam = 0.1) {
    /*
@@ -249,6 +253,7 @@ arma::mat initialize_B(const arma::mat &S, const arma::mat &H, const int &s,
     return ht(st(solve(S,H,solve_opts::fast),lam),s);
 }
 
+// // [[Rcpp::export]]
 arma::mat initialize_Omega(const arma::mat &B0, const arma::mat &X, const arma::mat &Y,
                     const int &s, const double &lam = 0.1) {
    /*
@@ -262,6 +267,7 @@ arma::mat initialize_Omega(const arma::mat &B0, const arma::mat &X, const arma::
     return ht(st(minOmega(B0,X,Y),lam),s,true);
 }
 
+// // [[Rcpp::export]]
 double objective(const arma::mat &B, const arma::mat &Omega, const arma::mat &X,
                  const arma::mat &Y)
     {
@@ -279,9 +285,7 @@ double objective(const arma::mat &B, const arma::mat &Omega, const arma::mat &X,
     return trace(A*Omega*A.st())/X.n_rows - real(log_det(Omega));
 }
 
-
-
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 arma::mat gdB(const arma::mat &B, const arma::mat &Omega,
                const arma::mat &S, const arma::mat &H,
                const int &n, const double &eta)
@@ -301,7 +305,7 @@ arma::mat gdB(const arma::mat &B, const arma::mat &Omega,
   return (B - 2.0*eta*(S*B-H)*Omega/n);
 }
 
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 arma::mat gdOmega(const arma::mat &B, const arma::mat &Omega,
               const arma::mat &X, const arma::mat &Y,
               const double &eta)
@@ -354,7 +358,6 @@ arma::mat lsB(const arma::mat &B, const arma::mat &Omega,
   return(B_test);
 }
 
-
 arma::mat lsOmega(arma::mat B, const arma::mat &Omega,
               const arma::mat &X, const arma::mat &Y,
               const int &s, double eta = 0.1,
@@ -389,11 +392,11 @@ arma::mat lsOmega(arma::mat B, const arma::mat &Omega,
   return(Omega_test);
 }
 
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 arma::mat updateB(arma::mat B, const arma::mat &Omega,
                   const arma::mat &X, const arma::mat &Y,
                   const arma::mat &S, const arma::mat &H,
-                  const String &type,
+                  const std::string &type,
                   const int &s,
                   const double &eta = 0.01,
                   const double &rho = 0.5,
@@ -421,10 +424,10 @@ arma::mat updateB(arma::mat B, const arma::mat &Omega,
     return B;
 }
 
-// [[Rcpp::export]]
+// // [[Rcpp::export]]
 arma::mat updateOmega(const arma::mat &B, arma::mat Omega,
                       const arma::mat &X, const arma::mat &Y,
-                      const String &type,
+                      const std::string &type,
                       const int &s,
                       const double &eta = 0.01,
                       const double &rho = 0.5,
@@ -536,8 +539,8 @@ arma::mat updateOmega(const arma::mat &B, arma::mat Omega,
 List tsmvr_solve(const arma::mat &X,
                  const arma::mat &Y,
                  const int &s1, const int &s2,
-                 const String &B_type = "gd",
-                 const String &Omega_type = "gd",
+                 const std::string &B_type = "gd",
+                 const std::string &Omega_type = "gd",
                  const double &eta1 = 0.05,
                  const double &eta2 = 0.2,
                  const double &epsilon = 1e-3,
@@ -547,14 +550,11 @@ List tsmvr_solve(const arma::mat &X,
 
     // Print header.
     if (!quiet) {
-        if (Omega_type == "gd") {
-          Rcpp::Rcout << "Solver mode 'gd-gd' with ";
-          Rcpp::Rcout << "eta1 = " << eta1 << " and eta2 = " <<
-                          eta2 << "." << endl;
-        }
-        else if (Omega_type == "min") {
-          Rcpp::Rcout << "Solver mode 'gd-min' with ";
+        Rcpp::Rcout << "Solver mode " << B_type << "-" << Omega_type << " with ";
+        if (Omega_type == "min") {
           Rcpp::Rcout << "eta1 = " << eta1 << "." << endl;
+        } else {
+          Rcpp::Rcout << "eta1 = " << eta1 << " and eta2 = " << eta2 << "." << endl;
         }
         Rcpp::Rcout << "t\tobj\t||\u0394B||\t\t||\u0394\u03A9||\ttime (ms)" << endl;
     }
@@ -592,7 +592,7 @@ List tsmvr_solve(const arma::mat &X,
     clock_t start = clock();
 
     // Temporary fixed variables.
-    double rho1 = 1e2;
+    double rho1 = 1e0;
     double rho2 = 1e0;
     double beta1 = 0.5;
     double beta2 = 0.5;

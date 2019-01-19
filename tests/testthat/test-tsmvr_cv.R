@@ -374,7 +374,7 @@ test_that("tsmvr_cv returns a list", {
   expect_true(is.list(z))
 })
 
-test_that("tsmvr_cv returns a list of length 2", {
+test_that("tsmvr_cv returns a list of length 4", {
   X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
   Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
   z <- tsmvr_cv(
@@ -382,7 +382,7 @@ test_that("tsmvr_cv returns a list of length 2", {
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
     quiet = T
   )
-  expect_equal(length(z), 3)
+  expect_equal(length(z), 4)
 })
 
 test_that("the labels of the list returned by tsmvr_cv are as
@@ -395,7 +395,7 @@ test_that("the labels of the list returned by tsmvr_cv are as
     quiet = T
   )
   expect_true(all(labels(z) ==
-    c("error_mean", "error_sd", "num_folds")))
+    c("error_mean", "error_sd", "num_folds", "time")))
 })
 
 test_that("the returned sublist labeled 'error_mean' is numeric", {

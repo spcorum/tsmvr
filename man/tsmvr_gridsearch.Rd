@@ -5,7 +5,8 @@
 \title{Gridsearch for tsmvr}
 \usage{
 tsmvr_gridsearch(X, Y, s1_grid, s2_grid, k = 10, reps = 10,
-  B_type = "gd", Omega_type = "gd", eta1 = 0.05, eta2 = 0.2,
+  B_type = "ls", Omega_type = "ls", eta1 = 0.05, eta2 = 0.2,
+  rho1 = 100, rho2 = 1, beta1 = 0.5, beta2 = 0.5,
   epsilon = 1e-05, max_iter = 40000, quiet = FALSE, seed = NULL)
 }
 \arguments{
@@ -28,6 +29,14 @@ tsmvr_gridsearch(X, Y, s1_grid, s2_grid, k = 10, reps = 10,
 \item{eta1}{B-step learning rate (positive numeric)}
 
 \item{eta2}{Omega-step learning rate (positive numeric)}
+
+\item{rho1}{B-step lineserach convergence parameter (positive numeric)}
+
+\item{rho2}{Omega-step lineserach convergence parameter  (positive numeric)}
+
+\item{beta1}{B-step linesearch shrinkage parameter (positive numeric)}
+
+\item{beta2}{Omega-step linesearch shrinkage parameter (positive numeric)}
 
 \item{epsilon}{convergence parameter (positive numeric)}
 

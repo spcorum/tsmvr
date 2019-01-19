@@ -15,6 +15,10 @@
 #' @param Omega_type Omega-step descent type (string: 'gd' or 'min')
 #' @param eta1 B-step learning rate (positive numeric)
 #' @param eta2 Omega-step learning rate (positive numeric)
+#' @param rho1 B-step lineserach convergence parameter (positive numeric)
+#' @param rho2 Omega-step lineserach convergence parameter  (positive numeric)
+#' @param beta1 B-step linesearch shrinkage parameter (positive numeric)
+#' @param beta2 Omega-step linesearch shrinkage parameter (positive numeric)
 #' @param epsilon convergence parameter (positive numeric)
 #' @param max_iter maximum number of allowed iterations (positive integer)
 #' @param quiet quiet mode (bool)
@@ -28,10 +32,13 @@
 #' @importFrom stats sd
 #'
 #' @export
-tsmvr_cv <- function(X, Y, s1, s2, k = 10, B_type = "gd",
-                     Omega_type = "gd", eta1 = 0.05, eta2 = 0.2,
-                     epsilon = 1e-3, max_iter = 2000, quiet = FALSE,
-                     seed = NULL) {
+tsmvr_cv <- function(X, Y, s1, s2, k = 10,
+                     B_type = "ls", Omega_type = "ls",
+                     eta1 = 0.05, eta2 = 0.2,
+                     rho1 = 1e2, rho2 = 1,
+                     beta1 = 0.5, beta2 = 0.5,
+                     epsilon = 1e-3, max_iter = 2000,
+                     quiet = FALSE, seed = NULL) {
   stopifnot(
     is.numeric(X), is.matrix(Y), is.numeric(Y), is.matrix(Y),
     is.numeric(s1), s1 >= 0, is.numeric(s2), s2 >= dim(Y)[2],

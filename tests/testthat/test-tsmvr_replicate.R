@@ -416,7 +416,7 @@ test_that("tsmvr_replicate returns a list of length 6", {
     s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
     quiet = T, seed = seed
   )
-  expect_equal(length(z), 6)
+  expect_equal(length(z), 7)
 })
 
 test_that("the labels of the list returned by tsmvr_replicate are as
@@ -434,7 +434,7 @@ test_that("the labels of the list returned by tsmvr_replicate are as
     c(
       "rep_error_mean", "rep_error_sd",
       "fold_error_means", "fold_error_sds",
-      "folds", "reps"
+      "folds", "reps", "time"
     )))
 })
 

@@ -7,6 +7,7 @@ vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+header-includes: \usepackage{amsmath} \usepackage{enumitem} \usepackage{bm} \usepackage{algorithm} \usepackage{algorithmic} \usepackage{subfig} \bibliography{references}
 ---
 
 ```{r setup, include = FALSE}
@@ -18,13 +19,13 @@ knitr::opts_chunk$set(
 
 ## Truly Sparse Multivariate Regression
 
-__tsmvr__ or Truly Sparse Multivariate Regression is an R package for solving sparse multivariate regression problems with error coviance estimation. The workhourse algorithm in __tsmvr__ is adapted from the algorithm described by Chen and Gu in their paper "High Dimensional Multivariate Regression and Precision Matrix Estimation via Nonconvex Optimization" (ArXiv ID 1606.00832, 2016).
+__tsmvr__ or Truly Sparse Multivariate Regression is an R package for solving sparse multivariate regression problems with error coviance estimation. The workhourse algorithm in __tsmvr__ is adapted from the algorithm described by J. Chen and Q. Gu in their 2016 paper [High Dimensional Multivariate Regression and Precision Matrix Estimation via Nonconvex Optimization](https://arxiv.org/abs/1606.00832) .
 
 A multivariate regression problem is a regression problem with multiple responses. Formally,
 
-$ \mathbf{Y} = \mathbf{X} \mathbf{B} + \mathbf{E} $
+$ Y = X B + E $
 
-Here, \mathbf{X} is the design matrix of $n$ observations of $p$ features, \mathbf{Y} is the design matrix of $n$ observations of $q$ responses, \mathbf{B} is the regression matrix, and \mathbf{E} is the error term. Given  \mathbf{X} and \mathbf{Y}, __tsmvr__ solves this probem for \mathbf{B} under the constraint that \mathbf{B} is sparse and the condition that the errors may be correlated. Under the hood, the error correlations are encoded in the precision matrix \mathbf{\Omega}, which has its own sparsity constraint.
+Here, X is the design matrix of $n$ observations of $p$ features, Y is the design matrix of $n$ observations of $q$ responses, $B$ is the regression matrix, and $E$ is the error term. Given  $X$ and $Y$, __tsmvr__ solves this probem for $B$ under the constraint that $B$ is sparse and the condition that the errors may be correlated. Under the hood, the error correlations are encoded in the precision matrix \mathbf{\Omega}, which has its own sparsity constraint.
 
 ## A First Example
 
@@ -49,103 +50,70 @@ data = tsmvrextras::make_data(
 )[[1]]
 ```
 
-The function \code{tsmvr_solve} solves the regression problem using hard-thresholded block-wise alternating gradient descent.
+Important: the data in design matrix generated in the code chunk above have mean zero (and standard deviation one). *tsmvr* assumes all data have zero mean, so it is important to do zeroing transformations to the data before running algroithm. 
 
-```{r first-solution-gd-gd}
-library(tsmvr)
+The function \code{tsmvr_solve} solves the regression problem using hard-thresholded block-wise alternating gradient descent with fixed learning rates.
+
+```{r first-solution-gd-gd, eval = F}
+# library(tsmvr)
 gd_gd_solution = tsmvr_solve(
   X = data$X, Y = data$Y, s1 = s1, s2 = s2, 
   B_type = 'gd', Omega_type = 'gd',
-  eta1 = 0.05, eta2 = 0.2,
+  eta1 = 0.05, eta2 = 0.1,
   skip = 50
 )
 ```
 
-```{r first-solution-ls-ls}
-library(tsmvr)
-gd_gd_solution = tsmvr_solve(
-  X = data$X, Y = data$Y, s1 = s1, s2 = s2, 
-  B_type = 'gd', Omega_type = 'ls',
-  eta1 = 0.05, eta2 = 1,
-  skip = 10
-)
-```
+Sometimes the fixed learning rate method is cumbersome because the best learning rates need to be found by trial and error. In that case, *tsmvr* uses a generalized linesearch procedure to find learning rates for the user. In this case, the paramaters \code{eta1} and \code{eta2} becomes the initial learning rates in the linesearch procedure. The cost for not having to choose the learning rates is that the algorithm runs slower.
 
-```{r first-solution-gd-min}
+```{r first-solution-ls-ls, eval = T}
 library(tsmvr)
-gd_gd_solution = tsmvr_solve(
+ls_ls_solution = tsmvr_solve(
   X = data$X, Y = data$Y, s1 = s1, s2 = s2, 
-  B_type = 'gd', Omega_type = 'min', 
-  eta1 = 0.05, eta2 = 0.2,
+  B_type = 'ls', Omega_type = 'ls',
+  eta1 = 0.05, eta2 = 0.1,
   skip = 50
-)
-```
-
-
-```{r first-solution-ls-min}
-library(tsmvr)
-gd_gd_solution = tsmvr_solve(
-  X = data$X, Y = data$Y, s1 = s1, s2 = s2, 
-  B_type = 'ls', Omega_type = 'min',
-  eta1 = 0.05, eta2 = 0.2,
-  skip = 50
-)
-```
-
-For some problems like this one, an equally good solution instead may be found using alternating gradient descent-direct minimization.
-
-```{r first-solution-gd-min, eval = F}
-gd_min_solution = tsmvr::tsmvr_solve(
-  X = data$X, Y = data$Y, s1 = s1, s2 = s2, 
-  Omega_type = 'min', eta1 = 0.01,
-  skip = 5
-)
+)  
 ```
 
 ## k-fold Cross Validation
 
 k-fold cross validation may be performed using the function \code{tsmvr_cv}
 
-```{r cross-validated, eval = F}
+```{r cross-validated, eval = T}
 set.seed(1)
 validated = tsmvr::tsmvr_cv(
   X = data$X, Y = data$Y, s1 = s1, s2 = s2, k = 3,
   B_type ='ls', Omega_type = 'ls', 
-  eta1 = 0.1, eta2 = 0.4
+  eta1 = 0.05, eta2 = 0.2
 )
 ```
 
 ## Replicated k-fold Cross Validation
 
-Similarly, replicated k-fold cross validation may be performed using the function \code{tsmvr_replicate}
+Similarly, replicated k-fold cross validation may be performed using the function \code{tsmvr_replicate}. Be warned, the code chunk below will take time to run.
 
 ```{r replicated, eval = F}
 set.seed(3)
 replicated = tsmvr::tsmvr_replicate(
-  X = data$X, Y = data$Y, s1 = s1, s2 = s2, k = 3,
+  X = data$X, Y = data$Y, s1 = s1, s2 = s2, k = 2, rep = 2,
   B_type ='ls', Omega_type = 'ls', 
-  eta1 = 0.1, eta2 = 0.4
+  eta1 = 0.05, eta2 = 0.1
 )
 ```
 
 ## Gridsearch
 
-Finally, replicated k-fold cross validation may be used to search a space of \code{s1} and \code{s2} values to find the pair of values that minimizes the cross validation error.
+Finally, replicated k-fold cross validation may be used to search a space of \code{s1} and \code{s2} values to find the pair of values that minimizes the cross validation error. The code chunk below takes time to run.
 
 ```{r gridsearch, eval = F}
-library(tsmvrextras)
-library(tsmvr)
-s1_grid = p*q*0.11
-s2_grid = 3*q-4
-
-s1_grid = round(p*q*exp(log(seq(0.1,0.2,length.out = 2))))
-s2_grid = round(seq(2*q,4*q,length.out = 2))
+s1_grid = c(80,100,120,140)
+s2_grid = c(25,26,31,35)
 set.seed(5)
-
 grid = tsmvr_gridsearch(
   X = data$X, Y = data$Y, s1_grid = s1_grid, s2_grid = s2_grid, 
-  k = 5, reps = 3, Omega_type = 'gd', eta1 = 0.02, eta2 = 0.2,
-  quiet = F
+  k = 2, reps = 3, B_type = 'ls', Omega_type = 'ls',
+  eta1 = 0.1, eta2 = 0.2, quiet = F
 )
 ```
 

@@ -29,7 +29,8 @@ Suggests:
     covr,
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    tsmvrextras
 Remotes:
     spcorum/tsmvrextras
 RdMacros: 

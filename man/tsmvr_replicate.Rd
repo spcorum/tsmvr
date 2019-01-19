@@ -4,8 +4,9 @@
 \alias{tsmvr_replicate}
 \title{Replicated k-fold cross-validation for tsmvr}
 \usage{
-tsmvr_replicate(X, Y, s1, s2, k = 10, reps = 10, B_type = "gd",
-  Omega_type = "gd", eta1 = 0.05, eta2 = 0.2, epsilon = 1e-05,
+tsmvr_replicate(X, Y, s1, s2, k = 10, reps = 10, B_type = "ls",
+  Omega_type = "ls", eta1 = 0.05, eta2 = 0.2, rho1 = 100,
+  rho2 = 1, beta1 = 0.5, beta2 = 0.5, epsilon = 1e-05,
   max_iter = 40000, quiet = FALSE, seed = NULL)
 }
 \arguments{
@@ -28,6 +29,14 @@ tsmvr_replicate(X, Y, s1, s2, k = 10, reps = 10, B_type = "gd",
 \item{eta1}{B-step learning rate (positive numeric)}
 
 \item{eta2}{Omega-step learning rate (positive numeric)}
+
+\item{rho1}{B-step lineserach convergence parameter (positive numeric)}
+
+\item{rho2}{Omega-step lineserach convergence parameter  (positive numeric)}
+
+\item{beta1}{B-step linesearch shrinkage parameter (positive numeric)}
+
+\item{beta2}{Omega-step linesearch shrinkage parameter (positive numeric)}
 
 \item{epsilon}{convergence parameter (positive numeric)}
 

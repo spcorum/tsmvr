@@ -16,6 +16,10 @@
 #' @param Omega_type Omega-step descent type (string: 'gd' or 'min')
 #' @param eta1 B-step learning rate (positive numeric)
 #' @param eta2 Omega-step learning rate (positive numeric)
+#' @param rho1 B-step lineserach convergence parameter (positive numeric)
+#' @param rho2 Omega-step lineserach convergence parameter  (positive numeric)
+#' @param beta1 B-step linesearch shrinkage parameter (positive numeric)
+#' @param beta2 Omega-step linesearch shrinkage parameter (positive numeric)
 #' @param epsilon convergence parameter (positive numeric)
 #' @param max_iter maximum number of allowed iterations (positive integer)
 #' @param quiet quiet mode (bool)
@@ -31,8 +35,10 @@
 #' @export
 tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
                              k = 10, reps = 10,
-                             B_type = "gd", Omega_type = "gd",
+                             B_type = "ls", Omega_type = "ls",
                              eta1 = 0.05, eta2 = 0.2,
+                             rho1 = 1e2, rho2=1,
+                             beta1 = 0.5, beta2 = 0.5,
                              epsilon = 1e-5, max_iter = 40000,
                              quiet = FALSE, seed = NULL) {
   stopifnot(
