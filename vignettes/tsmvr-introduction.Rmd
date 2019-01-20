@@ -60,7 +60,7 @@ gd_gd_solution = tsmvr_solve(
   X = data$X, Y = data$Y, s1 = s1, s2 = s2, 
   B_type = 'gd', Omega_type = 'gd',
   eta1 = 0.05, eta2 = 0.1,
-  skip = 50
+  skip = 50, max_iter = 10
 )
 ```
 

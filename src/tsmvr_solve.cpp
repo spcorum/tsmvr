@@ -144,6 +144,27 @@ using namespace std;
 //   return A.st()*A/X.n_rows-inv_sympd(Omega);
 // }
 
+arma::mat robust_inv(const arma::mat &X) {
+  /*
+  * Soft threshold of a matrix X with parameter lam.
+  */
+  if (X.n_rows != X.n_cols) {
+    std::runtime_error("Not a square matrix");
+  }
+  arma::mat A;
+  try {
+    return(inv_sympd(X));
+  } catch (arma::mat A) {
+    arma::mat I;
+    I.eye(size(X));
+    double epsilon = 1e-4;
+    A = X + epsilon*I;
+    return(X + epsilon*I);
+  }
+  // return A;
+}
+
+
 // // [[Rcpp::export]]
 arma::mat ppmat(const arma::mat &X) {
     /*
@@ -155,6 +176,8 @@ arma::mat ppmat(const arma::mat &X) {
     }
     return zeros<mat>(X.n_rows, X.n_cols);
 }
+
+
 
 // // [[Rcpp::export]]
 arma::mat st(const arma::mat &X, const double &lam) {
@@ -324,12 +347,11 @@ arma::mat gdOmega(const arma::mat &B, const arma::mat &Omega,
   *       Omega_new = Omega - eta*dgdB(B,Omega,X,Y)
   */
   const arma::mat A = Y-X*B;
-  // Rcpp::Rcout << "AAAA" << endl;
-  const arma::mat dgdOm = A.st()*A/X.n_rows-inv_sympd(Omega);
-  // Rcpp::Rcout << "BBBB" << endl;
-  // Rcpp::Rcout << "[dgdOm] = " << dgdOm.n_rows << " " << dgdOm.n_cols << endl;
+  // const arma::mat inv_Omega = robust_inv(Omega);
+  // Rcpp::Rcout << "cond(Omega) = " << cond(Omega) << endl;
+  // Rcpp::Rcout << "eigval(Omega) = " << endl << eig_sym(Omega);
+  const arma::mat dgdOm = A.st()*A/X.n_rows - robust_inv(Omega);
   return (Omega - eta*dgdOm);
-  // return (Omega - eta * (A.st()*A/X.n_rows-inv_sympd(Omega)));
 }
 
 arma::mat lsB(const arma::mat &B, const arma::mat &Omega,

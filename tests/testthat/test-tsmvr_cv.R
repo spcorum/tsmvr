@@ -365,12 +365,7 @@ test_that("seed cannot be a character string", {
   )
 })
 
-##################################################################
-
 test_that("tsmvr_cv returns a list and that list has length 4", {
-  data <- tsmvrextras::make_data(
-    n = 10, p = 4, q = 3, b1 = sqrt(0.5), b2 = sqrt(0.5)
-  )[[1]]
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_cv(
