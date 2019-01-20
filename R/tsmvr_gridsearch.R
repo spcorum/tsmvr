@@ -38,7 +38,7 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
                              k = 10, reps = 10,
                              B_type = "ls", Omega_type = "ls",
                              eta1 = 0.05, eta2 = 0.2,
-                             rho1 = 1e2, rho2=1,
+                             rho1 = 1e2, rho2 = 1,
                              beta1 = 0.5, beta2 = 0.5,
                              epsilon = 1e-5, max_iter = 2000,
                              suppress = TRUE, quiet = FALSE,
@@ -58,17 +58,18 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
   )
 
   # Initialize objects.
-  m = length(s1_grid)
-  n = length(s2_grid)
-  error = matrix(rep(0,m*n),m,n)
-  error_sd = matrix(rep(0,m*n),m,n)
+  m <- length(s1_grid)
+  n <- length(s2_grid)
+  error <- matrix(rep(0, m * n), m, n)
+  error_sd <- matrix(rep(0, m * n), m, n)
 
   # Header
   if (!quiet) {
-    if (Omega_type == "gd")
-      cat("Solver mode 'gd-gd' with eta1 = ", eta1, " and eta2 = ", eta2, ".\n", sep ='')
-    else if (Omega_type == "min")
-      cat("Solver mode 'gd-min' with eta1 = ", eta1, ".\n", sep = '')
+    if (Omega_type == "gd") {
+      cat("Solver mode 'gd-gd' with eta1 = ", eta1, " and eta2 = ", eta2, ".\n", sep = "")
+    } else if (Omega_type == "min") {
+      cat("Solver mode 'gd-min' with eta1 = ", eta1, ".\n", sep = "")
+    }
     cat("s1\ts2\terror\t\ttime (s)\n")
   }
 
@@ -90,14 +91,15 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
       )
 
       # Record this result.
-      error[i,j] <- replicate_result$rep_error_mean
-      error_sd[i,j] <- replicate_result$rep_error_sd
+      error[i, j] <- replicate_result$rep_error_mean
+      error_sd[i, j] <- replicate_result$rep_error_sd
       toc <- (Sys.time() - tic)
 
       # Print this result to screen.
       if (!quiet) {
-        cat(s1_grid[i], "\t", s2_grid[j], "\t", error[i,j], "\t",
-            round(toc, 3), "\n", sep = ""
+        cat(s1_grid[i], "\t", s2_grid[j], "\t", error[i, j], "\t",
+          round(toc, 3), "\n",
+          sep = ""
         )
       }
     }
@@ -105,17 +107,17 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
 
   # Compute final result.
   toc <- (Sys.time() - tic)[[1]]
-  error_min = min(error)
-  error_min_idx = which(error == min(error), arr.ind = T)
-  error_min_sd = sd(error_min_idx)
-  s1_min = s1_grid[error_min_idx[1]]
-  s2_min = s2_grid[error_min_idx[2]]
+  error_min <- min(error)
+  error_min_idx <- which(error == min(error), arr.ind = T)
+  error_min_sd <- sd(error_min_idx)
+  s1_min <- s1_grid[error_min_idx[1]]
+  s2_min <- s2_grid[error_min_idx[2]]
 
   # Print final result to screen.
   if (!quiet) {
-    cat('Minimum mean error = ', error_min, '\n', sep = '')
-    cat('Sd at minimum error = ', error_min_sd, '\n', sep = '')
-    cat('s1 = ', s1_min, ', s2 = ', s2_min, '\n', sep = '')
+    cat("Minimum mean error = ", error_min, "\n", sep = "")
+    cat("Sd at minimum error = ", error_min_sd, "\n", sep = "")
+    cat("s1 = ", s1_min, ", s2 = ", s2_min, "\n", sep = "")
     # cat('s1 = ', s1_min, '\n', sep = '')
     # cat('s2 = ', s2_min, '\n', sep = '')
   }

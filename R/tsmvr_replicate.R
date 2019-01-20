@@ -37,7 +37,7 @@
 tsmvr_replicate <- function(X, Y, s1, s2, k = 10, reps = 10,
                             B_type = "ls", Omega_type = "ls",
                             eta1 = 0.05, eta2 = 0.2,
-                            rho1 = 1e2, rho2=1,
+                            rho1 = 1e2, rho2 = 1,
                             beta1 = 0.5, beta2 = 0.5,
                             epsilon = 1e-5, max_iter = 40000,
                             quiet = FALSE, suppress = FALSE,
@@ -62,10 +62,11 @@ tsmvr_replicate <- function(X, Y, s1, s2, k = 10, reps = 10,
 
   # Header
   if (!quiet) {
-    if (Omega_type == "gd")
-      cat("Solver mode 'gd-gd' with eta1 = ", eta1, " and eta2 = ", eta2, ".\n", sep ='')
-    else if (Omega_type == "min")
-      cat("Solver mode 'gd-min' with eta1 = ", eta1, ".\n", sep = '')
+    if (Omega_type == "gd") {
+      cat("Solver mode 'gd-gd' with eta1 = ", eta1, " and eta2 = ", eta2, ".\n", sep = "")
+    } else if (Omega_type == "min") {
+      cat("Solver mode 'gd-min' with eta1 = ", eta1, ".\n", sep = "")
+    }
     cat("rep\terror\t\ttime (s)\n")
   }
 
@@ -100,13 +101,13 @@ tsmvr_replicate <- function(X, Y, s1, s2, k = 10, reps = 10,
   }
 
   toc <- (Sys.time() - tic)
-  rep_error_mean = mean(fold_error)
-  rep_error_sd = sd(fold_error)
+  rep_error_mean <- mean(fold_error)
+  rep_error_sd <- sd(fold_error)
 
   # Print final result to screen.
   if (!quiet) {
-    cat('Replicate mean = ', rep_error_mean, '\n', sep = '')
-    cat('Replicate sd = ', rep_error_sd, '\n', sep = '')
+    cat("Replicate mean = ", rep_error_mean, "\n", sep = "")
+    cat("Replicate sd = ", rep_error_sd, "\n", sep = "")
   }
 
   # Return results.

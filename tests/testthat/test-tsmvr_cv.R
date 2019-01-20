@@ -225,8 +225,9 @@ test_that("B_type cannot be some random character string", {
     test_string <- stri_rand_strings(
       n = 1,
       length = sample.int(n = 10, size = 1),
-      pattern = "[A-Za-z0-9]")
-    if(!(test_string %in% c("gd", "ls"))) break
+      pattern = "[A-Za-z0-9]"
+    )
+    if (!(test_string %in% c("gd", "ls"))) break
   }
   test_string
   expect_error(
@@ -264,7 +265,7 @@ test_that("Omega_type cannot be some random character string", {
       length = sample.int(n = 10, size = 1),
       pattern = "[A-Za-z0-9]"
     )
-    if(!(test_string %in% c("gd", "ls", "min"))) break
+    if (!(test_string %in% c("gd", "ls", "min"))) break
   }
   expect_error(
     tsmvr_cv(
@@ -367,7 +368,7 @@ test_that("seed cannot be a character string", {
 ##################################################################
 
 test_that("tsmvr_cv returns a list and that list has length 4", {
-  data = tsmvrextras::make_data(
+  data <- tsmvrextras::make_data(
     n = 10, p = 4, q = 3, b1 = sqrt(0.5), b2 = sqrt(0.5)
   )[[1]]
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
@@ -375,11 +376,11 @@ test_that("tsmvr_cv returns a list and that list has length 4", {
   z <- tsmvr_cv(
     X = X, Y = Y, k = 2,
     s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
-  expect_true(all(is.list(z),length(z)==4))
+  expect_true(all(is.list(z), length(z) == 4))
 })
 
 test_that("the labels of the list returned by tsmvr_cv are as
@@ -389,7 +390,7 @@ test_that("the labels of the list returned by tsmvr_cv are as
   z <- tsmvr_cv(
     X = X, Y = Y, k = 2,
     s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -403,7 +404,7 @@ test_that("the returned sublist labeled 'error_mean' is numeric", {
   z <- tsmvr_cv(
     X = X, Y = Y, k = 2,
     s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -416,7 +417,7 @@ test_that("the returned sublist labeled 'error_mean' is numeric", {
   z <- tsmvr_cv(
     X = X, Y = Y, k = 2,
     s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -429,7 +430,7 @@ test_that("the returned sublist labeled 'num_folds' is numeric", {
   z <- tsmvr_cv(
     X = X, Y = Y, k = 2,
     s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )

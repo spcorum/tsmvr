@@ -14,6 +14,7 @@
 #' @export
 k_folds <- function(n, k, seed = NULL) {
   stopifnot(
+    is.numeric(n), is.numeric(k), is.numeric(seed) || is.null(seed),
     n %% 1 == 0, n > 1, k %% 1 == 0, k > 1
   )
 

@@ -258,7 +258,6 @@ test_that("B_type cannot be some random character string", {
       pattern = "[A-Za-z0-9]"
     )
     if (!(test_string %in% c("gd"))) break
-
   }
   expect_error(
     tsmvr_gridsearch(
@@ -296,7 +295,6 @@ test_that("Omega_type cannot be some random character string", {
       pattern = "[A-Za-z0-9]"
     )
     if (!(test_string %in% c("gd"))) break
-
   }
   expect_error(
     tsmvr_gridsearch(
@@ -403,16 +401,18 @@ test_that("tsmvr_replicate returns a list, the length of that list is 7,
   z <- tsmvr_gridsearch(
     X = X, Y = Y, k = 2, reps = 2,
     s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
   expect_true(
-    all(is.list(z), length(z) == 9,
-        all(labels(z) == c("error_min", "error_min_sd",
-                           "s1_min", "s2_min", "error", "error_sd",
-                           "folds", "reps", "time")
-        )
+    all(
+      is.list(z), length(z) == 9,
+      all(labels(z) == c(
+        "error_min", "error_min_sd",
+        "s1_min", "s2_min", "error", "error_sd",
+        "folds", "reps", "time"
+      ))
     )
   )
 })
@@ -423,7 +423,7 @@ test_that("the listed item labeled 'rep_error_mean' is numeric", {
   z <- tsmvr_gridsearch(
     X = X, Y = Y, k = 2, reps = 2,
     s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -436,7 +436,7 @@ test_that("the listed item labeled 'rep_error_sd' is numeric", {
   z <- tsmvr_gridsearch(
     X = X, Y = Y, k = 2, reps = 2,
     s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -450,7 +450,7 @@ test_that("the listed item labeled 's1_min' is numeric", {
   z <- tsmvr_gridsearch(
     X = X, Y = Y, k = 2, reps = 2,
     s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -463,7 +463,7 @@ test_that("the listed item labeled 's2_min' is numeric", {
   z <- tsmvr_gridsearch(
     X = X, Y = Y, k = 2, reps = 2,
     s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -476,7 +476,7 @@ test_that("the listed item labeled 'error' is numeric", {
   z <- tsmvr_gridsearch(
     X = X, Y = Y, k = 2, reps = 2,
     s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -489,7 +489,7 @@ test_that("the listed item labeled 'error_sd' is numeric", {
   z <- tsmvr_gridsearch(
     X = X, Y = Y, k = 2, reps = 2,
     s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -502,7 +502,7 @@ test_that("the listed item labeled 'time' is numeric", {
   z <- tsmvr_gridsearch(
     X = X, Y = Y, k = 2, reps = 2,
     s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -516,7 +516,7 @@ test_that("the listed item labeled 'folds' is numeric", {
   z <- tsmvr_gridsearch(
     X = X, Y = Y, k = 2, reps = 2,
     s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -529,7 +529,7 @@ test_that("the listed item labeled 'reps' is numeric", {
   z <- tsmvr_gridsearch(
     X = X, Y = Y, k = 2, reps = 2,
     s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -542,7 +542,7 @@ test_that("the listed item labeled 'error' is a matrix", {
   z <- tsmvr_gridsearch(
     X = X, Y = Y, k = 2, reps = 2,
     s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -555,7 +555,7 @@ test_that("the listed item labeled 'error_sd' is a matrix", {
   z <- tsmvr_gridsearch(
     X = X, Y = Y, k = 2, reps = 2,
     s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -568,7 +568,7 @@ test_that("the listed item labeled 'k' is integer valued", {
   z <- tsmvr_gridsearch(
     X = X, Y = Y, k = 2, reps = 2,
     s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -582,7 +582,7 @@ test_that("the listed item labeled 'reps' is integer valued", {
   z <- tsmvr_gridsearch(
     X = X, Y = Y, k = 2, reps = 2,
     s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -595,7 +595,7 @@ test_that("lines covered by quiet = F can execute", {
   z <- tsmvr_gridsearch(
     X = X, Y = Y, k = 2, reps = 2,
     s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )

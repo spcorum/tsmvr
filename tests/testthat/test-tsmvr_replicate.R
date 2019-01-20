@@ -400,18 +400,20 @@ test_that("tsmvr_replicate returns a list, the length of that list is 7,
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
   expect_true(
-    all(is.list(z), length(z) == 7,
-      all(labels(z) == c("rep_error_mean", "rep_error_sd",
+    all(
+      is.list(z), length(z) == 7,
+      all(labels(z) == c(
+        "rep_error_mean", "rep_error_sd",
         "fold_error_means", "fold_error_sds", "folds", "reps",
-        "time")
-          )
-      )
+        "time"
+      ))
     )
+  )
 })
 
 test_that("from the returned list, the item labeled 'rep_error_mean' is numeric", {
@@ -420,7 +422,7 @@ test_that("from the returned list, the item labeled 'rep_error_mean' is numeric"
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -433,7 +435,7 @@ test_that("the listed item labeled 'rep_error_sd' is numeric", {
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -441,13 +443,13 @@ test_that("the listed item labeled 'rep_error_sd' is numeric", {
 })
 
 test_that("the listed item labeled 'fold_error_means' has length reps", {
-  num_reps = sample.int(5,1)
+  num_reps <- sample.int(5, 1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = num_reps,
     s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -455,13 +457,13 @@ test_that("the listed item labeled 'fold_error_means' has length reps", {
 })
 
 test_that("the listed item labeled 'fold_error_sds' has length reps", {
-  num_reps = sample.int(5,1)
+  num_reps <- sample.int(5, 1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = num_reps,
     s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -475,7 +477,7 @@ test_that("the listed item labeled 'folds' is numeric", {
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -488,7 +490,7 @@ test_that("the listed item labeled 'fold_error_sds' is numeric", {
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -501,7 +503,7 @@ test_that("the listed item labeled 'folds' is integer valued", {
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -514,7 +516,7 @@ test_that("the listed item labeled 'reps' is integer valued", {
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -527,7 +529,7 @@ test_that("lines covered by quiet = F can execute", {
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )
@@ -540,7 +542,7 @@ test_that("the returned sublist labeled 'num_folds' is numeric", {
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
     s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = 'ls', Omega_type = 'ls',
+    B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
     max_iter = 1, quiet = T, suppress = T
   )

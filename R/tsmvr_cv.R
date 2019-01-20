@@ -58,11 +58,12 @@ tsmvr_cv <- function(X, Y, s1, s2, k = 10,
 
   # Print header.
   if (!quiet) {
-    if (Omega_type == "gd")
-      cat("Solver mode 'gd-gd' with eta1 = ", eta1, " and eta2 = ", eta2, ".\n", sep ='')
-    else if (Omega_type == "min")
-      cat("Solver mode 'gd-min' with eta1 = ", eta1, ".\n", sep = '')
-    cat('Fold\tError\t\ttime (s)\n')
+    if (Omega_type == "gd") {
+      cat("Solver mode 'gd-gd' with eta1 = ", eta1, " and eta2 = ", eta2, ".\n", sep = "")
+    } else if (Omega_type == "min") {
+      cat("Solver mode 'gd-min' with eta1 = ", eta1, ".\n", sep = "")
+    }
+    cat("Fold\tError\t\ttime (s)\n")
   }
 
   # Compute folds.
@@ -91,22 +92,23 @@ tsmvr_cv <- function(X, Y, s1, s2, k = 10,
 
     # Print fold result to screen.
     if (!quiet) {
-      cat(i, '\t', error[i], '\t', round(toc,3), '\n', sep = '')
+      cat(i, "\t", error[i], "\t", round(toc, 3), "\n", sep = "")
     }
-
   }
   toc <- (Sys.time() - tic)
 
-  error_mean = mean(error)
-  error_sd = sd(error)
+  error_mean <- mean(error)
+  error_sd <- sd(error)
 
   # Print final result to screen.
   if (!quiet) {
-    cat('Fold mean = ', error_mean, '\n', sep = '')
-    cat('Fold sd = ', error_sd, '\n', sep = '')
+    cat("Fold mean = ", error_mean, "\n", sep = "")
+    cat("Fold sd = ", error_sd, "\n", sep = "")
   }
 
   # Compute results.
-  return(list(error_mean = error_mean, error_sd = error_sd,
-              num_folds = k, time = toc))
+  return(list(
+    error_mean = error_mean, error_sd = error_sd,
+    num_folds = k, time = toc
+  ))
 }
