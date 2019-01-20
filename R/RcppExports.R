@@ -54,6 +54,10 @@
 #' @param Omega_type (string: 'gd' or 'min')
 #' @param eta1 B-step learning rate (positive numeric)
 #' @param eta2 Omega-step learning rate (positive numeric)
+#' @param rho1 B-step learning rate (positive numeric)
+#' @param rho2 Omega-step learning rate (positive numeric)
+#' @param beta1 B-step learning rate (positive numeric)
+#' @param beta2 Omega-step learning rate (positive numeric)
 #' @param epsilon convergence parameter (positive numeric)
 #' @param max_iter maximum number of iterations (positive integer)
 #' @param skip iteration skip frequency for printing to screen (positive integer)
@@ -76,8 +80,8 @@
 #'
 #'
 #' @export
-tsmvr_solve <- function(X, Y, s1, s2, B_type = "gd", Omega_type = "gd", eta1 = 0.05, eta2 = 0.2, epsilon = 1e-3, max_iter = 2000L, skip = 10L, quiet = FALSE) {
-    .Call(`_tsmvr_tsmvr_solve`, X, Y, s1, s2, B_type, Omega_type, eta1, eta2, epsilon, max_iter, skip, quiet)
+tsmvr_solve <- function(X, Y, s1, s2, B_type = "gd", Omega_type = "gd", eta1 = 0.05, eta2 = 0.2, rho1 = 1e2, rho2 = 1e2, beta1 = 0.5, beta2 = 0.5, epsilon = 1e-3, max_iter = 2000L, skip = 10L, quiet = FALSE, suppress = FALSE) {
+    .Call(`_tsmvr_tsmvr_solve`, X, Y, s1, s2, B_type, Omega_type, eta1, eta2, rho1, rho2, beta1, beta2, epsilon, max_iter, skip, quiet, suppress)
 }
 
 # Register entry points for exported C++ functions

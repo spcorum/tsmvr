@@ -22,6 +22,7 @@
 #' @param beta2 Omega-step linesearch shrinkage parameter (positive numeric)
 #' @param epsilon convergence parameter (positive numeric)
 #' @param max_iter maximum number of allowed iterations (positive integer)
+#' @param suppress suppress maximum iteration warning (bool)
 #' @param quiet quiet mode (bool)
 #' @param seed set random seed (integer)
 #'
@@ -39,8 +40,9 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
                              eta1 = 0.05, eta2 = 0.2,
                              rho1 = 1e2, rho2=1,
                              beta1 = 0.5, beta2 = 0.5,
-                             epsilon = 1e-5, max_iter = 40000,
-                             quiet = FALSE, seed = NULL) {
+                             epsilon = 1e-5, max_iter = 2000,
+                             suppress = TRUE, quiet = FALSE,
+                             seed = NULL) {
   stopifnot(
     is.numeric(X), is.matrix(Y), is.numeric(Y), is.matrix(Y),
     is.numeric(s1_grid), s1_grid >= 0,
@@ -102,7 +104,7 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
   }
 
   # Compute final result.
-  toc <- (Sys.time() - tic)
+  toc <- (Sys.time() - tic)[[1]]
   error_min = min(error)
   error_min_idx = which(error == min(error), arr.ind = T)
   error_min_sd = sd(error_min_idx)
@@ -122,6 +124,7 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
   return(list(
     error_min = error_min, error_min_sd = error_min_sd,
     s1_min = s1_min, s2_min = s2_min,
-    error = error, error_sd = error_sd, time = toc
+    error = error, error_sd = error_sd, folds = k,
+    reps = reps, time = toc
   ))
 }

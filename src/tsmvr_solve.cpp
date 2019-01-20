@@ -150,7 +150,10 @@ arma::mat ppmat(const arma::mat &X) {
      * Positive part of matrix. Given matrix x, is positive part
      * is returned.
      */
-    return clamp(X,0,X.max());
+    if (X.max() > 0) {
+      return clamp(X,0,X.max());
+    }
+    return zeros<mat>(X.n_rows, X.n_cols);
 }
 
 // // [[Rcpp::export]]
@@ -333,7 +336,9 @@ arma::mat lsB(const arma::mat &B, const arma::mat &Omega,
               const arma::mat &S, const arma::mat &H,
               const arma::mat &X, const arma::mat &Y,
               const int &s, double eta = 0.1,
-              const double &rho = 1e2, const double &beta = 0.5)
+              const double &rho = 1e2, const double &beta = 0.5,
+              const double &eta_min = 1e-6,
+              const double &q_max = 128)
 {
   /*
   * Generalized linesearch for with resepct to B.
@@ -348,7 +353,13 @@ arma::mat lsB(const arma::mat &B, const arma::mat &Omega,
   do {
     q++;
     eta = eta*pow(beta,q);
-    // Rcpp::Rcout << "eta  = " << eta << endl;
+    // Rcpp::Rcout << "eta_1  = " << eta << endl;
+    if (q > q_max) {
+        throw std::runtime_error("B-step linsearch had too many iterations. Try adjusting parameters.");
+    }
+    if (eta < eta_min) {
+        throw std::runtime_error("B-step linsearch did not find a good learning rate. Try adjusting parameters.");
+    }
     B_test = ht(gdB(B,Omega,S,H,X.n_rows,eta),s);
     B_diff = B_test - B;
     g_test = objective(B_test,Omega,X,Y);
@@ -361,7 +372,8 @@ arma::mat lsB(const arma::mat &B, const arma::mat &Omega,
 arma::mat lsOmega(arma::mat B, const arma::mat &Omega,
               const arma::mat &X, const arma::mat &Y,
               const int &s, double eta = 0.1,
-              const double &rho = 1e2, const double &beta = 0.5)
+              const double &rho = 1e2, const double &beta = 0.5,
+              const double &eta_min = 1e-6, const int &q_max = 128)
 {
   /*
   * Generalized linesearch for with resepct to Omega.
@@ -376,10 +388,14 @@ arma::mat lsOmega(arma::mat B, const arma::mat &Omega,
   do {
     q++;
     eta = eta*pow(beta,q);
-    // Rcpp::Rcout << "eta = " << eta << endl;
-    // Rcpp::Rcout << "AAA" << endl;
+    // Rcpp::Rcout << "eta_2 = " << eta << endl;
+    if (q > q_max) {
+      throw std::runtime_error("B-step linsearch had too many iterations. Try adjusting parameters.");
+    }
+    if (eta < eta_min) {
+      throw std::runtime_error("B-step linsearch did not find a good learning rate. Try adjusting parameters.");
+    }
     Omega_test = ht(gdOmega(B,Omega,X,Y,eta),s,true);
-    // Rcpp::Rcout << "BBB" << endl;
     Omega_diff = Omega_test - Omega;
     g_test = objective(B,Omega_test,X,Y);
     g = objective(B,Omega,X,Y);
@@ -399,7 +415,7 @@ arma::mat updateB(arma::mat B, const arma::mat &Omega,
                   const std::string &type,
                   const int &s,
                   const double &eta = 0.01,
-                  const double &rho = 0.5,
+                  const double &rho = 1e2,
                   const double &beta = 0.5)
     {
     /*
@@ -430,7 +446,7 @@ arma::mat updateOmega(const arma::mat &B, arma::mat Omega,
                       const std::string &type,
                       const int &s,
                       const double &eta = 0.01,
-                      const double &rho = 0.5,
+                      const double &rho = 1e2,
                       const double &beta = 0.5) {
     /*
     * tsmvrRcpp covariance matrix iterate update via the gradient descent
@@ -513,6 +529,10 @@ arma::mat updateOmega(const arma::mat &B, arma::mat Omega,
 //' @param Omega_type (string: 'gd' or 'min')
 //' @param eta1 B-step learning rate (positive numeric)
 //' @param eta2 Omega-step learning rate (positive numeric)
+//' @param rho1 B-step learning rate (positive numeric)
+//' @param rho2 Omega-step learning rate (positive numeric)
+//' @param beta1 B-step learning rate (positive numeric)
+//' @param beta2 Omega-step learning rate (positive numeric)
 //' @param epsilon convergence parameter (positive numeric)
 //' @param max_iter maximum number of iterations (positive integer)
 //' @param skip iteration skip frequency for printing to screen (positive integer)
@@ -543,10 +563,15 @@ List tsmvr_solve(const arma::mat &X,
                  const std::string &Omega_type = "gd",
                  const double &eta1 = 0.05,
                  const double &eta2 = 0.2,
+                 const double &rho1 = 1e2,
+                 const double &rho2 = 1e2,
+                 const double &beta1 = 0.5,
+                 const double &beta2 = 0.5,
                  const double &epsilon = 1e-3,
                  const int &max_iter = 2000,
                  const int &skip = 10,
-                 const bool &quiet = false) {
+                 const bool &quiet = false,
+                 const bool &suppress = false) {
 
     // Print header.
     if (!quiet) {
@@ -592,10 +617,10 @@ List tsmvr_solve(const arma::mat &X,
     clock_t start = clock();
 
     // Temporary fixed variables.
-    double rho1 = 1e0;
-    double rho2 = 1e0;
-    double beta1 = 0.5;
-    double beta2 = 0.5;
+    // double rho1 = 1e0;
+    // double rho2 = 1e0;
+    // double beta1 = 0.5;
+    // double beta2 = 0.5;
 
     // Main loop of tsmvr algorithm.
     for (int k=1; k<=max_iter; k=k+1) {
@@ -606,15 +631,17 @@ List tsmvr_solve(const arma::mat &X,
         objOld = obj;
 
         // Update current iterate.
-        B = updateB(B,Omega,X,Y,S,H,B_type,s1,eta1,rho1,beta1);
+        B = updateB(B, Omega, X, Y, S, H, B_type, s1,
+                    eta1, rho1, beta1);
         // Rcpp::Rcout << "A" << endl;
-        Omega = updateOmega(B,Omega,X,Y,Omega_type,s2,eta2,rho2,beta2);
+        Omega = updateOmega(B, Omega, X, Y, Omega_type, s2,
+                            eta2, rho2, beta2);
         // Rcpp::Rcout << "B" << endl;
         obj = objective(B,Omega,X,Y);
 
         // Throw error if solution diverges.
         if (obj > objOld) {
-            throw std::runtime_error("solution diverged");
+            throw std::runtime_error("Solution diverged. Try adjusting parameters.");
         }
 
         // Norms of differences.
@@ -663,7 +690,9 @@ List tsmvr_solve(const arma::mat &X,
         BHist2 = BHist;
         OmegaHist2 = OmegaHist;
         objHist2 = objHist;
-        Rcpp::warning("warning: Maximum number of iterations achieved without convergence.\n");
+        if (suppress == false) {
+          Rcpp::warning("warning: Maximum number of iterations achieved without convergence.\n");
+        }
     }
     else {
         for (int k=0; k<itrs; k=k+1) {

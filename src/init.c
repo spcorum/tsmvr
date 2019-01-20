@@ -9,12 +9,12 @@
 
 /* .Call calls */
 extern SEXP _tsmvr_RcppExport_registerCCallable();
-extern SEXP _tsmvr_tsmvr_solve(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP _tsmvr_tsmvr_solve(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP run_testthat_tests();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_tsmvr_RcppExport_registerCCallable", (DL_FUNC) &_tsmvr_RcppExport_registerCCallable,  0},
-    {"_tsmvr_tsmvr_solve",                  (DL_FUNC) &_tsmvr_tsmvr_solve,                  12},
+    {"_tsmvr_tsmvr_solve",                  (DL_FUNC) &_tsmvr_tsmvr_solve,                  17},
     {"run_testthat_tests",                  (DL_FUNC) &run_testthat_tests,                   0},
     {NULL, NULL, 0}
 };

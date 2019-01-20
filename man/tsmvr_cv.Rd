@@ -7,7 +7,7 @@
 tsmvr_cv(X, Y, s1, s2, k = 10, B_type = "ls", Omega_type = "ls",
   eta1 = 0.05, eta2 = 0.2, rho1 = 100, rho2 = 1, beta1 = 0.5,
   beta2 = 0.5, epsilon = 0.001, max_iter = 2000, quiet = FALSE,
-  seed = NULL)
+  suppress = FALSE, seed = NULL)
 }
 \arguments{
 \item{X}{design matrix (n-by-p)}
@@ -41,6 +41,8 @@ tsmvr_cv(X, Y, s1, s2, k = 10, B_type = "ls", Omega_type = "ls",
 \item{max_iter}{maximum number of allowed iterations (positive integer)}
 
 \item{quiet}{quiet mode (bool)}
+
+\item{suppress}{suppress maximum iteration warning (bool)}
 
 \item{seed}{set random seed (integer)}
 }

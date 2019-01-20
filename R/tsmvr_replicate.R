@@ -22,6 +22,7 @@
 #' @param beta2 Omega-step linesearch shrinkage parameter (positive numeric)
 #' @param epsilon convergence parameter (positive numeric)
 #' @param max_iter maximum number of allowed iterations (positive integer)
+#' @param suppress suppress maximum iteration warning (bool)
 #' @param quiet quiet mode (bool)
 #' @param seed set random seed (integer)
 #'
@@ -39,7 +40,8 @@ tsmvr_replicate <- function(X, Y, s1, s2, k = 10, reps = 10,
                             rho1 = 1e2, rho2=1,
                             beta1 = 0.5, beta2 = 0.5,
                             epsilon = 1e-5, max_iter = 40000,
-                            quiet = FALSE, seed = NULL) {
+                            quiet = FALSE, suppress = FALSE,
+                            seed = NULL) {
   stopifnot(
     is.numeric(X), is.matrix(Y), is.numeric(Y), is.matrix(Y),
     is.numeric(s1), s1 >= 0, is.numeric(s2), s2 >= dim(Y)[2],
@@ -78,8 +80,10 @@ tsmvr_replicate <- function(X, Y, s1, s2, k = 10, reps = 10,
       k = k, B_type = B_type,
       Omega_type = Omega_type,
       eta1 = eta1, eta2 = eta2,
+      rho1 = rho1, rho2 = rho2,
+      beta1 = beta1, beta2 = beta2,
       epsilon = epsilon, max_iter = max_iter,
-      quiet = T, seed = seed
+      quiet = T, suppress = T, seed = seed
     )
 
     # Record results.

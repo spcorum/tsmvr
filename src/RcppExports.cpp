@@ -10,8 +10,8 @@
 using namespace Rcpp;
 
 // tsmvr_solve
-List tsmvr_solve(const arma::mat& X, const arma::mat& Y, const int& s1, const int& s2, const std::string& B_type, const std::string& Omega_type, const double& eta1, const double& eta2, const double& epsilon, const int& max_iter, const int& skip, const bool& quiet);
-static SEXP _tsmvr_tsmvr_solve_try(SEXP XSEXP, SEXP YSEXP, SEXP s1SEXP, SEXP s2SEXP, SEXP B_typeSEXP, SEXP Omega_typeSEXP, SEXP eta1SEXP, SEXP eta2SEXP, SEXP epsilonSEXP, SEXP max_iterSEXP, SEXP skipSEXP, SEXP quietSEXP) {
+List tsmvr_solve(const arma::mat& X, const arma::mat& Y, const int& s1, const int& s2, const std::string& B_type, const std::string& Omega_type, const double& eta1, const double& eta2, const double& rho1, const double& rho2, const double& beta1, const double& beta2, const double& epsilon, const int& max_iter, const int& skip, const bool& quiet, const bool& suppress);
+static SEXP _tsmvr_tsmvr_solve_try(SEXP XSEXP, SEXP YSEXP, SEXP s1SEXP, SEXP s2SEXP, SEXP B_typeSEXP, SEXP Omega_typeSEXP, SEXP eta1SEXP, SEXP eta2SEXP, SEXP rho1SEXP, SEXP rho2SEXP, SEXP beta1SEXP, SEXP beta2SEXP, SEXP epsilonSEXP, SEXP max_iterSEXP, SEXP skipSEXP, SEXP quietSEXP, SEXP suppressSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
@@ -22,19 +22,24 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const std::string& >::type Omega_type(Omega_typeSEXP);
     Rcpp::traits::input_parameter< const double& >::type eta1(eta1SEXP);
     Rcpp::traits::input_parameter< const double& >::type eta2(eta2SEXP);
+    Rcpp::traits::input_parameter< const double& >::type rho1(rho1SEXP);
+    Rcpp::traits::input_parameter< const double& >::type rho2(rho2SEXP);
+    Rcpp::traits::input_parameter< const double& >::type beta1(beta1SEXP);
+    Rcpp::traits::input_parameter< const double& >::type beta2(beta2SEXP);
     Rcpp::traits::input_parameter< const double& >::type epsilon(epsilonSEXP);
     Rcpp::traits::input_parameter< const int& >::type max_iter(max_iterSEXP);
     Rcpp::traits::input_parameter< const int& >::type skip(skipSEXP);
     Rcpp::traits::input_parameter< const bool& >::type quiet(quietSEXP);
-    rcpp_result_gen = Rcpp::wrap(tsmvr_solve(X, Y, s1, s2, B_type, Omega_type, eta1, eta2, epsilon, max_iter, skip, quiet));
+    Rcpp::traits::input_parameter< const bool& >::type suppress(suppressSEXP);
+    rcpp_result_gen = Rcpp::wrap(tsmvr_solve(X, Y, s1, s2, B_type, Omega_type, eta1, eta2, rho1, rho2, beta1, beta2, epsilon, max_iter, skip, quiet, suppress));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP _tsmvr_tsmvr_solve(SEXP XSEXP, SEXP YSEXP, SEXP s1SEXP, SEXP s2SEXP, SEXP B_typeSEXP, SEXP Omega_typeSEXP, SEXP eta1SEXP, SEXP eta2SEXP, SEXP epsilonSEXP, SEXP max_iterSEXP, SEXP skipSEXP, SEXP quietSEXP) {
+RcppExport SEXP _tsmvr_tsmvr_solve(SEXP XSEXP, SEXP YSEXP, SEXP s1SEXP, SEXP s2SEXP, SEXP B_typeSEXP, SEXP Omega_typeSEXP, SEXP eta1SEXP, SEXP eta2SEXP, SEXP rho1SEXP, SEXP rho2SEXP, SEXP beta1SEXP, SEXP beta2SEXP, SEXP epsilonSEXP, SEXP max_iterSEXP, SEXP skipSEXP, SEXP quietSEXP, SEXP suppressSEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_tsmvr_tsmvr_solve_try(XSEXP, YSEXP, s1SEXP, s2SEXP, B_typeSEXP, Omega_typeSEXP, eta1SEXP, eta2SEXP, epsilonSEXP, max_iterSEXP, skipSEXP, quietSEXP));
+        rcpp_result_gen = PROTECT(_tsmvr_tsmvr_solve_try(XSEXP, YSEXP, s1SEXP, s2SEXP, B_typeSEXP, Omega_typeSEXP, eta1SEXP, eta2SEXP, rho1SEXP, rho2SEXP, beta1SEXP, beta2SEXP, epsilonSEXP, max_iterSEXP, skipSEXP, quietSEXP, suppressSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -59,7 +64,7 @@ RcppExport SEXP _tsmvr_tsmvr_solve(SEXP XSEXP, SEXP YSEXP, SEXP s1SEXP, SEXP s2S
 static int _tsmvr_RcppExport_validate(const char* sig) { 
     static std::set<std::string> signatures;
     if (signatures.empty()) {
-        signatures.insert("List(*tsmvr_solve)(const arma::mat&,const arma::mat&,const int&,const int&,const std::string&,const std::string&,const double&,const double&,const double&,const int&,const int&,const bool&)");
+        signatures.insert("List(*tsmvr_solve)(const arma::mat&,const arma::mat&,const int&,const int&,const std::string&,const std::string&,const double&,const double&,const double&,const double&,const double&,const double&,const double&,const int&,const int&,const bool&,const bool&)");
     }
     return signatures.find(sig) != signatures.end();
 }

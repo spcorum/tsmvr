@@ -221,13 +221,14 @@ test_that("B_type cannot be a list", {
 test_that("B_type cannot be some random character string", {
   library(stringi)
   test_string <- ""
-  while (!(test_string %in% c("gd"))) {
+  while (TRUE) {
     test_string <- stri_rand_strings(
       n = 1,
       length = sample.int(n = 10, size = 1),
-      pattern = "[A-Za-z0-9]"
-    )
+      pattern = "[A-Za-z0-9]")
+    if(!(test_string %in% c("gd", "ls"))) break
   }
+  test_string
   expect_error(
     tsmvr_cv(
       X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 2), 2, 2),
@@ -257,12 +258,13 @@ test_that("Omega_type cannot be a list", {
 test_that("Omega_type cannot be some random character string", {
   library(stringi)
   test_string <- ""
-  while (!(test_string %in% c("gd"))) {
+  while (TRUE) {
     test_string <- stri_rand_strings(
       n = 1,
       length = sample.int(n = 10, size = 1),
       pattern = "[A-Za-z0-9]"
     )
+    if(!(test_string %in% c("gd", "ls", "min"))) break
   }
   expect_error(
     tsmvr_cv(
@@ -271,7 +273,6 @@ test_that("Omega_type cannot be some random character string", {
     )
   )
 })
-
 
 test_that("epsilon cannot be a character string", {
   expect_error(
@@ -363,70 +364,74 @@ test_that("seed cannot be a character string", {
   )
 })
 
-test_that("tsmvr_cv returns a list", {
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
-  z <- tsmvr_cv(
-    X = X, Y = Y, k = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T
-  )
-  expect_true(is.list(z))
-})
+##################################################################
 
-test_that("tsmvr_cv returns a list of length 4", {
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
+test_that("tsmvr_cv returns a list and that list has length 4", {
+  data = tsmvrextras::make_data(
+    n = 10, p = 4, q = 3, b1 = sqrt(0.5), b2 = sqrt(0.5)
+  )[[1]]
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_cv(
     X = X, Y = Y, k = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T
+    s1 = round(0.5 * 4 * 3), s2 = 7,
+    B_type = 'ls', Omega_type = 'ls',
+    rho1 = 1, rho2 = 1,
+    max_iter = 1, quiet = T, suppress = T
   )
-  expect_equal(length(z), 4)
+  expect_true(all(is.list(z),length(z)==4))
 })
 
 test_that("the labels of the list returned by tsmvr_cv are as
           expected", {
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_cv(
     X = X, Y = Y, k = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T
+    s1 = round(0.5 * 4 * 3), s2 = 7,
+    B_type = 'ls', Omega_type = 'ls',
+    rho1 = 1, rho2 = 1,
+    max_iter = 1, quiet = T, suppress = T
   )
   expect_true(all(labels(z) ==
     c("error_mean", "error_sd", "num_folds", "time")))
 })
 
 test_that("the returned sublist labeled 'error_mean' is numeric", {
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_cv(
     X = X, Y = Y, k = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T
+    s1 = round(0.5 * 4 * 3), s2 = 7,
+    B_type = 'ls', Omega_type = 'ls',
+    rho1 = 1, rho2 = 1,
+    max_iter = 1, quiet = T, suppress = T
   )
   expect_true(is.numeric(z$error_mean))
 })
 
 test_that("the returned sublist labeled 'error_mean' is numeric", {
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_cv(
     X = X, Y = Y, k = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T
+    s1 = round(0.5 * 4 * 3), s2 = 7,
+    B_type = 'ls', Omega_type = 'ls',
+    rho1 = 1, rho2 = 1,
+    max_iter = 1, quiet = T, suppress = T
   )
   expect_true(is.numeric(z$error_sd))
 })
 
 test_that("the returned sublist labeled 'num_folds' is numeric", {
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_cv(
     X = X, Y = Y, k = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T
+    s1 = round(0.5 * 4 * 3), s2 = 7,
+    B_type = 'ls', Omega_type = 'ls',
+    rho1 = 1, rho2 = 1,
+    max_iter = 1, quiet = T, suppress = T
   )
   expect_true(is.numeric(z$num_folds))
 })

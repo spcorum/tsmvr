@@ -5,8 +5,9 @@
 \title{Truly Sparse Multivariate Regression}
 \usage{
 tsmvr_solve(X, Y, s1, s2, B_type = "gd", Omega_type = "gd",
-  eta1 = 0.05, eta2 = 0.2, epsilon = 0.001, max_iter = 2000L,
-  skip = 10L, quiet = FALSE)
+  eta1 = 0.05, eta2 = 0.2, rho1 = 100, rho2 = 100, beta1 = 0.5,
+  beta2 = 0.5, epsilon = 0.001, max_iter = 2000L, skip = 10L,
+  quiet = FALSE, suppress = FALSE)
 }
 \arguments{
 \item{X}{design matrix (n-by-p)}
@@ -24,6 +25,14 @@ tsmvr_solve(X, Y, s1, s2, B_type = "gd", Omega_type = "gd",
 \item{eta1}{B-step learning rate (positive numeric)}
 
 \item{eta2}{Omega-step learning rate (positive numeric)}
+
+\item{rho1}{B-step learning rate (positive numeric)}
+
+\item{rho2}{Omega-step learning rate (positive numeric)}
+
+\item{beta1}{B-step learning rate (positive numeric)}
+
+\item{beta2}{Omega-step learning rate (positive numeric)}
 
 \item{epsilon}{convergence parameter (positive numeric)}
 

@@ -393,177 +393,156 @@ test_that("seed cannot be a character string", {
   )
 })
 
-test_that("tsmvr_replicate returns a list", {
-  seed <- 1
-  set.seed(seed)
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
+test_that("tsmvr_replicate returns a list, the length of that list is 7,
+          and the labels of that list are as expected", {
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T, seed = seed
+    s1 = round(0.5 * 4 * 3), s2 = 7,
+    B_type = 'ls', Omega_type = 'ls',
+    rho1 = 1, rho2 = 1,
+    max_iter = 1, quiet = T, suppress = T
   )
-  expect_true(is.list(z))
+  expect_true(
+    all(is.list(z), length(z) == 7,
+      all(labels(z) == c("rep_error_mean", "rep_error_sd",
+        "fold_error_means", "fold_error_sds", "folds", "reps",
+        "time")
+          )
+      )
+    )
 })
 
-test_that("tsmvr_replicate returns a list of length 6", {
-  seed <- 1
-  set.seed(seed)
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
+test_that("from the returned list, the item labeled 'rep_error_mean' is numeric", {
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T, seed = seed
-  )
-  expect_equal(length(z), 7)
-})
-
-test_that("the labels of the list returned by tsmvr_replicate are as
-          expected", {
-  seed <- 1
-  set.seed(seed)
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
-  z <- tsmvr_replicate(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T, seed = seed
-  )
-  expect_true(all(labels(z) ==
-    c(
-      "rep_error_mean", "rep_error_sd",
-      "fold_error_means", "fold_error_sds",
-      "folds", "reps", "time"
-    )))
-})
-
-test_that("the listed item labeled 'rep_error_mean' is numeric", {
-  seed <- 1
-  set.seed(seed)
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
-  z <- tsmvr_replicate(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T, seed = seed
+    s1 = round(0.5 * 4 * 3), s2 = 7,
+    B_type = 'ls', Omega_type = 'ls',
+    rho1 = 1, rho2 = 1,
+    max_iter = 1, quiet = T, suppress = T
   )
   expect_true(is.numeric(z$rep_error_mean))
 })
 
 test_that("the listed item labeled 'rep_error_sd' is numeric", {
-  seed <- 1
-  set.seed(seed)
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T, seed = seed
+    s1 = round(0.5 * 4 * 3), s2 = 7,
+    B_type = 'ls', Omega_type = 'ls',
+    rho1 = 1, rho2 = 1,
+    max_iter = 1, quiet = T, suppress = T
   )
   expect_true(is.numeric(z$rep_error_sd))
 })
 
 test_that("the listed item labeled 'fold_error_means' has length reps", {
-  seed <- 1
-  set.seed(seed)
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
+  num_reps = sample.int(5,1)
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_replicate(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T, seed = seed
+    X = X, Y = Y, k = 2, reps = num_reps,
+    s1 = round(0.5 * 4 * 3), s2 = 7,
+    B_type = 'ls', Omega_type = 'ls',
+    rho1 = 1, rho2 = 1,
+    max_iter = 1, quiet = T, suppress = T
   )
-  expect_equal(length(z$fold_error_means), 2)
+  expect_equal(length(z$fold_error_means), num_reps)
 })
 
 test_that("the listed item labeled 'fold_error_sds' has length reps", {
-  seed <- 1
-  set.seed(seed)
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
+  num_reps = sample.int(5,1)
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_replicate(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T, max_iter = 40000, seed = seed
+    X = X, Y = Y, k = 2, reps = num_reps,
+    s1 = round(0.5 * 4 * 3), s2 = 7,
+    B_type = 'ls', Omega_type = 'ls',
+    rho1 = 1, rho2 = 1,
+    max_iter = 1, quiet = T, suppress = T
   )
-  expect_equal(length(z$fold_error_sds), 2)
+  expect_equal(length(z$fold_error_sds), num_reps)
 })
 
 
 test_that("the listed item labeled 'folds' is numeric", {
-  seed <- 1
-  set.seed(seed)
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T, seed = seed
+    s1 = round(0.5 * 4 * 3), s2 = 7,
+    B_type = 'ls', Omega_type = 'ls',
+    rho1 = 1, rho2 = 1,
+    max_iter = 1, quiet = T, suppress = T
   )
   expect_true(is.numeric(z$folds))
 })
 
 test_that("the listed item labeled 'fold_error_sds' is numeric", {
-  seed <- 1
-  set.seed(seed)
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T, seed = seed
+    s1 = round(0.5 * 4 * 3), s2 = 7,
+    B_type = 'ls', Omega_type = 'ls',
+    rho1 = 1, rho2 = 1,
+    max_iter = 1, quiet = T, suppress = T
   )
   expect_true(is.numeric(z$reps))
 })
 
 test_that("the listed item labeled 'folds' is integer valued", {
-  seed <- 1
-  set.seed(seed)
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T, seed = seed
+    s1 = round(0.5 * 4 * 3), s2 = 7,
+    B_type = 'ls', Omega_type = 'ls',
+    rho1 = 1, rho2 = 1,
+    max_iter = 1, quiet = T, suppress = T
   )
   expect_true(z$folds %% 1 == 0)
 })
 
 test_that("the listed item labeled 'reps' is integer valued", {
-  seed <- 1
-  set.seed(seed)
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = T, seed = seed
+    s1 = round(0.5 * 4 * 3), s2 = 7,
+    B_type = 'ls', Omega_type = 'ls',
+    rho1 = 1, rho2 = 1,
+    max_iter = 1, quiet = T, suppress = T
   )
   expect_true(z$reps %% 1 == 0)
 })
 
 test_that("lines covered by quiet = F can execute", {
-  seed <- 1
-  set.seed(seed)
-  X <- matrix(rnorm(n = 1000, sd = 0.1), 100, 10)
-  Y <- matrix(rnorm(n = 300, mean = 1), 100, 3)
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
   z <- tsmvr_replicate(
     X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.9 * 10 * 3), s2 = 3 + 2 * (3 - 1),
-    quiet = F, seed = seed
+    s1 = round(0.5 * 4 * 3), s2 = 7,
+    B_type = 'ls', Omega_type = 'ls',
+    rho1 = 1, rho2 = 1,
+    max_iter = 1, quiet = T, suppress = T
   )
   expect_true(is.list(z))
 })
 
-# test_that("the returned sublist labeled 'num_folds' is numeric", {
-#   X = matrix(rnorm(n = 1000, sd = 0.1),100,10)
-#   Y = matrix(rnorm(n = 300, mean = 1),100,3)
-#   z = tsmvr_replicate(
-#     X = X, Y = Y, k = 10,
-#     s1 = round(0.9*10*3), s2 = 3 + 2*(3-1),
-#     max_iter = 1000,
-#     quiet = T
-#   )
-#   expect_true(is.numeric(z$num_folds))
-# })
+test_that("the returned sublist labeled 'num_folds' is numeric", {
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  z <- tsmvr_replicate(
+    X = X, Y = Y, k = 2, reps = 2,
+    s1 = round(0.5 * 4 * 3), s2 = 7,
+    B_type = 'ls', Omega_type = 'ls',
+    rho1 = 1, rho2 = 1,
+    max_iter = 1, quiet = T, suppress = T
+  )
+  expect_true(is.numeric(z$folds))
+})

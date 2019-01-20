@@ -25,17 +25,17 @@ namespace tsmvr {
         }
     }
 
-    inline List tsmvr_solve(const arma::mat& X, const arma::mat& Y, const int& s1, const int& s2, const std::string& B_type = "gd", const std::string& Omega_type = "gd", const double& eta1 = 0.05, const double& eta2 = 0.2, const double& epsilon = 1e-3, const int& max_iter = 2000, const int& skip = 10, const bool& quiet = false) {
-        typedef SEXP(*Ptr_tsmvr_solve)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+    inline List tsmvr_solve(const arma::mat& X, const arma::mat& Y, const int& s1, const int& s2, const std::string& B_type = "gd", const std::string& Omega_type = "gd", const double& eta1 = 0.05, const double& eta2 = 0.2, const double& rho1 = 1e2, const double& rho2 = 1e2, const double& beta1 = 0.5, const double& beta2 = 0.5, const double& epsilon = 1e-3, const int& max_iter = 2000, const int& skip = 10, const bool& quiet = false, const bool& suppress = false) {
+        typedef SEXP(*Ptr_tsmvr_solve)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_tsmvr_solve p_tsmvr_solve = NULL;
         if (p_tsmvr_solve == NULL) {
-            validateSignature("List(*tsmvr_solve)(const arma::mat&,const arma::mat&,const int&,const int&,const std::string&,const std::string&,const double&,const double&,const double&,const int&,const int&,const bool&)");
+            validateSignature("List(*tsmvr_solve)(const arma::mat&,const arma::mat&,const int&,const int&,const std::string&,const std::string&,const double&,const double&,const double&,const double&,const double&,const double&,const double&,const int&,const int&,const bool&,const bool&)");
             p_tsmvr_solve = (Ptr_tsmvr_solve)R_GetCCallable("tsmvr", "_tsmvr_tsmvr_solve");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_tsmvr_solve(Shield<SEXP>(Rcpp::wrap(X)), Shield<SEXP>(Rcpp::wrap(Y)), Shield<SEXP>(Rcpp::wrap(s1)), Shield<SEXP>(Rcpp::wrap(s2)), Shield<SEXP>(Rcpp::wrap(B_type)), Shield<SEXP>(Rcpp::wrap(Omega_type)), Shield<SEXP>(Rcpp::wrap(eta1)), Shield<SEXP>(Rcpp::wrap(eta2)), Shield<SEXP>(Rcpp::wrap(epsilon)), Shield<SEXP>(Rcpp::wrap(max_iter)), Shield<SEXP>(Rcpp::wrap(skip)), Shield<SEXP>(Rcpp::wrap(quiet)));
+            rcpp_result_gen = p_tsmvr_solve(Shield<SEXP>(Rcpp::wrap(X)), Shield<SEXP>(Rcpp::wrap(Y)), Shield<SEXP>(Rcpp::wrap(s1)), Shield<SEXP>(Rcpp::wrap(s2)), Shield<SEXP>(Rcpp::wrap(B_type)), Shield<SEXP>(Rcpp::wrap(Omega_type)), Shield<SEXP>(Rcpp::wrap(eta1)), Shield<SEXP>(Rcpp::wrap(eta2)), Shield<SEXP>(Rcpp::wrap(rho1)), Shield<SEXP>(Rcpp::wrap(rho2)), Shield<SEXP>(Rcpp::wrap(beta1)), Shield<SEXP>(Rcpp::wrap(beta2)), Shield<SEXP>(Rcpp::wrap(epsilon)), Shield<SEXP>(Rcpp::wrap(max_iter)), Shield<SEXP>(Rcpp::wrap(skip)), Shield<SEXP>(Rcpp::wrap(quiet)), Shield<SEXP>(Rcpp::wrap(suppress)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
