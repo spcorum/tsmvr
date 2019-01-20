@@ -7,7 +7,7 @@
 tsmvr_replicate(X, Y, s1, s2, k = 10, reps = 10, B_type = "ls",
   Omega_type = "ls", eta1 = 0.05, eta2 = 0.2, rho1 = 100,
   rho2 = 1, beta1 = 0.5, beta2 = 0.5, epsilon = 1e-05,
-  max_iter = 40000, quiet = FALSE, seed = NULL)
+  max_iter = 40000, quiet = FALSE, suppress = FALSE, seed = NULL)
 }
 \arguments{
 \item{X}{design matrix (n-by-p)}
@@ -43,6 +43,8 @@ tsmvr_replicate(X, Y, s1, s2, k = 10, reps = 10, B_type = "ls",
 \item{max_iter}{maximum number of allowed iterations (positive integer)}
 
 \item{quiet}{quiet mode (bool)}
+
+\item{suppress}{suppress maximum iteration warning (bool)}
 
 \item{seed}{set random seed (integer)}
 }
