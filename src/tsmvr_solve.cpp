@@ -6,27 +6,6 @@ using namespace Rcpp;
 using namespace arma;
 using namespace std;
 
-// arma::mat robust_inv(const arma::mat &X) {
-//   /*
-//   * Soft threshold of a matrix X with parameter lam.
-//   */
-//   if (X.n_rows != X.n_cols) {
-//     std::runtime_error("Not a square matrix");
-//   }
-//   arma::mat A;
-//   try {
-//     return(inv(X));
-//   } catch (arma::mat A) {
-//     cout << "This is where we arrived at." << endl;
-//     arma::mat I;
-//     I.eye(size(X));
-//     double epsilon = 1e-4;
-//     A = X + epsilon*I;
-//     return(inv(X + epsilon*I));
-//   }
-//   // return A;
-// }
-
 // [[Rcpp::export]]
 arma::mat project_pdc(const arma::mat &X, const double delta = 1e-6)
   {
@@ -179,7 +158,7 @@ arma::mat initialize_Omega(const arma::mat &B0, const arma::mat &X, const arma::
     * sparsity parameter integer s >= 0, and Lasso paramter double
     * lam > 0.
     */
-    return ht(st(minOmega(B0,X,Y),lam),s,true);
+    return ht(st_offdiag(minOmega(B0,X,Y),lam),s,true);
 }
 
 // // [[Rcpp::export]]
@@ -367,7 +346,11 @@ arma::mat updateOmega(const arma::mat &B, arma::mat Omega,
     * via the gradient descent method.
     */
     if (type == "gd") {
-      Omega = ht(gdOmega(B,Omega,X,Y,eta),s,true);
+      // Rcpp::Rcout << "Omega_t =\n" << Omega << endl;
+      arma::mat Omega_tilde = gdOmega(B,Omega,X,Y,eta);
+      // Rcpp::Rcout << "Omega_tilde =\n" << Omega_tilde << endl;
+      Omega = ht(Omega_tilde,s,true);
+      // Rcpp::Rcout << "Omega_t+1 =\n" << Omega << endl;
     }
     else if (type == "ls") {
       Omega = lsOmega(B,Omega,X,Y,s,eta,rho,beta);
@@ -535,6 +518,7 @@ List tsmvr_solve(const arma::mat &X,
         Omega = updateOmega(B, Omega, X, Y, Omega_type, s2,
                             eta2, rho2, beta2);
         obj = objective(B,Omega,X,Y);
+
 
         // Throw error if solution diverges.
         if (obj > objOld) {
