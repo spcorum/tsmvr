@@ -6,7 +6,7 @@
 \usage{
 tsmvr_gridsearch(X, Y, s1_grid, s2_grid, k = 10, reps = 10,
   B_type = "ls", Omega_type = "ls", eta1 = 0.05, eta2 = 0.2,
-  rho1 = 100, rho2 = 1, beta1 = 0.5, beta2 = 0.5,
+  rho1 = 100, rho2 = 100, beta1 = 0.5, beta2 = 0.5,
   epsilon = 1e-05, max_iter = 2000, suppress = TRUE, quiet = FALSE,
   seed = NULL)
 }

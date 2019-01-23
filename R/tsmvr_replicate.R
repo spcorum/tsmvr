@@ -37,7 +37,7 @@
 tsmvr_replicate <- function(X, Y, s1, s2, k = 10, reps = 10,
                             B_type = "ls", Omega_type = "ls",
                             eta1 = 0.05, eta2 = 0.2,
-                            rho1 = 1e2, rho2 = 1,
+                            rho1 = 1e2, rho2 = 1e2,
                             beta1 = 0.5, beta2 = 0.5,
                             epsilon = 1e-5, max_iter = 40000,
                             quiet = FALSE, suppress = FALSE,

@@ -6,26 +6,42 @@ using namespace Rcpp;
 using namespace arma;
 using namespace std;
 
-arma::mat robust_inv(const arma::mat &X) {
+// arma::mat robust_inv(const arma::mat &X) {
+//   /*
+//   * Soft threshold of a matrix X with parameter lam.
+//   */
+//   if (X.n_rows != X.n_cols) {
+//     std::runtime_error("Not a square matrix");
+//   }
+//   arma::mat A;
+//   try {
+//     return(inv(X));
+//   } catch (arma::mat A) {
+//     cout << "This is where we arrived at." << endl;
+//     arma::mat I;
+//     I.eye(size(X));
+//     double epsilon = 1e-4;
+//     A = X + epsilon*I;
+//     return(inv(X + epsilon*I));
+//   }
+//   // return A;
+// }
+
+// [[Rcpp::export]]
+arma::mat project_pdc(const arma::mat &X, const double delta = 1e-6)
+  {
   /*
-  * Soft threshold of a matrix X with parameter lam.
+  * Projection onto positive definite cone
   */
   if (X.n_rows != X.n_cols) {
     std::runtime_error("Not a square matrix");
   }
-  arma::mat A;
-  try {
-    return(inv_sympd(X));
-  } catch (arma::mat A) {
-    arma::mat I;
-    I.eye(size(X));
-    double epsilon = 1e-4;
-    A = X + epsilon*I;
-    return(X + epsilon*I);
-  }
-  // return A;
+  arma::vec eigval;
+  arma::mat eigvec;
+  eig_sym(eigval, eigvec, X);
+  eigval.elem(find(eigval <= 0)).fill(delta);
+  return eigvec.st()*diagmat(eigval)*eigvec;
 }
-
 
 // // [[Rcpp::export]]
 arma::mat ppmat(const arma::mat &X) {
@@ -47,6 +63,17 @@ arma::mat st(const arma::mat &X, const double &lam) {
      * Soft threshold of a matrix X with parameter lam.
      */
     return ppmat(X-lam) - ppmat(-X-lam);
+}
+
+arma::mat st_offdiag(const arma::mat &X, const double &lam) {
+  /*
+  * Soft threshold of a matrix X with parameter lam.
+  * Diagonal is ignored in this version.
+  */
+  arma::mat Xdiag = diagmat(X);
+  arma::mat Xoffdiag = X - Xdiag;
+  Xoffdiag = ppmat(Xoffdiag-lam) - ppmat(-Xoffdiag-lam);
+  return Xdiag + Xoffdiag;
 }
 
 // // [[Rcpp::export]]
@@ -89,7 +116,7 @@ arma::mat htHelper(arma::mat X, const int &s) {
     return X;
 }
 
-// // [[Rcpp::export]]
+// [[Rcpp::export]]
 arma::mat ht(arma::mat X, int s, bool ss = false) {
     /*
      * Hard threshold operator. Given a matrix, sparsity paramter s
@@ -124,7 +151,7 @@ arma::mat minOmega(const arma::mat &B, const arma::mat &X, const arma::mat &Y) {
     *       minOmega = [SigmaR]^(-1)
     */
     arma::mat A = Y-X*B;
-    arma::mat temp = inv_sympd(A.st()*A/X.n_rows);
+    arma::mat temp = inv(A.st()*A/X.n_rows);
     return temp;
 }
 
@@ -209,10 +236,7 @@ arma::mat gdOmega(const arma::mat &B, const arma::mat &Omega,
   *       Omega_new = Omega - eta*dgdB(B,Omega,X,Y)
   */
   const arma::mat A = Y-X*B;
-  // const arma::mat inv_Omega = robust_inv(Omega);
-  // Rcpp::Rcout << "cond(Omega) = " << cond(Omega) << endl;
-  // Rcpp::Rcout << "eigval(Omega) = " << endl << eig_sym(Omega);
-  const arma::mat dgdOm = A.st()*A/X.n_rows - robust_inv(Omega);
+  const arma::mat dgdOm = A.st()*A/X.n_rows - inv_sympd(Omega);
   return (Omega - eta*dgdOm);
 }
 
@@ -279,7 +303,8 @@ arma::mat lsOmega(arma::mat B, const arma::mat &Omega,
     if (eta < eta_min) {
       throw std::runtime_error("B-step linsearch did not find a good learning rate. Try adjusting parameters.");
     }
-    Omega_test = ht(gdOmega(B,Omega,X,Y,eta),s,true);
+    Omega_test = ht(gdOmega(B,Omega,X,Y,eta),s,true); // non psd step
+
     Omega_diff = Omega_test - Omega;
     g_test = objective(B,Omega_test,X,Y);
     g = objective(B,Omega,X,Y);
@@ -312,7 +337,6 @@ arma::mat updateB(arma::mat B, const arma::mat &Omega,
     * via the gradient descent method.
     */
     if (type == "gd") {
-      // B = B - eta*dgdB(B,Omega,S,H,X.n_rows);
       B = ht( gdB(B, Omega, S, H, X.n_rows, eta), s);
     }
     else if (type == "ls") {
@@ -343,13 +367,10 @@ arma::mat updateOmega(const arma::mat &B, arma::mat Omega,
     * via the gradient descent method.
     */
     if (type == "gd") {
-      // Omega = Omega - eta*dgdOmega(B,Omega,X,Y);
       Omega = ht(gdOmega(B,Omega,X,Y,eta),s,true);
     }
     else if (type == "ls") {
-      // Rcpp::Rcout << "AA" << endl;
       Omega = lsOmega(B,Omega,X,Y,s,eta,rho,beta);
-      // Rcpp::Rcout << "BB" << endl;
     }
     else if (type == "min") {
       Omega = ht(minOmega(B,X,Y),s,true);
@@ -500,12 +521,6 @@ List tsmvr_solve(const arma::mat &X,
     // Start the clock.
     clock_t start = clock();
 
-    // Temporary fixed variables.
-    // double rho1 = 1e0;
-    // double rho2 = 1e0;
-    // double beta1 = 0.5;
-    // double beta2 = 0.5;
-
     // Main loop of tsmvr algorithm.
     for (int k=1; k<=max_iter; k=k+1) {
 
@@ -517,10 +532,8 @@ List tsmvr_solve(const arma::mat &X,
         // Update current iterate.
         B = updateB(B, Omega, X, Y, S, H, B_type, s1,
                     eta1, rho1, beta1);
-        // Rcpp::Rcout << "A" << endl;
         Omega = updateOmega(B, Omega, X, Y, Omega_type, s2,
                             eta2, rho2, beta2);
-        // Rcpp::Rcout << "B" << endl;
         obj = objective(B,Omega,X,Y);
 
         // Throw error if solution diverges.

@@ -5,7 +5,7 @@
 \title{k-fold cross-validation for tsmvr}
 \usage{
 tsmvr_cv(X, Y, s1, s2, k = 10, B_type = "ls", Omega_type = "ls",
-  eta1 = 0.05, eta2 = 0.2, rho1 = 100, rho2 = 1, beta1 = 0.5,
+  eta1 = 0.05, eta2 = 0.2, rho1 = 100, rho2 = 100, beta1 = 0.5,
   beta2 = 0.5, epsilon = 0.001, max_iter = 2000, quiet = FALSE,
   suppress = FALSE, seed = NULL)
 }
