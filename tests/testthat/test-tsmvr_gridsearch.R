@@ -597,7 +597,7 @@ test_that("lines covered by quiet = F can execute", {
     s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
     B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    max_iter = 1, quiet = F, suppress = T
   )
   expect_true(is.list(z))
 })

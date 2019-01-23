@@ -544,7 +544,7 @@ test_that("the returned sublist labeled 'num_folds' is numeric", {
     s1 = round(0.5 * 4 * 3), s2 = 7,
     B_type = "ls", Omega_type = "ls",
     rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    max_iter = 1, quiet = F, suppress = T
   )
   expect_true(is.numeric(z$folds))
 })
