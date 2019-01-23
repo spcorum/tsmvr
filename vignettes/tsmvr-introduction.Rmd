@@ -19,13 +19,13 @@ knitr::opts_chunk$set(
 
 ## Truly Sparse Multivariate Regression
 
-__tsmvr__ or Truly Sparse Multivariate Regression is an R package for solving sparse multivariate regression problems with error coviance estimation. The workhourse algorithm in __tsmvr__ is adapted from the algorithm described by J. Chen and Q. Gu in their 2016 paper [High Dimensional Multivariate Regression and Precision Matrix Estimation via Nonconvex Optimization](https://arxiv.org/abs/1606.00832) .
+__tsmvr__ or Truly Sparse Multivariate Regression is an R package for solving sparse multivariate regression problems with error covariance estimation. The workhorse algorithm in __tsmvr__ is adapted from the algorithm described by J. Chen and Q. Gu in their 2016 paper [High Dimensional Multivariate Regression and Precision Matrix Estimation via Nonconvex Optimization](https://arxiv.org/abs/1606.00832) .
 
 A multivariate regression problem is a regression problem with multiple responses. Formally,
 
 $ Y = X B + E $
 
-Here, X is the design matrix of $n$ observations of $p$ features, Y is the design matrix of $n$ observations of $q$ responses, $B$ is the regression matrix, and $E$ is the error term. Given  $X$ and $Y$, __tsmvr__ solves this probem for $B$ under the constraint that $B$ is sparse and the condition that the errors may be correlated. Under the hood, the error correlations are encoded in the precision matrix \mathbf{\Omega}, which has its own sparsity constraint.
+Here, X is the design matrix of $n$ observations of $p$ features, Y is the design matrix of $n$ observations of $q$ responses, $B$ is the regression matrix, and $E$ is the error term. Given  $X$ and $Y$, __tsmvr__ solves this problem for $B$ under the constraint that $B$ is sparse and the condition that the errors may be correlated. Under the hood, the error correlations are encoded in the precision matrix \mathbf{\Omega}, which has its own sparsity constraint.
 
 ## A First Example
 
@@ -50,7 +50,7 @@ data = tsmvrextras::make_data(
 )[[1]]
 ```
 
-Important: the data in design matrix generated in the code chunk above have mean zero (and standard deviation one). *tsmvr* assumes all data have zero mean, so it is important to do zeroing transformations to the data before running algroithm. 
+Important: the data in design matrix generated in the code chunk above have mean zero (and standard deviation one). *tsmvr* assumes all data have zero mean, so it is important to do zeroing transformations to the data before running algorithm. 
 
 The function \code{tsmvr_solve} solves the regression problem using hard-thresholded block-wise alternating gradient descent with fixed learning rates.
 

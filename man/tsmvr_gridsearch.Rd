@@ -31,9 +31,9 @@ tsmvr_gridsearch(X, Y, s1_grid, s2_grid, k = 10, reps = 10,
 
 \item{eta2}{Omega-step learning rate (positive numeric)}
 
-\item{rho1}{B-step lineserach convergence parameter (positive numeric)}
+\item{rho1}{B-step linesearch convergence parameter (positive numeric)}
 
-\item{rho2}{Omega-step lineserach convergence parameter  (positive numeric)}
+\item{rho2}{Omega-step linesearch convergence parameter  (positive numeric)}
 
 \item{beta1}{B-step linesearch shrinkage parameter (positive numeric)}
 

@@ -30,9 +30,9 @@ tsmvr_replicate(X, Y, s1, s2, k = 10, reps = 10, B_type = "ls",
 
 \item{eta2}{Omega-step learning rate (positive numeric)}
 
-\item{rho1}{B-step lineserach convergence parameter (positive numeric)}
+\item{rho1}{B-step linesearch convergence parameter (positive numeric)}
 
-\item{rho2}{Omega-step lineserach convergence parameter  (positive numeric)}
+\item{rho2}{Omega-step linesearch convergence parameter  (positive numeric)}
 
 \item{beta1}{B-step linesearch shrinkage parameter (positive numeric)}
 

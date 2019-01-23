@@ -69,7 +69,7 @@ ht <- function(X, s, ss = FALSE) {
 #' @param epsilon convergence parameter (positive numeric)
 #' @param max_iter maximum number of iterations (positive integer)
 #' @param skip iteration skip frequency for printing to screen (positive integer)
-#' @param quiet whether or not to operate quietyly (bool)
+#' @param quiet whether or not to operate quietly (bool)
 #' @param suppress whether or not to suppress warnings (bool)
 #'
 #' @references \insertRef{chen2016high}{tsmvr}
