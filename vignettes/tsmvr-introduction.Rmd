@@ -27,31 +27,6 @@ $ Y = X B + E $
 
 Here, X is the design matrix of $n$ observations of $p$ features, Y is the design matrix of $n$ observations of $q$ responses, $B$ is the regression matrix, and $E$ is the error term. Given  $X$ and $Y$, __tsmvr__ solves this probem for $B$ under the constraint that $B$ is sparse and the condition that the errors may be correlated. Under the hood, the error correlations are encoded in the precision matrix \mathbf{\Omega}, which has its own sparsity constraint.
 
-## Some little tests.
-```{r little.tests}
-
-X = matrix(runif(q^2),q,q)
-x = eigen(crossprod(X))
-
-delta = 1e-6
-X = diag(c(1,-0.5,-1))
-x = eigen(X)
-new_vals = x$values
-new_vals[which(x$values <= 0)] = 1e-6
-new_X = t(x$vectors) %*% diag(new_vals) %*% x$vectors
-
-X = matrix(runif(9),3,3)
-X = t(X) + X
-X
-x = eigen(X)
-x$values
-new_vals = x$values
-new_vals[which(x$values <= 0)] = 1e-6
-new_X = t(x$vectors) %*% diag(new_vals) %*% x$vectors
-new_X
-eigen(new_X)$values
-```
-
 ## A First Example
 
 For a first example, define some problem parameters.
@@ -74,19 +49,6 @@ data = tsmvrextras::make_data(
   n = n, p = p, q = q, b1 = sqrt(sparsity), b2 = sqrt(sparsity)
 )[[1]]
 ```
-
-```{r test, eval = T}
-N = 100
-for (i in 1:N) {
-  ls_ls_solution = tsmvr_solve(
-    X = data$X, Y = data$Y, s1 = s1, s2 = s2, 
-    B_type = 'ls', Omega_type = 'ls',
-    eta1 = 0.05, eta2 = 0.1,
-    skip = 50
-  )
-}
-```
-
 
 Important: the data in design matrix generated in the code chunk above have mean zero (and standard deviation one). *tsmvr* assumes all data have zero mean, so it is important to do zeroing transformations to the data before running algroithm. 
 
