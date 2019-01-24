@@ -25,27 +25,6 @@ namespace tsmvr {
         }
     }
 
-    inline arma::mat project_pdc(const arma::mat& X, const double delta = 1e-6) {
-        typedef SEXP(*Ptr_project_pdc)(SEXP,SEXP);
-        static Ptr_project_pdc p_project_pdc = NULL;
-        if (p_project_pdc == NULL) {
-            validateSignature("arma::mat(*project_pdc)(const arma::mat&,const double)");
-            p_project_pdc = (Ptr_project_pdc)R_GetCCallable("tsmvr", "_tsmvr_project_pdc");
-        }
-        RObject rcpp_result_gen;
-        {
-            RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_project_pdc(Shield<SEXP>(Rcpp::wrap(X)), Shield<SEXP>(Rcpp::wrap(delta)));
-        }
-        if (rcpp_result_gen.inherits("interrupted-error"))
-            throw Rcpp::internal::InterruptedException();
-        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
-            throw Rcpp::LongjumpException(rcpp_result_gen);
-        if (rcpp_result_gen.inherits("try-error"))
-            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
-        return Rcpp::as<arma::mat >(rcpp_result_gen);
-    }
-
     inline arma::mat ht(arma::mat X, int s, bool ss = false) {
         typedef SEXP(*Ptr_ht)(SEXP,SEXP,SEXP);
         static Ptr_ht p_ht = NULL;

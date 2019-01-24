@@ -9,41 +9,6 @@
 
 using namespace Rcpp;
 
-// project_pdc
-arma::mat project_pdc(const arma::mat& X, const double delta);
-static SEXP _tsmvr_project_pdc_try(SEXP XSEXP, SEXP deltaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< const double >::type delta(deltaSEXP);
-    rcpp_result_gen = Rcpp::wrap(project_pdc(X, delta));
-    return rcpp_result_gen;
-END_RCPP_RETURN_ERROR
-}
-RcppExport SEXP _tsmvr_project_pdc(SEXP XSEXP, SEXP deltaSEXP) {
-    SEXP rcpp_result_gen;
-    {
-        Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_tsmvr_project_pdc_try(XSEXP, deltaSEXP));
-    }
-    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
-    if (rcpp_isInterrupt_gen) {
-        UNPROTECT(1);
-        Rf_onintr();
-    }
-    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
-    if (rcpp_isLongjump_gen) {
-        Rcpp::internal::resumeJump(rcpp_result_gen);
-    }
-    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
-    if (rcpp_isError_gen) {
-        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
-        UNPROTECT(1);
-        Rf_error(CHAR(rcpp_msgSEXP_gen));
-    }
-    UNPROTECT(1);
-    return rcpp_result_gen;
-}
 // ht
 arma::mat ht(arma::mat X, int s, bool ss);
 static SEXP _tsmvr_ht_try(SEXP XSEXP, SEXP sSEXP, SEXP ssSEXP) {
@@ -135,7 +100,6 @@ RcppExport SEXP _tsmvr_tsmvr_solve(SEXP XSEXP, SEXP YSEXP, SEXP s1SEXP, SEXP s2S
 static int _tsmvr_RcppExport_validate(const char* sig) { 
     static std::set<std::string> signatures;
     if (signatures.empty()) {
-        signatures.insert("arma::mat(*project_pdc)(const arma::mat&,const double)");
         signatures.insert("arma::mat(*ht)(arma::mat,int,bool)");
         signatures.insert("List(*tsmvr_solve)(const arma::mat&,const arma::mat&,const int&,const int&,const std::string&,const std::string&,const double&,const double&,const double&,const double&,const double&,const double&,const double&,const int&,const int&,const bool&,const bool&)");
     }
@@ -144,7 +108,6 @@ static int _tsmvr_RcppExport_validate(const char* sig) {
 
 // registerCCallable (register entry points for exported C++ functions)
 RcppExport SEXP _tsmvr_RcppExport_registerCCallable() { 
-    R_RegisterCCallable("tsmvr", "_tsmvr_project_pdc", (DL_FUNC)_tsmvr_project_pdc_try);
     R_RegisterCCallable("tsmvr", "_tsmvr_ht", (DL_FUNC)_tsmvr_ht_try);
     R_RegisterCCallable("tsmvr", "_tsmvr_tsmvr_solve", (DL_FUNC)_tsmvr_tsmvr_solve_try);
     R_RegisterCCallable("tsmvr", "_tsmvr_RcppExport_validate", (DL_FUNC)_tsmvr_RcppExport_validate);

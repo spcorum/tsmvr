@@ -40,7 +40,7 @@ tsmvr_solve(X, Y, s1, s2, B_type = "gd", Omega_type = "gd",
 
 \item{skip}{iteration skip frequency for printing to screen (positive integer)}
 
-\item{quiet}{whether or not to operate quietly (bool)}
+\item{quiet}{whether or not to operate   (bool)}
 
 \item{suppress}{whether or not to suppress warnings (bool)}
 }

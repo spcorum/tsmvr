@@ -6,21 +6,21 @@ using namespace Rcpp;
 using namespace arma;
 using namespace std;
 
-// [[Rcpp::export]]
-arma::mat project_pdc(const arma::mat &X, const double delta = 1e-6)
-  {
-  /*
-  * Projection onto positive definite cone
-  */
-  if (X.n_rows != X.n_cols) {
-    std::runtime_error("Not a square matrix");
-  }
-  arma::vec eigval;
-  arma::mat eigvec;
-  eig_sym(eigval, eigvec, X);
-  eigval.elem(find(eigval <= 0)).fill(delta);
-  return eigvec.st()*diagmat(eigval)*eigvec;
-}
+// // [[Rcpp::export]]
+// arma::mat project_pdc(const arma::mat &X, const double delta = 1e-6)
+//   {
+//   /*
+//   * Projection onto positive definite cone
+//   */
+//   if (X.n_rows != X.n_cols) {
+//     std::runtime_error("Not a square matrix");
+//   }
+//   arma::vec eigval;
+//   arma::mat eigvec;
+//   eig_sym(eigval, eigvec, X);
+//   eigval.elem(find(eigval <= 0)).fill(delta);
+//   return eigvec.st()*diagmat(eigval)*eigvec;
+// }
 
 // // [[Rcpp::export]]
 arma::mat ppmat(const arma::mat &X) {
@@ -480,7 +480,7 @@ List tsmvr_solve(const arma::mat &X,
     // For recording history of iterates.
     field<arma::mat> BHist(max_iter);
     field<arma::mat> OmegaHist(max_iter);
-    field<double> objHist(max_iter);
+    arma::vec objHist(max_iter);
 
     // For caching previous iterates.
     arma::mat BOld;
@@ -567,7 +567,7 @@ List tsmvr_solve(const arma::mat &X,
     // number of iterations is reached, warn.
     field<arma::mat> BHist2(itrs);
     field<arma::mat> OmegaHist2(itrs);
-    field<double> objHist2(itrs);
+    arma::vec objHist2(itrs);
     if (itrs == max_iter) {
         BHist2 = BHist;
         OmegaHist2 = OmegaHist;
