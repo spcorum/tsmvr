@@ -40,11 +40,12 @@ s1 = round(p * q * sparsity * 1.1) # fitted sparsity will be a little larger tha
 s2 = 3 * q - 4                     # constrains precision matrix to have the number of entries as a tri-diagonal matrix
 ```
 
-The following code generates a synthetic dataset. Here, the dataset has a true regression matrix of `r sparsity`.
+The following code generates a synthetic dataset. Here, the dataset has a true regression matrix of sparsity `r sparsity`.
 
 ```{r first-data}
+library(tsmvr)
 set.seed(1729)
-data = tsmvr::make_data(
+data = make_data(
   n = n, p = p, q = q, b1 = sqrt(sparsity), b2 = sqrt(sparsity)
 )[[1]]
 ```
@@ -115,8 +116,3 @@ grid = tsmvr_gridsearch(
   eta1 = 0.1, eta2 = 0.2, quiet = F
 )
 ```
-
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))

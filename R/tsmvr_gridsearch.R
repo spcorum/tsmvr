@@ -70,7 +70,7 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
     } else if (Omega_type == "min") {
       cat("Solver mode 'gd-min' with eta1 = ", eta1, ".\n", sep = "")
     }
-    cat("s1\ts2\terror\t\ttime (s)\n")
+    cat("s1\ts2\terror\t\tsd\t\ttime (s)\n")
   }
 
   # Iterate over reps.
@@ -98,8 +98,7 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
       # Print this result to screen.
       if (!quiet) {
         cat(s1_grid[i], "\t", s2_grid[j], "\t", error[i, j], "\t",
-          round(toc, 3), "\n",
-          sep = ""
+            error_sd[i, j], "\t", round(toc, 3), "\n", sep = ""
         )
       }
     }
@@ -109,7 +108,7 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
   toc <- (Sys.time() - tic)[[1]]
   error_min <- min(error)
   error_min_idx <- which(error == min(error), arr.ind = T)
-  error_min_sd <- sd(error_min_idx)
+  error_min_sd <- error_sd[error_min_idx]
   s1_min <- s1_grid[error_min_idx[1]]
   s2_min <- s2_grid[error_min_idx[2]]
 

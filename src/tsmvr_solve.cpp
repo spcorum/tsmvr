@@ -242,11 +242,11 @@ arma::mat lsB(const arma::mat &B, const arma::mat &Omega,
     eta = eta*pow(beta,q);
     // Rcpp::Rcout << "eta_1  = " << eta << endl;
     if (q > q_max) {
-        throw std::runtime_error("B-step linsearch had too many iterations. Try adjusting parameters.");
+        throw std::runtime_error("B-step linesearch had too many iterations. Try adjusting parameters.");
     }
-    if (eta < eta_min) {
-        throw std::runtime_error("B-step linsearch did not find a good learning rate. Try adjusting parameters.");
-    }
+    // if (eta < eta_min) {
+    //     throw std::runtime_error("B-step linesearch did not find a good learning rate. Try adjusting parameters.");
+    // }
     B_test = ht(gdB(B,Omega,S,H,X.n_rows,eta),s);
     B_diff = B_test - B;
     g_test = objective(B_test,Omega,X,Y);
@@ -277,11 +277,11 @@ arma::mat lsOmega(arma::mat B, const arma::mat &Omega,
     eta = eta*pow(beta,q);
     // Rcpp::Rcout << "eta_2 = " << eta << endl;
     if (q > q_max) {
-      throw std::runtime_error("B-step linsearch had too many iterations. Try adjusting parameters.");
+      throw std::runtime_error("B-step linesearch had too many iterations. Try adjusting parameters.");
     }
-    if (eta < eta_min) {
-      throw std::runtime_error("B-step linsearch did not find a good learning rate. Try adjusting parameters.");
-    }
+    // if (eta < eta_min) {
+    //   throw std::runtime_error("B-step linesearch did not find a good learning rate. Try adjusting parameters.");
+    // }
     Omega_test = ht(gdOmega(B,Omega,X,Y,eta),s,true); // non psd step
 
     Omega_diff = Omega_test - Omega;

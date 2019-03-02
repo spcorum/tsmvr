@@ -24,15 +24,20 @@ Imports:
     Rdpack,
     matrixcalc,
     stringi,
+    prettydoc,
+    ggplot2,
+    igraph,
+    pROC,
+    reshape,
     prettydoc
 Suggests: 
     covr,
     testthat,
     knitr,
     rmarkdown,
-    tsmvrextras
+    tsmvrdata
 Remotes:
-    spcorum/tsmvrextras
+    spcorum/tsmvrdata
 RdMacros: 
     Rdpack
 RoxygenNote: 6.1.0
