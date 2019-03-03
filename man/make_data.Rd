@@ -6,8 +6,8 @@
 \usage{
 make_data(n, p, q, b1 = sqrt(0.1), b2 = sqrt(0.1), sigma = 1,
   rho_x = 0.6, type = "AR1", rho_err = 0.7, h = 0.9, power = 1,
-  n_edge = 1, zero_appeal = 1, min_ev = 0.18, reps = 1,
-  seed = NULL)
+  n_edge = 1, zero_appeal = 1, min_ev = 0.18, g = 1,
+  edge_val = 0.3, gamma = 1e-06, reps = 1, seed = NULL)
 }
 \arguments{
 \item{n}{number of observations (positive integer)}
@@ -37,6 +37,12 @@ make_data(n, p, q, b1 = sqrt(0.1), b2 = sqrt(0.1), sigma = 1,
 \item{zero_appeal}{Barabasi algorithm baseline attractiveness for SFN covariance matrix (positive numeric)}
 
 \item{min_ev}{minimum eigenvalue of SFN covariance matrix (\code{min_ev} > 0) (ensures matrix is PSD) )}
+
+\item{g}{number of hub nodes for HUB graph precision matrix (positive integer-valued numeric less than q)}
+
+\item{edge_val}{value of hub edges for HUB graph precision matrix (non-negative numeric)}
+
+\item{gamma}{additional shift of identity matrix component of HUB graph precision matrix (non-negative numeric)}
 
 \item{reps}{number of randomly drawn datasets to return (positive integer)}
 

@@ -5,7 +5,8 @@
 \title{Construct covariance and precision matrices}
 \usage{
 covariance_matrix(q, type = "AR1", rho = 0.7, h = 0.9, power = 1,
-  n_edge = 1, zero_appeal = 1, min_ev = 0.18)
+  n_edge = 1, zero_appeal = 1, min_ev = 0.18, g = 1,
+  edge_val = 0.3, gamma = 1e-06)
 }
 \arguments{
 \item{q}{dimension of covariance matrix (positive integer)}
@@ -23,6 +24,12 @@ covariance_matrix(q, type = "AR1", rho = 0.7, h = 0.9, power = 1,
 \item{zero_appeal}{Barabasi algorithm baseline attractiveness for SFN covariance matrix (positive numeric)}
 
 \item{min_ev}{minimum eigenvalue of SFN covariance matrix (\code{min_ev} > 0) (ensures matrix is PSD) )}
+
+\item{g}{number of hub nodes for HUB graph precision matrix (positive integer-valued numeric less than q)}
+
+\item{edge_val}{value of hub edges for HUB graph precision matrix (non-negative numeric)}
+
+\item{gamma}{additional shift of identity matrix component of HUB graph precision matrix (non-negative numeric)}
 }
 \value{
 A list of two matrices, the \code{covariance} matrix and the
@@ -35,6 +42,5 @@ fractional gaussian noise [FGN], or scale free network [SFN].
 }
 \references{
 \insertRef{MRCE}{tsmvr}
-
 \insertRef{chen2016high}{tsmvr}
 }
