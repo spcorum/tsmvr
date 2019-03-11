@@ -486,7 +486,7 @@ List tsmvr_solve(const arma::mat &X,
     } else {
       Rcpp::Rcout << "eta1 = " << eta1 << " and eta2 = " << eta2 << "." << endl;
     }
-    Rcpp::Rcout << "t\tobj\t||\u0394B||\t\t||\u0394\u03A9||\ttime (ms)" << endl;
+    Rcpp::Rcout << "t\tobj\t||\u2207B||\t\t||\u2207\u03A9||\ttime (ms)" << endl;
   }
 
   // Pre-compute constant matrices.
@@ -505,8 +505,8 @@ List tsmvr_solve(const arma::mat &X,
 
   // For determining convergence.
   int itrs;
-  double dBNorm;
-  double dOmegaNorm;
+  double gamma1;
+  double gamma2;
   double gamma = std::numeric_limits<double>::infinity();
 
   // Initial iterates.
@@ -548,16 +548,16 @@ List tsmvr_solve(const arma::mat &X,
     }
 
     // Norms of differences.
-    dBNorm = norm(B-BOld,"fro");
-    dOmegaNorm = norm(Omega-OmegaOld,"fro");
+    gamma1 = norm((B-BOld)/eta1,"fro");
+    gamma2 = norm((Omega-OmegaOld)/eta2,"fro");
 
     // If not quiet, print results to screen.
     if(quiet == false && k % skip == 0) {
       now = ( clock() - start ) / (double) CLOCKS_PER_SEC * 1000;
       Rcpp::Rcout <<  k << "\t"                                            \
                   << round((long)(obj*1000000.0))/1000000.0 << "\t"        \
-                  << round((long)(dBNorm*1000000.0))/1000000.0 << "\t\t"   \
-                  << round((long)(dOmegaNorm*1000000.0))/1000000.0 << "\t" \
+                  << round((long)(gamma1*1000000.0))/1000000.0 << "\t\t"   \
+                  << round((long)(gamma2*1000000.0))/1000000.0 << "\t" \
                   << round(now) << endl;
     }
 
@@ -568,7 +568,7 @@ List tsmvr_solve(const arma::mat &X,
 
     // Test for convergence.
     itrs = k;
-    gamma = std::max(dBNorm, dOmegaNorm);
+    gamma = std::max(gamma1, gamma2);
     if (gamma < epsilon) break;
 
   }
