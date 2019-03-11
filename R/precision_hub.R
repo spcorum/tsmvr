@@ -19,8 +19,9 @@ precision_hub <- function(q, g, edge_val=0.3, gamma=1e-6) {
   Omega = matrix(rep(0,q^2),q,q)
   start_vec = seq(from=1,to=10,by=g)
   for (i in 1:length(start_vec)) {
-    stop = start_vec[i] + g - 1
+    stop = min(start_vec[i] + g - 1,q)
     center = start_vec[i] + floor(g/2)
+    center = start_vec[i]
     for (j in start_vec[i]:stop) {
       for (k in start_vec[i]:stop) {
         if (k <= q) if (k == center) Omega[j,k] = edge_val
@@ -38,9 +39,9 @@ precision_hub <- function(q, g, edge_val=0.3, gamma=1e-6) {
 }
 
 
-#Omega = precision_hub(q=10, g=6, 0.6)
-q=10
-g=3
-Omega = precision_hub(q=q, g=g, edge_val=0.3, gamma=1e-6)
-eigen(Omega)$values
-Omega
+# Omega = precision_hub(q=10, g=6, 0.6)
+# q = 10
+# g = 4
+# Omega = precision_hub(q=q, g=g, edge_val=0.3, gamma=1e-6)
+# Omega
+# print(sum(Omega!=0))

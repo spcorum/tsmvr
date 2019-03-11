@@ -24,24 +24,24 @@ using namespace std;
 
 // // [[Rcpp::export]]
 arma::mat ppmat(const arma::mat &X) {
-    /*
-     * Positive part of matrix. Given matrix x, is positive part
-     * is returned.
-     */
-    if (X.max() > 0) {
-      return clamp(X,0,X.max());
-    }
-    return zeros<mat>(X.n_rows, X.n_cols);
+  /*
+  * Positive part of matrix. Given matrix x, is positive part
+  * is returned.
+  */
+  if (X.max() > 0) {
+    return clamp(X,0,X.max());
+  }
+  return zeros<mat>(X.n_rows, X.n_cols);
 }
 
 
 
 // // [[Rcpp::export]]
 arma::mat st(const arma::mat &X, const double &lam) {
-    /*
-     * Soft threshold of a matrix X with parameter lam.
-     */
-    return ppmat(X-lam) - ppmat(-X-lam);
+  /*
+  * Soft threshold of a matrix X with parameter lam.
+  */
+  return ppmat(X-lam) - ppmat(-X-lam);
 }
 
 arma::mat st_offdiag(const arma::mat &X, const double &lam) {
@@ -57,132 +57,147 @@ arma::mat st_offdiag(const arma::mat &X, const double &lam) {
 
 // // [[Rcpp::export]]
 arma::mat htHelper(arma::mat X, const int &s) {
-    /*
-     * Support set matrix. Given matrix X and integer 0 <= s <= |X|
-     * returns a matrix of size X such that the top s absolute value
-     * entries of X are returned in their original positions and the
-     * rest are set to zero.
-     */
+  /*
+  * Support set matrix. Given matrix X and integer 0 <= s <= |X|
+  * returns a matrix of size X such that the top s absolute value
+  * entries of X are returned in their original positions and the
+  * rest are set to zero.
+  */
 
-    int N = X.n_rows*X.n_cols;
+  int N = X.n_rows*X.n_cols;
 
-    // Ensure 0 <= s <= N;
-    if (s < 0) {
-        // Rcpp::Rcout << "case of s2 = " << s << " < 0" << endl;
-        throw std::range_error("Sparsity parameter cannot be less than zero.");
-    }
-    if (s > N) {
-        // Rcpp::Rcout << "case of s2 = " << s << " > N = " << N << endl;
-        throw std::range_error("Sparsity parameter cannot larger than the number of matrix entries.");
-    }
-    if (s == 0) {
-        X.zeros();
-    }
-    else if (s < N) {
+  // Ensure 0 <= s <= N;
+  if (s < 0) {
+    // Rcpp::Rcout << "case of s2 = " << s << " < 0" << endl;
+    throw std::range_error("Sparsity parameter cannot be less than zero.");
+  }
+  if (s > N) {
+    // Rcpp::Rcout << "case of s2 = " << s << " > N = " << N << endl;
+    throw std::range_error("Sparsity parameter cannot larger than the number of matrix entries.");
+  }
+  if (s == 0) {
+    X.zeros();
+  }
+  else if (s < N) {
 
-        int p = N - s;                      // p is # of elements to set to 0
-        arma::mat absX = abs(X);
-        vec x = sort(vectorise(absX));      // x = sorted vectorized abs(X)
-        X.elem(find(absX < x(p))).zeros();  // find elements of abs(X) <=
-                                            // value of x at position p - 1 &
-                                            // set them to zero. The
-                                            // result is the support set
-                                            // matrix of X.
-    }
-    else {
-        // The remaining logical case s == N returns the input matrix.
-    }
-    return X;
+    int p = N - s;                      // p is # of elements to set to 0
+    arma::mat absX = abs(X);
+    vec x = sort(vectorise(absX));      // x = sorted vectorized abs(X)
+    X.elem(find(absX < x(p))).zeros();  // find elements of abs(X) <=
+    // value of x at position p - 1 &
+    // set them to zero. The
+    // result is the support set
+    // matrix of X.
+  }
+  else {
+    // The remaining logical case s == N returns the input matrix.
+  }
+  return X;
 }
 
 // [[Rcpp::export]]
 arma::mat ht(arma::mat X, int s, bool ss = false) {
-    /*
-     * Hard threshold operator. Given a matrix, sparsity paramter s
-     * (0 <= s <= |X|), and bool ss indicating whether or not X
-     * is square symmetric.
-     */
-    if (s == 0) return X;
-    if (not ss) X =  htHelper(X,s);
-    else {
-        // Otherwise, for a (square) symmetric matrix, the symmetry can be
-        // exploited for speed.
-        int n = X.n_rows;
-        int s2 = (s-n+1)/2;
-        arma::mat Xdiag = diagmat(X);
-        arma::mat Xupper = htHelper(trimatu(X,1),s2);
-        X = Xdiag + Xupper + trans(Xupper);
-    }
-    return X;
+  /*
+  * Hard threshold operator. Given a matrix, sparsity paramter s
+  * (0 <= s <= |X|), and bool ss indicating whether or not X
+  * is square symmetric.
+  */
+  if (s == 0) return X;
+  if (not ss) X =  htHelper(X,s);
+  else {
+    // Otherwise, for a (square) symmetric matrix, the symmetry can be
+    // exploited for speed.
+    int n = X.n_rows;
+    int s2 = (s-n+1)/2;
+    arma::mat Xdiag = diagmat(X);
+    arma::mat Xupper = htHelper(trimatu(X,1),s2);
+    X = Xdiag + Xupper + trans(Xupper);
+  }
+  return X;
 }
 
 // // [[Rcpp::export]]
-arma::mat minOmega(const arma::mat &B, const arma::mat &X, const arma::mat &Y) {
-   /*
-    * Direct minimization of tsmvrRcpp objective function with respect to
-    * covariance matrix Omega.
-    *
-    * Given regression covariane matrix SigmaR (q-by-q), returns the
-    * value of the (response) covariance matrix Sigma that minimizes
-    * the tsmvrRcpp objective function when B is held constant (q-by-q
-    * matrix.)
-    *
-    *       minOmega = [SigmaR]^(-1)
-    */
-    arma::mat A = Y-X*B;
-    arma::mat temp = inv(A.st()*A/X.n_rows);
-    return temp;
+arma::mat minOmega(const arma::mat &B, const arma::mat &X, const arma::mat &Y,
+                   const double &delta = 1e-6) {
+  /*
+  * Direct minimization of tsmvrRcpp objective function with respect to
+  * covariance matrix Omega.
+  *
+  * Given regression covariane matrix SigmaR (q-by-q), returns the
+  * value of the (response) covariance matrix Sigma that minimizes
+  * the tsmvrRcpp objective function when B is held constant (q-by-q
+  * matrix.)
+  *
+  *       minOmega = [SigmaR]^(-1)
+  */
+  arma::mat A = Y-X*B;
+  arma::mat Covariance = A.st()*A/X.n_rows;
+  // Rcpp::Rcout << "Covariance =" << endl;
+  // Rcpp::Rcout << Covariance << endl;
+  arma::mat temp = inv(Covariance+delta*arma::eye<mat>(size(Covariance)));
+  return temp;
 }
 
 // // [[Rcpp::export]]
 arma::mat initialize_B(const arma::mat &S, const arma::mat &H, const int &s,
-                const double &lam = 0.1) {
-   /*
-    * This function intializes in the initial iterates B
-    * for iterative hard threholding for multivariate
-    * regression. It takes design matrix p-by-p predictor matrix
-    * S = X'X, p-by-q matrix H = X'Y, sparsity parameter integer
-    * s >= 0, and Lasso paramter double lam > 0.
-    */
-    return ht(st(solve(S,H,solve_opts::fast),lam),s);
+                       const double &lam = 0.1, const double &delta = 1e-6) {
+  /*
+  * This function intializes in the initial iterates B
+  * for iterative hard threholding for multivariate
+  * regression. It takes design matrix p-by-p predictor matrix
+  * S = X'X, p-by-q matrix H = X'Y, sparsity parameter integer
+  * s >= 0, and Lasso paramter double lam > 0.
+  */
+  arma::mat B_init = ht(st(solve(S+delta*arma::eye<mat>(size(S)),H,solve_opts::fast),lam),s);
+  return B_init;
 }
 
 // // [[Rcpp::export]]
 arma::mat initialize_Omega(const arma::mat &B0, const arma::mat &X, const arma::mat &Y,
-                    const int &s, const double &lam = 0.1) {
-   /*
-    * This function intializes in the initial iterates B
-    * for iterative hard threholding for multivariate
-    * regression. It takes p-by-q initial iterate regrssor matrix B0,
-    * design matrix n-by-p predictor matrix X, n-by-q matrix Y,
-    * sparsity parameter integer s >= 0, and Lasso paramter double
-    * lam > 0.
-    */
-    return ht(st_offdiag(minOmega(B0,X,Y),lam),s,true);
+                           const int &s, const double &lam = 0.1,
+                           const double &delta = 1e-6) {
+  /*
+  * This function intializes in the initial iterates B
+  * for iterative hard threholding for multivariate
+  * regression. It takes p-by-q initial iterate regrssor matrix B0,
+  * design matrix n-by-p predictor matrix X, n-by-q matrix Y,
+  * sparsity parameter integer s >= 0, and Lasso paramter double
+  * lam > 0.
+  */
+  arma::mat minOm = minOmega(B0,X,Y,delta);
+  arma::mat Soft = st(minOm,lam);
+  arma::mat Omega_init = ht(Soft,s,true);
+  // Rcpp::Rcout << "Inverse covariance =" << endl;
+  // Rcpp::Rcout << minOm << endl;
+  // Rcpp::Rcout << "Soft =" << endl;
+  // Rcpp::Rcout << Soft << endl;
+  // Rcpp::Rcout << "Omega_init =" << endl;
+  // Rcpp::Rcout << Omega_init << endl;
+  return Omega_init;
 }
 
 // // [[Rcpp::export]]
 double objective(const arma::mat &B, const arma::mat &Omega, const arma::mat &X,
                  const arma::mat &Y)
-    {
-    /*
-     * Covariance estimated multivariate regression objective function
-     * (i.e., log-likelihood function).
-     *
-     * Given regressor matrix B (p-by-q), PSD covariance matrix Omega
-     * (q-by-n), design matrix X (p-by-n), and response matrix Y
-     * (q-by-n), returns the value of objective function (double).
-     *
-     *  objective = 1/n Trace[ (Y-X*B)'*Omega*(Y-X*B) ] - log(|Omega|)
-     */
-    arma::mat A = Y-X*B;
-    return trace(A*Omega*A.st())/X.n_rows - real(log_det(Omega));
+{
+  /*
+  * Covariance estimated multivariate regression objective function
+  * (i.e., log-likelihood function).
+  *
+  * Given regressor matrix B (p-by-q), PSD covariance matrix Omega
+  * (q-by-n), design matrix X (p-by-n), and response matrix Y
+  * (q-by-n), returns the value of objective function (double).
+  *
+  *  objective = 1/n Trace[ (Y-X*B)'*Omega*(Y-X*B) ] - log(|Omega|)
+  */
+  arma::mat A = Y-X*B;
+  return trace(A*Omega*A.st())/X.n_rows - real(log_det(Omega));
 }
 
 // // [[Rcpp::export]]
 arma::mat gdB(const arma::mat &B, const arma::mat &Omega,
-               const arma::mat &S, const arma::mat &H,
-               const int &n, const double &eta)
+              const arma::mat &S, const arma::mat &H,
+              const int &n, const double &eta)
 {
   /*
   * Gradient step with respect to B
@@ -201,8 +216,8 @@ arma::mat gdB(const arma::mat &B, const arma::mat &Omega,
 
 // // [[Rcpp::export]]
 arma::mat gdOmega(const arma::mat &B, const arma::mat &Omega,
-              const arma::mat &X, const arma::mat &Y,
-              const double &eta)
+                  const arma::mat &X, const arma::mat &Y,
+                  const double &eta, const double &delta = 0)
 {
   /*
   * Gradient step with respect to Omega.
@@ -215,7 +230,8 @@ arma::mat gdOmega(const arma::mat &B, const arma::mat &Omega,
   *       Omega_new = Omega - eta*dgdB(B,Omega,X,Y)
   */
   const arma::mat A = Y-X*B;
-  const arma::mat dgdOm = A.st()*A/X.n_rows - inv_sympd(Omega);
+  const arma::mat dgdOm = A.st()*A/X.n_rows -
+    inv_sympd(Omega+delta*arma::eye<mat>(size(Omega)));
   return (Omega - eta*dgdOm);
 }
 
@@ -242,7 +258,7 @@ arma::mat lsB(const arma::mat &B, const arma::mat &Omega,
     eta = eta*pow(beta,q);
     // Rcpp::Rcout << "eta_1  = " << eta << endl;
     if (q > q_max) {
-        throw std::runtime_error("B-step linesearch had too many iterations. Try adjusting parameters.");
+      throw std::runtime_error("B-step linesearch had too many iterations. Try adjusting parameters.");
     }
     // if (eta < eta_min) {
     //     throw std::runtime_error("B-step linesearch did not find a good learning rate. Try adjusting parameters.");
@@ -257,10 +273,10 @@ arma::mat lsB(const arma::mat &B, const arma::mat &Omega,
 }
 
 arma::mat lsOmega(arma::mat B, const arma::mat &Omega,
-              const arma::mat &X, const arma::mat &Y,
-              const int &s, double eta = 0.1,
-              const double &rho = 1e2, const double &beta = 0.5,
-              const double &eta_min = 1e-6, const int &q_max = 128)
+                  const arma::mat &X, const arma::mat &Y,
+                  const int &s, double eta = 0.1,
+                  const double &rho = 1e2, const double &beta = 0.5,
+                  const double &eta_min = 1e-6, const int &q_max = 128)
 {
   /*
   * Generalized linesearch for with resepct to Omega.
@@ -290,8 +306,8 @@ arma::mat lsOmega(arma::mat B, const arma::mat &Omega,
     g_diff = rho/2*trace(Omega_diff.t()*Omega_diff);
   } while (
       objective(B,Omega_test,X,Y) >
-        objective(B,Omega,X,Y) -
-        rho/2*trace(Omega_diff.t()*Omega_diff)
+    objective(B,Omega,X,Y) -
+    rho/2*trace(Omega_diff.t()*Omega_diff)
   );
   return(Omega_test);
 }
@@ -305,26 +321,26 @@ arma::mat updateB(arma::mat B, const arma::mat &Omega,
                   const double &eta = 0.01,
                   const double &rho = 1e2,
                   const double &beta = 0.5)
-    {
-    /*
-    * tsmvrRcpp regressor matrix iterate update via the gradient descent
-    * method.
-    *
-    * Given current regressor matrix iterate B (p-by-q), design matrix
-    * X (p-by-n), and response matrix Y (q-by-q), and learning rate
-    * eta (eta > 0), returns the updated iterate B (p-by-q matrix)
-    * via the gradient descent method.
-    */
-    if (type == "gd") {
-      B = ht( gdB(B, Omega, S, H, X.n_rows, eta), s);
-    }
-    else if (type == "ls") {
-      B = lsB(B, Omega, S, H, X, Y, s, eta, rho, beta);
-    }
-    else {
-      throw std::range_error("B-step type must be 'gd' or 'ls'.");
-    }
-    return B;
+{
+  /*
+  * tsmvrRcpp regressor matrix iterate update via the gradient descent
+  * method.
+  *
+  * Given current regressor matrix iterate B (p-by-q), design matrix
+  * X (p-by-n), and response matrix Y (q-by-q), and learning rate
+  * eta (eta > 0), returns the updated iterate B (p-by-q matrix)
+  * via the gradient descent method.
+  */
+  if (type == "gd") {
+    B = ht( gdB(B, Omega, S, H, X.n_rows, eta), s);
+  }
+  else if (type == "ls") {
+    B = lsB(B, Omega, S, H, X, Y, s, eta, rho, beta);
+  }
+  else {
+    throw std::range_error("B-step type must be 'gd' or 'ls'.");
+  }
+  return B;
 }
 
 // // [[Rcpp::export]]
@@ -335,33 +351,33 @@ arma::mat updateOmega(const arma::mat &B, arma::mat Omega,
                       const double &eta = 0.01,
                       const double &rho = 1e2,
                       const double &beta = 0.5) {
-    /*
-    * tsmvrRcpp covariance matrix iterate update via the gradient descent
-    * method.
-    *
-    * Given current regressor matrix iterate B (p-by-q), current
-    * covariance iterate Omega (q-by-q), design matrix
-    * X (p-by-n), and response matrix Y (q-by-q), and learning rate
-    * eta (eta > 0), returns the updated iterate Omega (q-by-q matrix)
-    * via the gradient descent method.
-    */
-    if (type == "gd") {
-      // Rcpp::Rcout << "Omega_t =\n" << Omega << endl;
-      arma::mat Omega_tilde = gdOmega(B,Omega,X,Y,eta);
-      // Rcpp::Rcout << "Omega_tilde =\n" << Omega_tilde << endl;
-      Omega = ht(Omega_tilde,s,true);
-      // Rcpp::Rcout << "Omega_t+1 =\n" << Omega << endl;
-    }
-    else if (type == "ls") {
-      Omega = lsOmega(B,Omega,X,Y,s,eta,rho,beta);
-    }
-    else if (type == "min") {
-      Omega = ht(minOmega(B,X,Y),s,true);
-    }
-    else {
-        throw std::range_error("Omega-step 'type' must be 'gd' or 'min'.");
-    }
-    return Omega;
+  /*
+  * tsmvrRcpp covariance matrix iterate update via the gradient descent
+  * method.
+  *
+  * Given current regressor matrix iterate B (p-by-q), current
+  * covariance iterate Omega (q-by-q), design matrix
+  * X (p-by-n), and response matrix Y (q-by-q), and learning rate
+  * eta (eta > 0), returns the updated iterate Omega (q-by-q matrix)
+  * via the gradient descent method.
+  */
+  if (type == "gd") {
+    // Rcpp::Rcout << "Omega_t =\n" << Omega << endl;
+    arma::mat Omega_twidle = gdOmega(B,Omega,X,Y,eta);
+    Omega = ht(Omega_twidle,s,true);
+    // Rcpp::Rcout << "Omega_twidle =\n" << Omega_twidle << endl;
+    // Rcpp::Rcout << "Omega_t+1 =\n" << Omega << endl;
+  }
+  else if (type == "ls") {
+    Omega = lsOmega(B,Omega,X,Y,s,eta,rho,beta);
+  }
+  else if (type == "min") {
+    Omega = ht(minOmega(B,X,Y),s,true);
+  }
+  else {
+    throw std::range_error("Omega-step 'type' must be 'gd' or 'min'.");
+  }
+  return Omega;
 }
 
 //' Truly Sparse Multivariate Regression
@@ -462,142 +478,147 @@ List tsmvr_solve(const arma::mat &X,
                  const bool &quiet = false,
                  const bool &suppress = false) {
 
-    // Print header.
-    if (!quiet) {
-        Rcpp::Rcout << "Solver mode " << B_type << "-" << Omega_type << " with ";
-        if (Omega_type == "min") {
-          Rcpp::Rcout << "eta1 = " << eta1 << "." << endl;
-        } else {
-          Rcpp::Rcout << "eta1 = " << eta1 << " and eta2 = " << eta2 << "." << endl;
-        }
-        Rcpp::Rcout << "t\tobj\t||\u0394B||\t\t||\u0394\u03A9||\ttime (ms)" << endl;
+  // Print header.
+  if (!quiet) {
+    Rcpp::Rcout << "Solver mode " << B_type << "-" << Omega_type << " with ";
+    if (Omega_type == "min") {
+      Rcpp::Rcout << "eta1 = " << eta1 << "." << endl;
+    } else {
+      Rcpp::Rcout << "eta1 = " << eta1 << " and eta2 = " << eta2 << "." << endl;
+    }
+    Rcpp::Rcout << "t\tobj\t||\u0394B||\t\t||\u0394\u03A9||\ttime (ms)" << endl;
+  }
+
+  // Pre-compute constant matrices.
+  const arma::mat S = X.t()*X;
+  const arma::mat H = X.t()*Y;
+
+  // For recording history of iterates.
+  field<arma::mat> BHist(max_iter);
+  field<arma::mat> OmegaHist(max_iter);
+  arma::vec objHist(max_iter);
+
+  // For caching previous iterates.
+  arma::mat BOld;
+  arma::mat OmegaOld;
+  double objOld;
+
+  // For determining convergence.
+  int itrs;
+  double dBNorm;
+  double dOmegaNorm;
+  double gamma = std::numeric_limits<double>::infinity();
+
+  // Initial iterates.
+  arma::mat B = initialize_B(S,H,s1);
+  arma::mat Omega = initialize_Omega(B,X,Y,s2);
+  double obj = std::numeric_limits<double>::infinity();
+
+  // For keeping time.
+  double time;
+  long now;
+
+  // Start the clock.
+  clock_t start = clock();
+
+  // Main loop of tsmvr algorithm.
+  for (int k=1; k<=max_iter; k=k+1) {
+
+    // Cache previous iterate.
+    BOld = B;
+    OmegaOld = Omega;
+    objOld = obj;
+
+    // Update current iterate.
+    B = updateB(B, Omega, X, Y, S, H, B_type, s1,
+                eta1, rho1, beta1);
+    Omega = updateOmega(B, Omega, X, Y, Omega_type, s2,
+                        eta2, rho2, beta2);
+    obj = objective(B,Omega,X,Y);
+
+    // Rcpp::Rcout << "B(" << k << ") =" << endl;
+    // Rcpp::Rcout << B << endl;
+    // Rcpp::Rcout << "Omega(" << k << ") =" << endl;
+    // Rcpp::Rcout << Omega << endl;
+
+
+    // Throw error if solution diverges.
+    if (obj > objOld) {
+      throw std::runtime_error("Solution diverged. Try adjusting parameters.");
     }
 
-    // Pre-compute constant matrices.
-    const arma::mat S = X.t()*X;
-    const arma::mat H = X.t()*Y;
+    // Norms of differences.
+    dBNorm = norm(B-BOld,"fro");
+    dOmegaNorm = norm(Omega-OmegaOld,"fro");
 
-    // For recording history of iterates.
-    field<arma::mat> BHist(max_iter);
-    field<arma::mat> OmegaHist(max_iter);
-    arma::vec objHist(max_iter);
-
-    // For caching previous iterates.
-    arma::mat BOld;
-    arma::mat OmegaOld;
-    double objOld;
-
-    // For determining convergence.
-    int itrs;
-    double dBNorm;
-    double dOmegaNorm;
-    double gamma = std::numeric_limits<double>::infinity();
-
-    // Initial iterates.
-    arma::mat B = initialize_B(S,H,s1);
-    arma::mat Omega = initialize_Omega(B,X,Y,s2);
-    double obj = std::numeric_limits<double>::infinity();
-
-    // For keeping time.
-    double time;
-    long now;
-
-    // Start the clock.
-    clock_t start = clock();
-
-    // Main loop of tsmvr algorithm.
-    for (int k=1; k<=max_iter; k=k+1) {
-
-        // Cache previous iterate.
-        BOld = B;
-        OmegaOld = Omega;
-        objOld = obj;
-
-        // Update current iterate.
-        B = updateB(B, Omega, X, Y, S, H, B_type, s1,
-                    eta1, rho1, beta1);
-        Omega = updateOmega(B, Omega, X, Y, Omega_type, s2,
-                            eta2, rho2, beta2);
-        obj = objective(B,Omega,X,Y);
-
-
-        // Throw error if solution diverges.
-        if (obj > objOld) {
-            throw std::runtime_error("Solution diverged. Try adjusting parameters.");
-        }
-
-        // Norms of differences.
-        dBNorm = norm(B-BOld,"fro");
-        dOmegaNorm = norm(Omega-OmegaOld,"fro");
-
-        // If not quiet, print results to screen.
-        if(quiet == false && k % skip == 0) {
-            now = ( clock() - start ) / (double) CLOCKS_PER_SEC * 1000;
-            Rcpp::Rcout <<  k << "\t" \
-                 << round((long)(obj*1000000.0))/1000000.0 << "\t" \
-                 << round((long)(dBNorm*1000000.0))/1000000.0 << "\t\t" \
-                 << round((long)(dOmegaNorm*1000000.0))/1000000.0 << "\t" \
-                 << round(now) << endl;
-        }
-
-        // Save iterates to history.
-        BHist(k-1) = B;
-        OmegaHist(k-1) = Omega;
-        objHist(k-1) = obj;
-
-        // Test for convergence.
-        itrs = k;
-        gamma = std::max(dBNorm, dOmegaNorm);
-        if (gamma < epsilon) break;
-
+    // If not quiet, print results to screen.
+    if(quiet == false && k % skip == 0) {
+      now = ( clock() - start ) / (double) CLOCKS_PER_SEC * 1000;
+      Rcpp::Rcout <<  k << "\t"                                            \
+                  << round((long)(obj*1000000.0))/1000000.0 << "\t"        \
+                  << round((long)(dBNorm*1000000.0))/1000000.0 << "\t\t"   \
+                  << round((long)(dOmegaNorm*1000000.0))/1000000.0 << "\t" \
+                  << round(now) << endl;
     }
 
-    // Time duration
-    time = ( clock() - start ) / (double) CLOCKS_PER_SEC;
+    // Save iterates to history.
+    BHist(k-1) = B;
+    OmegaHist(k-1) = Omega;
+    objHist(k-1) = obj;
 
-    // Statistics.
-    arma::mat Y_hat = X*B;
-    arma::mat res = Y-Y_hat;
-    double ss = trace(res.t()*res);
-    // int df = n-(p+q+q^2);    // df = # obs - (coefficents + responses +
-                            //  size of precision matrix) [correct ?]
-    // double se = ss/std::sqrt(df);  // standard error, not impelented ..
+    // Test for convergence.
+    itrs = k;
+    gamma = std::max(dBNorm, dOmegaNorm);
+    if (gamma < epsilon) break;
 
-    // Resize fields to return cleaner objects to user. If maximum
-    // number of iterations is reached, warn.
-    field<arma::mat> BHist2(itrs);
-    field<arma::mat> OmegaHist2(itrs);
-    arma::vec objHist2(itrs);
-    if (itrs == max_iter) {
-        BHist2 = BHist;
-        OmegaHist2 = OmegaHist;
-        objHist2 = objHist;
-        if (suppress == false) {
-          Rcpp::warning("warning: Maximum number of iterations achieved without convergence.\n");
-        }
+  }
+
+  // Time duration
+  time = ( clock() - start ) / (double) CLOCKS_PER_SEC;
+
+  // Statistics.
+  arma::mat Y_hat = X*B;
+  arma::mat res = Y-Y_hat;
+  double ss = trace(res.t()*res);
+  // int df = n-(p+q+q^2);    // df = # obs - (coefficents + responses +
+  //  size of precision matrix) [correct ?]
+  // double se = ss/std::sqrt(df);  // standard error, not impelented ..
+
+  // Resize fields to return cleaner objects to user. If maximum
+  // number of iterations is reached, warn.
+  field<arma::mat> BHist2(itrs);
+  field<arma::mat> OmegaHist2(itrs);
+  arma::vec objHist2(itrs);
+  if (itrs == max_iter) {
+    BHist2 = BHist;
+    OmegaHist2 = OmegaHist;
+    objHist2 = objHist;
+    if (suppress == false) {
+      Rcpp::warning("warning: Maximum number of iterations achieved without convergence.\n");
     }
-    else {
-        for (int k=0; k<itrs; k=k+1) {
-            BHist2(k) = BHist(k);
-            OmegaHist2(k) = OmegaHist(k);
-            objHist2(k) = objHist(k);
-        }
+  }
+  else {
+    for (int k=0; k<itrs; k=k+1) {
+      BHist2(k) = BHist(k);
+      OmegaHist2(k) = OmegaHist(k);
+      objHist2(k) = objHist(k);
     }
+  }
 
-    // Return.
-    return List::create(Named("B_hat") = B,
-                        Named("Omega_hat") = Omega,
-                        Named("Y_hat") = Y_hat,
-                        Named("residuals") = res,
-                        Named("sum_of_squares") = ss,
-                        Named("num_obs") = X.n_rows,
-                        Named("num_predictors") = X.n_cols,
-                        Named("num_responses") = Y.n_cols,
-                        Named("iterations") = itrs,
-                        Named("time") = time,
-                        Named("B_history") = BHist2,
-                        Named("Omega_history") = OmegaHist2,
-                        Named("objective") = obj,
-                        Named("objective_history") = objHist2);
+  // Return.
+  return List::create(Named("B_hat") = B,
+                      Named("Omega_hat") = Omega,
+                      Named("Y_hat") = Y_hat,
+                      Named("residuals") = res,
+                      Named("sum_of_squares") = ss,
+                      Named("num_obs") = X.n_rows,
+                      Named("num_predictors") = X.n_cols,
+                      Named("num_responses") = Y.n_cols,
+                      Named("iterations") = itrs,
+                      Named("time") = time,
+                      Named("B_history") = BHist2,
+                      Named("Omega_history") = OmegaHist2,
+                      Named("objective") = obj,
+                      Named("objective_history") = objHist2);
 
 }

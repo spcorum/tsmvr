@@ -70,7 +70,7 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
     } else if (Omega_type == "min") {
       cat("Solver mode 'gd-min' with eta1 = ", eta1, ".\n", sep = "")
     }
-    cat("s1\ts2\terror\t\tsd\t\ttime (s)\n")
+    cat("s1\ts2\terror\t\tsd\t\ttime\n")
   }
 
   # Iterate over reps.

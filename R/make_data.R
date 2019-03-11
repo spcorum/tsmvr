@@ -83,7 +83,7 @@ make_data <- function(n, p, q, b1 = sqrt(0.1), b2 = sqrt(0.1), sigma = 1,
    )
   data.list <- as.list(rep(list(NULL), reps))
   for (i in 1:reps) {
-    Y = XB + sigma^2 * E.list[[i]]
+    Y = XB + sigma * E.list[[i]]
     data.list[[i]]$X = X
     data.list[[i]]$B = B
     data.list[[i]]$Y = Y
