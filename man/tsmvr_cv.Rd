@@ -4,10 +4,7 @@
 \alias{tsmvr_cv}
 \title{k-fold cross-validation for tsmvr}
 \usage{
-tsmvr_cv(X, Y, s1, s2, k = 10, B_type = "ls", Omega_type = "ls",
-  eta1 = 0.05, eta2 = 0.2, rho1 = 100, rho2 = 100, beta1 = 0.5,
-  beta2 = 0.5, epsilon = 0.001, max_iter = 2000, quiet = FALSE,
-  suppress = FALSE, seed = NULL)
+tsmvr_cv(X, Y, s1, s2, pars, k = 10, quiet = F, seed = NULL)
 }
 \arguments{
 \item{X}{design matrix (n-by-p)}
@@ -18,31 +15,11 @@ tsmvr_cv(X, Y, s1, s2, k = 10, B_type = "ls", Omega_type = "ls",
 
 \item{s2}{covariance matrix sparsity (positive integer)}
 
+\item{pars}{list of algorithm parameters; output of \code{set_parameters}}
+
 \item{k}{number of k-folds (integer greater than 1)}
 
-\item{B_type}{B-step descent type (string: 'gd')}
-
-\item{Omega_type}{Omega-step descent type (string: 'gd' or 'min')}
-
-\item{eta1}{B-step learning rate (positive numeric)}
-
-\item{eta2}{Omega-step learning rate (positive numeric)}
-
-\item{rho1}{B-step linesearch convergence parameter (positive numeric)}
-
-\item{rho2}{Omega-step linesearch convergence parameter  (positive numeric)}
-
-\item{beta1}{B-step linesearch shrinkage parameter (positive numeric)}
-
-\item{beta2}{Omega-step linesearch shrinkage parameter (positive numeric)}
-
-\item{epsilon}{convergence parameter (positive numeric)}
-
-\item{max_iter}{maximum number of allowed iterations (positive integer)}
-
-\item{quiet}{quiet mode (bool)}
-
-\item{suppress}{suppress maximum iteration warning (bool)}
+\item{quiet}{(logical)}
 
 \item{seed}{set random seed (integer)}
 }
@@ -58,6 +35,8 @@ error between the true response and the predicted response
 on a given cross-validation set.
 }
 \note{
-See also \code{\link{squared_error}}, \code{\link{k_folds}},
-\code{\link{tsmvr_solve}}.
+See also \code{\link{squared_error}},
+\code{\link{k_folds}},
+\code{\link{tsmvr_solve}}, and
+\code{\link{set_parameters}}.
 }

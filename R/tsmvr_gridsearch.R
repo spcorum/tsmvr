@@ -8,72 +8,59 @@
 #'
 #' @param X design matrix (n-by-p)
 #' @param Y response matrix (n-by-q)
-#' @param s1_grid values for gridsearch (vector of integer valued numerics)
-#' @param s2_grid values for gridsearch (vector of integer valued numerics)
-#' @param k number of k-folds (integer greater than 1)
-#' @param reps number of replications (positive integer)
-#' @param B_type B-step descent type (string: 'gd')
-#' @param Omega_type Omega-step descent type (string: 'gd' or 'min')
-#' @param eta1 B-step learning rate (positive numeric)
-#' @param eta2 Omega-step learning rate (positive numeric)
-#' @param rho1 B-step linesearch convergence parameter (positive numeric)
-#' @param rho2 Omega-step linesearch convergence parameter  (positive numeric)
-#' @param beta1 B-step linesearch shrinkage parameter (positive numeric)
-#' @param beta2 Omega-step linesearch shrinkage parameter (positive numeric)
-#' @param epsilon convergence parameter (positive numeric)
-#' @param max_iter maximum number of allowed iterations (positive integer)
-#' @param suppress suppress maximum iteration warning (bool)
-#' @param quiet quiet mode (bool)
+#' @param s1_vec values for gridsearch (vector of integer valued numerics)
+#' @param s2_vec values for gridsearch (vector of integer valued numerics)
+#' @param k number of k-folds (integer valued numerics greater than 1)
+#' @param reps number of replications (positive integer valued numeric)
+#' @param pars list of algorithm parameters; output of \code{set_parameters}
 #' @param seed set random seed (integer)
 #'
 #' @return A list containing the \code{mean} and \code{sd} of the
 #' error over the replicates as well as the means and standard
 #' deviations of the errors across each fold.
-#' See also \code{\link{squared_error}}, \code{\link{k_folds}},
-#' \code{\link{tsmvr_cv}}, and \code{\link{tsmvr_solve}}.
 #'
+#' @note See also \code{\link{squared_error}},
+#' \code{\link{k_folds}},
+#' \code{\link{tsmvr_solve}},
+#' \code{\link{tsmvr_cv}},
+#' \code{\link{tsmvr_replicate}}, and
+#' \code{\link{set_parameters}}.
 #'
-#' @export
-tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
+# #' @export
+tsmvr_vecsearch <- function(X, Y, s1_vec, s2_vec, pars,
                              k = 10, reps = 10,
-                             B_type = "ls", Omega_type = "ls",
-                             eta1 = 0.05, eta2 = 0.2,
-                             rho1 = 1e2, rho2 = 1e2,
-                             beta1 = 0.5, beta2 = 0.5,
-                             epsilon = 1e-5, max_iter = 2000,
-                             suppress = TRUE, quiet = FALSE,
-                             seed = NULL) {
+                             quiet = F, seed = NULL) {
+
   stopifnot(
-    is.numeric(X), is.matrix(Y), is.numeric(Y), is.matrix(Y),
-    is.numeric(s1_grid), s1_grid >= 0,
-    is.numeric(s2_grid), s2_grid >= dim(Y)[2],
-    s1_grid <= dim(X)[2] * dim(Y)[2], s2_grid <= (dim(Y)[2])^2,
-    s1_grid %% 1 == 0, s2_grid %% 1 == 0,
-    k %% 1 == 0, k > 1, reps %% 1 == 0, reps > 0,
-    is.character(B_type), is.character(Omega_type),
-    B_type %in% c("gd", "ls"), Omega_type %in% c("gd", "min", "ls"),
-    is.numeric(epsilon), epsilon > 0,
-    is.numeric(max_iter), max_iter > 0, max_iter %% 1 == 0,
+    is.numeric(X), is.matrix(X),
+    is.numeric(Y), is.matrix(Y),
+    dim(X)[1] == dim(Y)[1],
+    is.numeric(s1_vec), s1_vec%%1 == 0,
+    s1_vec >= 0, s1_vec <= dim(X)[2] * dim(Y)[2],
+    is.numeric(s2_vec), s2_vec%%1 == 0,
+    s2_vec >= dim(Y)[2], s2_vec <=(dim(Y)[2])^2,
+    is.list(pars),
+    is.numeric(k), k%%1 == 0, k > 1, k <= dim(X)[1],
+    is.numeric(reps), reps%%1 == 0, reps > 0,
     is.null(seed) || is.numeric(seed)
   )
 
   # Initialize objects.
-  m <- length(s1_grid)
-  n <- length(s2_grid)
+  m <- length(s1_vec)
+  n <- length(s2_vec)
   error <- matrix(rep(0, m * n), m, n)
   error_sd <- matrix(rep(0, m * n), m, n)
 
   # Header
   if (!quiet) {
-    if (Omega_type == "gd") {
-      cat("Solver mode 'gd-gd' with eta1 = ", eta1, " and eta2 = ", eta2, ".\n", sep = "")
-    } else if (Omega_type == "min") {
-      cat("Solver mode 'gd-min' with eta1 = ", eta1, ".\n", sep = "")
-    }
-    cat("s1\ts2\terror\t\tsd\t\ttime\n")
+    cat("Solver mode ", pars$B_type, "-", pars$Omega_type, " with eta1 = ", pars$eta1, sep = "")
+    if (pars$Omega_type == 'min') cat(".\n", sep = '')
+    else cat(" and eta2 = ", pars$eta2,  ".\n", sep = '')
+    cat("s1\ts2\terror/p/q\t\tsd\t\ttime\n")
   }
 
   # Iterate over reps.
+  pars$quiet = T
   set.seed(seed)
   tic <- Sys.time()
   for (i in 1:m) {
@@ -82,12 +69,9 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
       # For each grid point, perform replicated, cross-validated
       # tsmvr_solve.
       replicate_result <- tsmvr_replicate(
-        X = X, Y = Y, s1 = s1_grid[i], s2 = s2_grid[j],
-        k = k, reps = reps,
-        B_type = B_type, Omega_type = Omega_type,
-        eta1 = eta1, eta2 = eta2,
-        epsilon = epsilon, max_iter = max_iter,
-        quiet = T, seed = seed
+        X = X, Y = Y, s1 = s1_vec[i], s2 = s2_vec[j],
+        k = k, reps = reps, pars = pars, quiet = T,
+        seed = seed
       )
 
       # Record this result.
@@ -97,7 +81,7 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
 
       # Print this result to screen.
       if (!quiet) {
-        cat(s1_grid[i], "\t", s2_grid[j], "\t", error[i, j], "\t",
+        cat(s1_vec[i], "\t", s2_vec[j], "\t", error[i, j], "\t",
             error_sd[i, j], "\t", round(toc, 3), "\n", sep = ""
         )
       }
@@ -109,8 +93,8 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
   error_min <- min(error)
   error_min_idx <- which(error == min(error), arr.ind = T)
   error_min_sd <- error_sd[error_min_idx]
-  s1_min <- s1_grid[error_min_idx[1]]
-  s2_min <- s2_grid[error_min_idx[2]]
+  s1_min <- s1_vec[error_min_idx[1]]
+  s2_min <- s2_vec[error_min_idx[2]]
 
   # Print final result to screen.
   if (!quiet) {
@@ -125,7 +109,8 @@ tsmvr_gridsearch <- function(X, Y, s1_grid, s2_grid,
   return(list(
     error_min = error_min, error_min_sd = error_min_sd,
     s1_min = s1_min, s2_min = s2_min,
-    error = error, error_sd = error_sd, folds = k,
-    reps = reps, time = toc
+    s1_vec = s1_vec, s2_vec = s2_vec,
+    folds = k, reps = reps,
+    gs_time = toc
   ))
 }
