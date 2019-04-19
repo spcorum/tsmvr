@@ -459,7 +459,7 @@ arma::mat updateOmega(const arma::mat &B, arma::mat Omega,
 //' \code{residuls} - difference between the actual and fitted responses
 //'
 //'
-//' @export
+// //' @export
 // [[Rcpp::export]]
 List tsmvr_solve(const arma::mat &X,
                  const arma::mat &Y,

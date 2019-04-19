@@ -10,7 +10,7 @@ tsmvr(X, Y, s1 = NULL, s2 = NULL, s1_vec = NULL, s2_vec = NULL,
 \arguments{
 \item{X}{n-by-p predictor matrix}
 
-\item{Y}{n-by-1 response matrix}
+\item{Y}{n-by-q response matrix}
 
 \item{s1}{sparsity for p-by-q regressor matrix \code{B} (positive integer or NULL)}
 

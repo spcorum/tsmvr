@@ -11,7 +11,7 @@
 #'
 #' @note See also \code{\link{tsmvr_cv}}.
 #'
-#' @export
+# #' @export
 k_folds <- function(n, k, seed = NULL) {
   stopifnot(
     is.numeric(n), is.numeric(k), is.numeric(seed) || is.null(seed),
