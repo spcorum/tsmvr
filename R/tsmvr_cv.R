@@ -26,7 +26,7 @@
 #' @importFrom stats sd
 #'
 # #' @export
-tsmvr_cv <- function(X, Y, s1, s2, pars, k = 10, quiet = F, seed = NULL) {
+tsmvr_cv <- function(X, Y, s1, s2, pars, quiet = F, seed = NULL) {
   stopifnot(
     is.numeric(X), is.matrix(X),
     is.numeric(Y), is.matrix(Y),
@@ -34,28 +34,27 @@ tsmvr_cv <- function(X, Y, s1, s2, pars, k = 10, quiet = F, seed = NULL) {
     is.numeric(s1), s1%%1 == 0, s1 > 0, s1 <= dim(X)[2] * dim(Y)[2],
     is.numeric(s2), s2%%1 == 0, s2 > 0, s2 <= (dim(Y)[2])^2,
     is.list(pars),
-    is.numeric(k), k%%1 == 0, k > 1, k <= dim(X)[1],
     is.logical(quiet),
     is.null(seed) || is.numeric(seed)
   )
 
-  error <- rep(0, k)
+  error <- rep(0, pars$k)
 
   # Print header.
   if (!quiet) {
     cat("Solver mode ", pars$B_type, "-", pars$Omega_type, " with eta1 = ", pars$eta1, sep = "")
     if (pars$Omega_type == 'min') cat(".\n", sep = '')
     else cat(" and eta2 = ", pars$eta2,  ".\n", sep = '')
-    cat("Fold\terror/p/q\t\ttime (s)\n")
+    cat("Fold\terror\t\ttime (s)\n")
   }
 
   # Compute folds.
-  fold_list <- k_folds(nrow(X), k, seed)
+  fold_list <- k_folds(nrow(X), pars$k, seed)
 
   # For each fold, solve and compute result.
   tic <- Sys.time()
   pars$quiet = T
-  for (i in 1:k) {
+  for (i in 1:pars$k) {
     X_train <- X[fold_list$train[[i]], ]
     Y_train <- Y[fold_list$train[[i]], ]
     X_val <- X[fold_list$val[[i]], ]
@@ -66,7 +65,8 @@ tsmvr_cv <- function(X, Y, s1, s2, pars, k = 10, quiet = F, seed = NULL) {
     )$B_hat
 
     Y_pred <- X_val %*% B_hat
-    error[i] <- squared_error(Y_val, Y_pred)
+    A = Y_val - Y_pred
+    error[i] <- sum(A*A)
     toc <- (Sys.time() - tic)
 
     # Print fold result to screen.
@@ -88,6 +88,6 @@ tsmvr_cv <- function(X, Y, s1, s2, pars, k = 10, quiet = F, seed = NULL) {
   # Compute results.
   return(list(
     error_mean = error_mean, error_sd = error_sd,
-    num_folds = k, time = toc
+    num_folds = pars$k, time = toc
   ))
 }

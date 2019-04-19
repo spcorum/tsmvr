@@ -5,11 +5,11 @@
 \title{Set parameters for tsmvr_solve}
 \usage{
 set_parameters(B_type = "ls", Omega_type = "ls", eta1 = 0.01,
-  eta2 = 0.01, lam1 = 0.1, lam2 = 0.1, del1 = 1e-06,
-  del2 = 1e-06, del_Om = 0, rho1 = 0.001, rho2 = 0.001,
+  eta2 = 0.01, lam1 = 0.1, lam2 = 0.1, del1 = 0.001,
+  del2 = 0.001, del_Om = 0, rho1 = 0.001, rho2 = 0.001,
   beta1 = 0.5, beta2 = 0.5, qmax1 = 128, qmax2 = 128,
-  eps1 = 1e-04, eps2 = Inf, max_iter = 2000, skip = 10,
-  quiet = F, suppress = F, seed = NULL)
+  eps1 = 1e-04, eps2 = Inf, k = 5, reps = 10, max_iter = 2000,
+  skip = 10, quiet = F, suppress = F, seed = NULL)
 }
 \arguments{
 \item{B_type}{type of descent for regression steps (string: 'gd' or 'ls')}
@@ -45,6 +45,10 @@ set_parameters(B_type = "ls", Omega_type = "ls", eta1 = 0.01,
 \item{eps1}{B-step convergence parameter (positive numeric)}
 
 \item{eps2}{Omega-step convergence parameter (positive numeric)}
+
+\item{k}{number of cross-validation folds (positive integer valued numeric greater than 1)}
+
+\item{reps}{number of k-fold cross-validation replicates (positive integer valued numeric)}
 
 \item{max_iter}{maximum number of iterations (positive integer)}
 

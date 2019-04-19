@@ -4,8 +4,7 @@
 \alias{tsmvr_replicate}
 \title{Replicated k-fold cross-validation for tsmvr}
 \usage{
-tsmvr_replicate(X, Y, s1, s2, pars, k = 10, reps = 10, quiet = F,
-  seed = NULL)
+tsmvr_replicate(X, Y, s1, s2, pars, quiet = F, seed = NULL)
 }
 \arguments{
 \item{X}{design matrix (n-by-p)}
@@ -18,11 +17,11 @@ tsmvr_replicate(X, Y, s1, s2, pars, k = 10, reps = 10, quiet = F,
 
 \item{pars}{list of algorithm parameters; output of \code{set_parameters}}
 
+\item{seed}{set random seed (integer)}
+
 \item{k}{number of k-folds (integer greater than 1)}
 
 \item{reps}{number of replications (positive integer)}
-
-\item{seed}{set random seed (integer)}
 }
 \value{
 A list containing the \code{mean} and \code{sd} of the

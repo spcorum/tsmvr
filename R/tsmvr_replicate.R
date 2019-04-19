@@ -27,8 +27,7 @@
 #'
 #'
 # #' @export
-tsmvr_replicate <- function(X, Y, s1, s2, pars, k = 10, reps = 10, quiet = F,
-                            seed = NULL) {
+tsmvr_replicate <- function(X, Y, s1, s2, pars, quiet = F, seed = NULL) {
 
   stopifnot(
     is.numeric(X), is.matrix(X),
@@ -37,28 +36,26 @@ tsmvr_replicate <- function(X, Y, s1, s2, pars, k = 10, reps = 10, quiet = F,
     is.numeric(s1), s1%%1 == 0, s1 > 0, s1 <= dim(X)[2] * dim(Y)[2],
     is.numeric(s2), s2%%1 == 0, s2 > 0, s2 <= (dim(Y)[2])^2,
     is.list(pars),
-    is.numeric(k), k%%1 == 0, k > 1, k <= dim(X)[1],
-    is.numeric(reps), reps%%1 == 0, reps > 0,
     is.null(seed) || is.numeric(seed)
   )
 
   # Initialize objects.
   n <- nrow(X)
-  fold_error <- rep(0, reps)
-  fold_sd <- rep(0, reps)
+  fold_error <- rep(0, pars$reps)
+  fold_sd <- rep(0, pars$reps)
 
   # Header
   if (!quiet) {
     cat("Solver mode ", pars$B_type, "-", pars$Omega_type, " with eta1 = ", pars$eta1, sep = "")
     if (pars$Omega_type == 'min') cat(".\n", sep = '')
     else cat(" and eta2 = ", pars$eta2,  ".\n", sep = '')
-    cat("rep\terror/p/q\t\ttime (s)\n")
+    cat("rep\terror\t\ttime (s)\n")
   }
 
   # Iterate over reps.
   set.seed(seed)
   tic <- Sys.time()
-  for (r in 1:reps) {
+  for (r in 1:pars$reps) {
 
     # For each rep, iterate over folds.
     if(is.null(seed)) temp_seed = NULL
@@ -66,7 +63,7 @@ tsmvr_replicate <- function(X, Y, s1, s2, pars, k = 10, reps = 10, quiet = F,
     # print(temp_seed)
     fold_result <- tsmvr_cv(
       X = X, Y = Y, s1 = s1, s2 = s2,
-      k = k, pars = pars, quiet = T,
+      pars = pars, quiet = T,
       seed = temp_seed
     )
 
@@ -97,6 +94,6 @@ tsmvr_replicate <- function(X, Y, s1, s2, pars, k = 10, reps = 10, quiet = F,
   return(list(
     rep_error_mean = rep_error_mean, rep_error_sd = rep_error_sd,
     fold_error_means = fold_error, fold_error_sds = fold_sd,
-    folds = k, reps = reps, time = toc
+    folds = pars$k, reps = pars$reps, time = toc
   ))
 }

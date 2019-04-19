@@ -5,7 +5,7 @@
 \title{Truly Spare MultiVariate Regression}
 \usage{
 tsmvr(X, Y, s1 = NULL, s2 = NULL, s1_vec = NULL, s2_vec = NULL,
-  method = c("single", "cv", "gs"), pars, quiet = FALSE, seed = NULL)
+  method = c("single", "gs"), pars, quiet = FALSE, seed = NULL)
 }
 \arguments{
 \item{X}{n-by-p predictor matrix}

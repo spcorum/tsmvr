@@ -4,7 +4,7 @@
 \alias{tsmvr_cv}
 \title{k-fold cross-validation for tsmvr}
 \usage{
-tsmvr_cv(X, Y, s1, s2, pars, k = 10, quiet = F, seed = NULL)
+tsmvr_cv(X, Y, s1, s2, pars, quiet = F, seed = NULL)
 }
 \arguments{
 \item{X}{design matrix (n-by-p)}
@@ -17,11 +17,11 @@ tsmvr_cv(X, Y, s1, s2, pars, k = 10, quiet = F, seed = NULL)
 
 \item{pars}{list of algorithm parameters; output of \code{set_parameters}}
 
-\item{k}{number of k-folds (integer greater than 1)}
-
 \item{quiet}{(logical)}
 
 \item{seed}{set random seed (integer)}
+
+\item{k}{number of k-folds (integer greater than 1)}
 }
 \value{
 A list of the mean and standard deviation of the errors

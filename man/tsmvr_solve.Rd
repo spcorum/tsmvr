@@ -4,10 +4,7 @@
 \alias{tsmvr_solve}
 \title{Truly Sparse Multivariate Regression}
 \usage{
-tsmvr_solve(X, Y, s1, s2, B_type = "gd", Omega_type = "gd",
-  eta1 = 0.05, eta2 = 0.2, rho1 = 100, rho2 = 100, beta1 = 0.5,
-  beta2 = 0.5, epsilon = 0.001, max_iter = 2000L, skip = 10L,
-  quiet = FALSE, suppress = FALSE)
+tsmvr_solve(X, Y, s1, s2, pars)
 }
 \arguments{
 \item{X}{design matrix (n-by-p)}

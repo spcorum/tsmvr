@@ -27,10 +27,7 @@
 #' \code{\link{set_parameters}}.
 #'
 # #' @export
-tsmvr_vecsearch <- function(X, Y, s1_vec, s2_vec, pars,
-                             k = 10, reps = 10,
-                             quiet = F, seed = NULL) {
-
+tsmvr_gridsearch <- function(X, Y, s1_vec, s2_vec, pars, quiet = F, seed = NULL) {
   stopifnot(
     is.numeric(X), is.matrix(X),
     is.numeric(Y), is.matrix(Y),
@@ -40,8 +37,6 @@ tsmvr_vecsearch <- function(X, Y, s1_vec, s2_vec, pars,
     is.numeric(s2_vec), s2_vec%%1 == 0,
     s2_vec >= dim(Y)[2], s2_vec <=(dim(Y)[2])^2,
     is.list(pars),
-    is.numeric(k), k%%1 == 0, k > 1, k <= dim(X)[1],
-    is.numeric(reps), reps%%1 == 0, reps > 0,
     is.null(seed) || is.numeric(seed)
   )
 
@@ -56,7 +51,7 @@ tsmvr_vecsearch <- function(X, Y, s1_vec, s2_vec, pars,
     cat("Solver mode ", pars$B_type, "-", pars$Omega_type, " with eta1 = ", pars$eta1, sep = "")
     if (pars$Omega_type == 'min') cat(".\n", sep = '')
     else cat(" and eta2 = ", pars$eta2,  ".\n", sep = '')
-    cat("s1\ts2\terror/p/q\t\tsd\t\ttime\n")
+    cat("s1\ts2\terror\t\tsd\ttime\n")
   }
 
   # Iterate over reps.
@@ -70,8 +65,7 @@ tsmvr_vecsearch <- function(X, Y, s1_vec, s2_vec, pars,
       # tsmvr_solve.
       replicate_result <- tsmvr_replicate(
         X = X, Y = Y, s1 = s1_vec[i], s2 = s2_vec[j],
-        k = k, reps = reps, pars = pars, quiet = T,
-        seed = seed
+        pars = pars, quiet = T, seed = seed
       )
 
       # Record this result.
@@ -101,8 +95,6 @@ tsmvr_vecsearch <- function(X, Y, s1_vec, s2_vec, pars,
     cat("Minimum mean error = ", error_min, "\n", sep = "")
     cat("Sd at minimum error = ", error_min_sd, "\n", sep = "")
     cat("s1 = ", s1_min, ", s2 = ", s2_min, "\n", sep = "")
-    # cat('s1 = ', s1_min, '\n', sep = '')
-    # cat('s2 = ', s2_min, '\n', sep = '')
   }
 
   # Return result.
@@ -110,7 +102,7 @@ tsmvr_vecsearch <- function(X, Y, s1_vec, s2_vec, pars,
     error_min = error_min, error_min_sd = error_min_sd,
     s1_min = s1_min, s2_min = s2_min,
     s1_vec = s1_vec, s2_vec = s2_vec,
-    folds = k, reps = reps,
+    folds = pars$k, reps = pars$reps,
     gs_time = toc
   ))
 }

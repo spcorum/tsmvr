@@ -20,6 +20,8 @@
 #' @param qmax2 Omega-step linesearch maximum number of iterations (positive integer valued numeric)
 #' @param eps1 B-step convergence parameter (positive numeric)
 #' @param eps2 Omega-step convergence parameter (positive numeric)
+#' @param k number of cross-validation folds (positive integer valued numeric greater than 1)
+#' @param reps number of k-fold cross-validation replicates (positive integer valued numeric)
 #' @param max_iter maximum number of iterations (positive integer)
 #' @param skip iteration skip frequency for output to screen (positive integer)
 #' @param quiet whether or not to operate   (bool)
@@ -41,11 +43,12 @@
 set_parameters = function(B_type = 'ls', Omega_type = 'ls',
                           eta1 = 0.01, eta2 = 0.01,
                           lam1 = 0.1, lam2 = 0.1,
-                          del1 = 1e-6, del2 = 1e-6, del_Om = 0,
+                          del1 = 1e-3, del2 = 1e-3, del_Om = 0,
                           rho1 = 1e-3, rho2 = 1e-3,
                           beta1 = 0.5, beta2 = 0.5,
                           qmax1 = 128, qmax2 = 128,
                           eps1 = 1e-4, eps2 = Inf,
+                          k = 5, reps = 10,
                           max_iter = 2000, skip = 10,
                           quiet = F, suppress = F, seed = NULL) {
 
@@ -80,6 +83,7 @@ set_parameters = function(B_type = 'ls', Omega_type = 'ls',
       lam1 = lam1, lam2 = lam2, del1 = del1, del2 = del2, del_Om = del_Om,
       rho1 = rho1, rho2 = rho2, beta1 = beta1, beta2 = beta2,
       qmax1 = qmax1, qmax2 = qmax2, eps1 = eps1, eps2 = eps2,
+      k = k, reps = reps,
       max_iter = max_iter, skip = skip, quiet = quiet, suppress = suppress
     )
   )

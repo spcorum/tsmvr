@@ -118,7 +118,7 @@ arma::mat ht(arma::mat X, int s, bool ss = false) {
 
 // // [[Rcpp::export]]
 arma::mat minOmega(const arma::mat &B, const arma::mat &X, const arma::mat &Y,
-                   const double &delta = 1e-6) {
+                   const double &del = 1e-3) {
   /*
   * Direct minimization of tsmvrRcpp objective function with respect to
   * covariance matrix Omega.
@@ -134,13 +134,13 @@ arma::mat minOmega(const arma::mat &B, const arma::mat &X, const arma::mat &Y,
   arma::mat Covariance = A.st()*A/X.n_rows;
   // Rcpp::Rcout << "Covariance =" << endl;
   // Rcpp::Rcout << Covariance << endl;
-  arma::mat temp = inv(Covariance+delta*arma::eye<mat>(size(Covariance)));
+  arma::mat temp = inv(Covariance+del*arma::eye<mat>(size(Covariance)));
   return temp;
 }
 
 // // [[Rcpp::export]]
 arma::mat initialize_B(const arma::mat &S, const arma::mat &H, const int &s,
-                       const double &lam = 0.1, const double &delta = 1e-6) {
+                       const double &lam = 0.1, const double &del = 1e-3) {
   /*
   * This function intializes in the initial iterates B
   * for iterative hard threholding for multivariate
@@ -148,14 +148,14 @@ arma::mat initialize_B(const arma::mat &S, const arma::mat &H, const int &s,
   * S = X'X, p-by-q matrix H = X'Y, sparsity parameter integer
   * s >= 0, and Lasso paramter double lam > 0.
   */
-  arma::mat B_init = ht(st(solve(S+delta*arma::eye<mat>(size(S)),H,solve_opts::fast),lam),s);
+  arma::mat B_init = ht(st(solve(S+del*arma::eye<mat>(size(S)),H,solve_opts::fast),lam),s);
   return B_init;
 }
 
 // // [[Rcpp::export]]
 arma::mat initialize_Omega(const arma::mat &B0, const arma::mat &X, const arma::mat &Y,
                            const int &s, const double &lam = 0.1,
-                           const double &delta = 1e-6) {
+                           const double &del = 1e-3) {
   /*
   * This function intializes in the initial iterates B
   * for iterative hard threholding for multivariate
@@ -164,7 +164,7 @@ arma::mat initialize_Omega(const arma::mat &B0, const arma::mat &X, const arma::
   * sparsity parameter integer s >= 0, and Lasso paramter double
   * lam > 0.
   */
-  arma::mat minOm = minOmega(B0,X,Y,delta);
+  arma::mat minOm = minOmega(B0,X,Y,del);
   arma::mat Soft = st(minOm,lam);
   arma::mat Omega_init = ht(Soft,s,true);
   // Rcpp::Rcout << "Inverse covariance =" << endl;
@@ -464,19 +464,29 @@ arma::mat updateOmega(const arma::mat &B, arma::mat Omega,
 List tsmvr_solve(const arma::mat &X,
                  const arma::mat &Y,
                  const int &s1, const int &s2,
-                 const std::string &B_type = "gd",
-                 const std::string &Omega_type = "gd",
-                 const double &eta1 = 0.05,
-                 const double &eta2 = 0.2,
-                 const double &rho1 = 1e2,
-                 const double &rho2 = 1e2,
-                 const double &beta1 = 0.5,
-                 const double &beta2 = 0.5,
-                 const double &epsilon = 1e-3,
-                 const int &max_iter = 2000,
-                 const int &skip = 10,
-                 const bool &quiet = false,
-                 const bool &suppress = false) {
+                 const Rcpp::List &pars)
+  {
+
+  // Extract algorithm parameters from list "pars".
+  Rcpp::List x(pars);
+  const std::string B_type = as<std::string>(x["B_type"]);
+  const std::string Omega_type = as<std::string>(x["Omega_type"]);
+  const double eta1 = as<double>(x["eta1"]);
+  const double eta2 = as<double>(x["eta2"]);
+  const double lam1 = as<double>(x["lam1"]);
+  const double lam2 = as<double>(x["lam2"]);
+  const double del1 = as<double>(x["del1"]);
+  const double del2 = as<double>(x["del2"]);
+  const double rho1 = as<double>(x["rho1"]);
+  const double rho2 = as<double>(x["rho2"]);
+  const double beta1 = as<double>(x["beta1"]);
+  const double beta2 = as<double>(x["beta2"]);
+  const double eps1 = as<double>(x["eps1"]);
+  const double eps2 = as<double>(x["eps1"]);
+  const int max_iter = as<int>(x["max_iter"]);
+  const int skip = as<int>(x["skip"]);
+  const bool quiet = as<bool>(x["quiet"]);
+  const bool suppress = as<bool>(x["quiet"]);
 
   // Print header.
   if (!quiet) {
@@ -505,14 +515,9 @@ List tsmvr_solve(const arma::mat &X,
 
   // For determining convergence.
   int itrs;
-  double gamma1;
-  double gamma2;
-  double gamma = std::numeric_limits<double>::infinity();
-
-  // Initial iterates.
-  arma::mat B = initialize_B(S,H,s1);
-  arma::mat Omega = initialize_Omega(B,X,Y,s2);
-  double obj = std::numeric_limits<double>::infinity();
+  double gamma1 = std::numeric_limits<double>::infinity();
+  double gamma2 = std::numeric_limits<double>::infinity();
+  // double gamma = std::numeric_limits<double>::infinity();
 
   // For keeping time.
   double time;
@@ -520,6 +525,11 @@ List tsmvr_solve(const arma::mat &X,
 
   // Start the clock.
   clock_t start = clock();
+
+  // Initial iterates.
+  arma::mat B = initialize_B(S,H,s1,lam1,del1);
+  arma::mat Omega = initialize_Omega(B,X,Y,s2,lam2,del2);
+  double obj = std::numeric_limits<double>::infinity();
 
   // Main loop of tsmvr algorithm.
   for (int k=1; k<=max_iter; k=k+1) {
@@ -548,6 +558,8 @@ List tsmvr_solve(const arma::mat &X,
     }
 
     // Norms of differences.
+    gamma1 = pow(norm((B-BOld)/eta1,"fro"),2);
+    gamma2 = pow(norm((Omega-OmegaOld)/eta2,"fro"),2);
     gamma1 = norm((B-BOld)/eta1,"fro");
     gamma2 = norm((Omega-OmegaOld)/eta2,"fro");
 
@@ -568,8 +580,8 @@ List tsmvr_solve(const arma::mat &X,
 
     // Test for convergence.
     itrs = k;
-    gamma = std::max(gamma1, gamma2);
-    if (gamma < epsilon) break;
+    // gamma = std::max(gamma1, gamma2);
+    if (gamma1 <= eps1 && gamma2 <= eps2) break;
 
   }
 
