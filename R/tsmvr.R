@@ -15,7 +15,7 @@
 #' matrix entries.
 #'
 #' @param X n-by-p predictor matrix
-#' @param Y n-by-1 response matrix
+#' @param Y n-by-q response matrix
 #' @param s1 sparsity for p-by-q regressor matrix \code{B} (positive integer or NULL)
 #' @param s2 sparsity for q-by-q precision matrix \code{Omega} (positive integer or NULL)
 #' @param s1_vec \code{s1} values for gridsearch (vector of integer valued numerics or NULL)
