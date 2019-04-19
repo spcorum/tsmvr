@@ -482,7 +482,7 @@ List tsmvr_solve(const arma::mat &X,
   const double beta1 = as<double>(x["beta1"]);
   const double beta2 = as<double>(x["beta2"]);
   const double eps1 = as<double>(x["eps1"]);
-  const double eps2 = as<double>(x["eps1"]);
+  const double eps2 = as<double>(x["eps2"]);
   const int max_iter = as<int>(x["max_iter"]);
   const int skip = as<int>(x["skip"]);
   const bool quiet = as<bool>(x["quiet"]);
@@ -568,7 +568,7 @@ List tsmvr_solve(const arma::mat &X,
       now = ( clock() - start ) / (double) CLOCKS_PER_SEC * 1000;
       Rcpp::Rcout <<  k << "\t"                                            \
                   << round((long)(obj*1000000.0))/1000000.0 << "\t"        \
-                  << round((long)(gamma1*1000000.0))/1000000.0 << "\t\t"   \
+                  << round((long)(gamma1*1000000.0))/1000000.0 << "\t"   \
                   << round((long)(gamma2*1000000.0))/1000000.0 << "\t" \
                   << round(now) << endl;
     }
