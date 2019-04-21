@@ -217,7 +217,7 @@ arma::mat gdB(const arma::mat &B, const arma::mat &Omega,
 // // [[Rcpp::export]]
 arma::mat gdOmega(const arma::mat &B, const arma::mat &Omega,
                   const arma::mat &X, const arma::mat &Y,
-                  const double &eta, const double &delta = 0)
+                  const double &eta, const bool &disp_min_ev)
 {
   /*
   * Gradient step with respect to Omega.
@@ -229,9 +229,12 @@ arma::mat gdOmega(const arma::mat &B, const arma::mat &Omega,
   *
   *       Omega_new = Omega - eta*dgdB(B,Omega,X,Y)
   */
+  if (disp_min_ev) {
+    arma::vec eigval = eig_sym(Omega);
+    Rcpp::Rcout << "Omega minimum eigenvalue = " << eigval[0] << endl;
+  }
   const arma::mat A = Y-X*B;
-  const arma::mat dgdOm = A.st()*A/X.n_rows -
-    inv_sympd(Omega+delta*arma::eye<mat>(size(Omega)));
+  const arma::mat dgdOm = A.st()*A/X.n_rows - inv_sympd(Omega);
   return (Omega - eta*dgdOm);
 }
 
@@ -275,8 +278,9 @@ arma::mat lsB(const arma::mat &B, const arma::mat &Omega,
 arma::mat lsOmega(arma::mat B, const arma::mat &Omega,
                   const arma::mat &X, const arma::mat &Y,
                   const int &s, double eta = 0.1,
-                  const double &rho = 1e2, const double &beta = 0.5,
-                  const double &eta_min = 1e-6, const int &q_max = 128)
+                  const double &rho = 1, const double &beta = 0.5,
+                  const double &eta_min = 1e-6, const int &q_max = 128,
+                  const bool &disp_min_ev = false)
 {
   /*
   * Generalized linesearch for with resepct to Omega.
@@ -298,7 +302,7 @@ arma::mat lsOmega(arma::mat B, const arma::mat &Omega,
     // if (eta < eta_min) {
     //   throw std::runtime_error("B-step linesearch did not find a good learning rate. Try adjusting parameters.");
     // }
-    Omega_test = ht(gdOmega(B,Omega,X,Y,eta),s,true); // non psd step
+    Omega_test = ht(gdOmega(B,Omega,X,Y,eta,disp_min_ev),s,true); // non psd step
 
     Omega_diff = Omega_test - Omega;
     g_test = objective(B,Omega_test,X,Y);
@@ -350,7 +354,8 @@ arma::mat updateOmega(const arma::mat &B, arma::mat Omega,
                       const int &s,
                       const double &eta = 0.01,
                       const double &rho = 1e2,
-                      const double &beta = 0.5) {
+                      const double &beta = 0.5,
+                      const bool &disp_min_ev = false) {
   /*
   * tsmvrRcpp covariance matrix iterate update via the gradient descent
   * method.
@@ -363,13 +368,13 @@ arma::mat updateOmega(const arma::mat &B, arma::mat Omega,
   */
   if (type == "gd") {
     // Rcpp::Rcout << "Omega_t =\n" << Omega << endl;
-    arma::mat Omega_twidle = gdOmega(B,Omega,X,Y,eta);
+    arma::mat Omega_twidle = gdOmega(B,Omega,X,Y,eta,disp_min_ev);
     Omega = ht(Omega_twidle,s,true);
     // Rcpp::Rcout << "Omega_twidle =\n" << Omega_twidle << endl;
     // Rcpp::Rcout << "Omega_t+1 =\n" << Omega << endl;
   }
   else if (type == "ls") {
-    Omega = lsOmega(B,Omega,X,Y,s,eta,rho,beta);
+    Omega = lsOmega(B,Omega,X,Y,s,eta,rho,beta,1e-6,128,disp_min_ev);
   }
   else if (type == "min") {
     Omega = ht(minOmega(B,X,Y),s,true);
@@ -487,6 +492,7 @@ List tsmvr_solve(const arma::mat &X,
   const int skip = as<int>(x["skip"]);
   const bool quiet = as<bool>(x["quiet"]);
   const bool suppress = as<bool>(x["quiet"]);
+  const bool disp_min_ev = as<bool>(x["disp_min_ev"]);
 
   // Print header.
   if (!quiet) {
@@ -496,7 +502,7 @@ List tsmvr_solve(const arma::mat &X,
     } else {
       Rcpp::Rcout << "eta1 = " << eta1 << " and eta2 = " << eta2 << "." << endl;
     }
-    Rcpp::Rcout << "t\tobj\t||\u2207B||\t\t||\u2207\u03A9||\ttime (ms)" << endl;
+    Rcpp::Rcout << "t\tobj\t||\u2207B/eta1||\t||\u2207\u03A9/eta2||\ttime (ms)" << endl;
   }
 
   // Pre-compute constant matrices.
@@ -543,14 +549,8 @@ List tsmvr_solve(const arma::mat &X,
     B = updateB(B, Omega, X, Y, S, H, B_type, s1,
                 eta1, rho1, beta1);
     Omega = updateOmega(B, Omega, X, Y, Omega_type, s2,
-                        eta2, rho2, beta2);
+                        eta2, rho2, beta2, disp_min_ev);
     obj = objective(B,Omega,X,Y);
-
-    // Rcpp::Rcout << "B(" << k << ") =" << endl;
-    // Rcpp::Rcout << B << endl;
-    // Rcpp::Rcout << "Omega(" << k << ") =" << endl;
-    // Rcpp::Rcout << Omega << endl;
-
 
     // Throw error if solution diverges.
     if (obj > objOld) {

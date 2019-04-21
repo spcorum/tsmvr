@@ -6,10 +6,10 @@
 \usage{
 set_parameters(B_type = "ls", Omega_type = "ls", eta1 = 0.01,
   eta2 = 0.01, lam1 = 0.1, lam2 = 0.1, del1 = 0.001,
-  del2 = 0.001, del_Om = 0, rho1 = 0.001, rho2 = 0.001,
-  beta1 = 0.5, beta2 = 0.5, qmax1 = 128, qmax2 = 128,
-  eps1 = 1e-04, eps2 = Inf, k = 5, reps = 10, max_iter = 2000,
-  skip = 10, quiet = F, suppress = F, seed = NULL)
+  del2 = 0.001, rho1 = 0.001, rho2 = 0.001, beta1 = 0.5,
+  beta2 = 0.5, qmax1 = 128, qmax2 = 128, eps1 = 1e-04,
+  eps2 = Inf, k = 5, reps = 10, max_iter = 2000, skip = 10,
+  quiet = F, suppress = F, seed = NULL)
 }
 \arguments{
 \item{B_type}{type of descent for regression steps (string: 'gd' or 'ls')}
@@ -27,8 +27,6 @@ set_parameters(B_type = "ls", Omega_type = "ls", eta1 = 0.01,
 \item{del1}{B initialization matrix inversion fudge factor (positive numeric)}
 
 \item{del2}{Omega initialization matrix inversion fudge factor (positive numeric)}
-
-\item{del_Om}{Omega-step matrix inversion fudge factor (positive numeric)}
 
 \item{rho1}{B-step linesearch convergence parameter (positive numeric)}
 

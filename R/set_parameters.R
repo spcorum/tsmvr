@@ -11,7 +11,6 @@
 #' @param lam2 Omega-step learning rate (positive numeric)
 #' @param del1 B initialization matrix inversion fudge factor (positive numeric)
 #' @param del2 Omega initialization matrix inversion fudge factor (positive numeric)
-#' @param del_Om Omega-step matrix inversion fudge factor (positive numeric)
 #' @param rho1 B-step linesearch convergence parameter (positive numeric)
 #' @param rho2 Omega-step linesearch convergence parameter (positive numeric)
 #' @param beta1 B-step linesearch stepsize shrinking paramter (positive numeric)
@@ -43,14 +42,15 @@
 set_parameters = function(B_type = 'ls', Omega_type = 'ls',
                           eta1 = 0.01, eta2 = 0.01,
                           lam1 = 0.1, lam2 = 0.1,
-                          del1 = 1e-3, del2 = 1e-3, del_Om = 0,
+                          del1 = 1e-3, del2 = 1e-3,
                           rho1 = 1e-3, rho2 = 1e-3,
                           beta1 = 0.5, beta2 = 0.5,
                           qmax1 = 128, qmax2 = 128,
                           eps1 = 1e-4, eps2 = Inf,
                           k = 5, reps = 10,
                           max_iter = 2000, skip = 10,
-                          quiet = F, suppress = F, seed = NULL) {
+                          quiet = FALSE, suppress = FALSE,
+                          disp_min_ev = FALSE) {
 
   stopifnot(
     is.character(B_type), B_type %in% c("gd", "ls"),
@@ -61,7 +61,6 @@ set_parameters = function(B_type = 'ls', Omega_type = 'ls',
     is.numeric(lam2), lam2 >= 0,
     is.numeric(del1), del1 >= 0,
     is.numeric(del2), del2 >= 0,
-    is.numeric(del_Om), del_Om >= 0,
     is.numeric(rho1), rho1 > 0,
     is.numeric(rho2), rho2 > 0,
     is.numeric(beta1), beta1 > 0,
@@ -74,17 +73,17 @@ set_parameters = function(B_type = 'ls', Omega_type = 'ls',
     is.numeric(skip), skip > 0, skip%%1 == 0,
     is.logical(quiet),
     is.logical(suppress),
-    is.numeric(seed) || is.null(seed)
+    is.logical(disp_min_ev)
   )
 
   return(
     list(
       B_type = B_type, Omega_type = Omega_type, eta1 = eta1, eta2 = eta2,
-      lam1 = lam1, lam2 = lam2, del1 = del1, del2 = del2, del_Om = del_Om,
+      lam1 = lam1, lam2 = lam2, del1 = del1, del2 = del2,
       rho1 = rho1, rho2 = rho2, beta1 = beta1, beta2 = beta2,
       qmax1 = qmax1, qmax2 = qmax2, eps1 = eps1, eps2 = eps2,
-      k = k, reps = reps,
-      max_iter = max_iter, skip = skip, quiet = quiet, suppress = suppress
+      k = k, reps = reps, max_iter = max_iter, skip = skip, quiet = quiet,
+      suppress = suppress, disp_min_ev = disp_min_ev
     )
   )
 }
