@@ -9,7 +9,7 @@ set_parameters(B_type = "ls", Omega_type = "ls", eta1 = 0.01,
   del2 = 0.001, rho1 = 0.001, rho2 = 0.001, beta1 = 0.5,
   beta2 = 0.5, qmax1 = 128, qmax2 = 128, eps1 = 1e-04,
   eps2 = Inf, k = 5, reps = 10, max_iter = 2000, skip = 10,
-  quiet = F, suppress = F, seed = NULL)
+  quiet = FALSE, suppress = FALSE, disp_min_ev = FALSE)
 }
 \arguments{
 \item{B_type}{type of descent for regression steps (string: 'gd' or 'ls')}

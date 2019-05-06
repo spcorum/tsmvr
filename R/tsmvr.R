@@ -72,7 +72,7 @@ tsmvr = function(X, Y, s1 = NULL, s2 = NULL, s1_vec = NULL,
     output1 = tsmvr_solve(X = X, Y = Y, s1 = s1, s2 = s2, pars = pars)
     output2$model_time = (Sys.time() - tic)[[1]]
 
-    output = c(output1, output2)
+    output = c(pars, output1, output2)
   }
 
 
@@ -87,7 +87,7 @@ tsmvr = function(X, Y, s1 = NULL, s2 = NULL, s1_vec = NULL,
       X = X, Y = Y, s1 = output2$s1_min, s2 = output2$s2_min, pars = pars
     )
     output2$model_time = (Sys.time() - tic)[[1]]
-    output = c(output1,output2)
+    output = c(pars, output1,output2)
   }
 
   return(output)
