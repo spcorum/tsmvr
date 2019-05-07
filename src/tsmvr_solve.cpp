@@ -34,8 +34,6 @@ arma::mat ppmat(const arma::mat &X) {
   return zeros<mat>(X.n_rows, X.n_cols);
 }
 
-
-
 // // [[Rcpp::export]]
 arma::mat st(const arma::mat &X, const double &lam) {
   /*
@@ -83,7 +81,8 @@ arma::mat htHelper(arma::mat X, const int &s) {
     int p = N - s;                      // p is # of elements to set to 0
     arma::mat absX = abs(X);
     vec x = sort(vectorise(absX));      // x = sorted vectorized abs(X)
-    X.elem(find(absX < x(p))).zeros();  // find elements of abs(X) <=
+    X.elem(find(absX < x(p))).zeros();  // set lowest p elements in absolute value to zero
+    // Above, find elements of abs(X) <=
     // value of x at position p - 1 &
     // set them to zero. The
     // result is the support set
@@ -132,8 +131,6 @@ arma::mat minOmega(const arma::mat &B, const arma::mat &X, const arma::mat &Y,
   */
   arma::mat A = Y-X*B;
   arma::mat Covariance = A.st()*A/X.n_rows;
-  // Rcpp::Rcout << "Covariance =" << endl;
-  // Rcpp::Rcout << Covariance << endl;
   arma::mat temp = inv(Covariance+del*arma::eye<mat>(size(Covariance)));
   return temp;
 }
@@ -167,12 +164,6 @@ arma::mat initialize_Omega(const arma::mat &B0, const arma::mat &X, const arma::
   arma::mat minOm = minOmega(B0,X,Y,del);
   arma::mat Soft = st(minOm,lam);
   arma::mat Omega_init = ht(Soft,s,true);
-  // Rcpp::Rcout << "Inverse covariance =" << endl;
-  // Rcpp::Rcout << minOm << endl;
-  // Rcpp::Rcout << "Soft =" << endl;
-  // Rcpp::Rcout << Soft << endl;
-  // Rcpp::Rcout << "Omega_init =" << endl;
-  // Rcpp::Rcout << Omega_init << endl;
   return Omega_init;
 }
 
@@ -217,7 +208,8 @@ arma::mat gdB(const arma::mat &B, const arma::mat &Omega,
 // // [[Rcpp::export]]
 arma::mat gdOmega(const arma::mat &B, const arma::mat &Omega,
                   const arma::mat &X, const arma::mat &Y,
-                  const double &eta, const bool &disp_min_ev)
+                  const double &eta, const bool &disp_min_ev,
+                  const double &del)
 {
   /*
   * Gradient step with respect to Omega.
@@ -234,7 +226,8 @@ arma::mat gdOmega(const arma::mat &B, const arma::mat &Omega,
     Rcpp::Rcout << "Omega minimum eigenvalue = " << eigval[0] << endl;
   }
   const arma::mat A = Y-X*B;
-  const arma::mat dgdOm = A.st()*A/X.n_rows - inv_sympd(Omega);
+  const arma::mat dgdOm = A.st()*A/X.n_rows -
+     inv_sympd(Omega + del*arma::eye<mat>(size(Omega)));
   return (Omega - eta*dgdOm);
 }
 
@@ -243,8 +236,7 @@ arma::mat lsB(const arma::mat &B, const arma::mat &Omega,
               const arma::mat &X, const arma::mat &Y,
               const int &s, double eta = 0.1,
               const double &rho = 1e2, const double &beta = 0.5,
-              const double &eta_min = 1e-6,
-              const double &q_max = 128)
+              const double &qmax = 128)
 {
   /*
   * Generalized linesearch for with resepct to B.
@@ -260,12 +252,9 @@ arma::mat lsB(const arma::mat &B, const arma::mat &Omega,
     q++;
     eta = eta*pow(beta,q);
     // Rcpp::Rcout << "eta_1  = " << eta << endl;
-    if (q > q_max) {
+    if (q > qmax) {
       throw std::runtime_error("B-step linesearch had too many iterations. Try adjusting parameters.");
     }
-    // if (eta < eta_min) {
-    //     throw std::runtime_error("B-step linesearch did not find a good learning rate. Try adjusting parameters.");
-    // }
     B_test = ht(gdB(B,Omega,S,H,X.n_rows,eta),s);
     B_diff = B_test - B;
     g_test = objective(B_test,Omega,X,Y);
@@ -278,13 +267,12 @@ arma::mat lsB(const arma::mat &B, const arma::mat &Omega,
 arma::mat lsOmega(arma::mat B, const arma::mat &Omega,
                   const arma::mat &X, const arma::mat &Y,
                   const int &s, double eta = 0.1,
-                  const double &rho = 1, const double &beta = 0.5,
-                  const double &eta_min = 1e-6, const int &q_max = 128,
-                  const bool &disp_min_ev = false)
+                  const double &rho = 1e-6, const double &beta = 0.5,
+                  const bool &disp_min_ev = false, const double &del = 1e-6,
+                  const int &qmax = 128)
 {
   /*
   * Generalized linesearch for with resepct to Omega.
-  *
   */
   arma::mat Omega_test;
   arma::mat Omega_diff;
@@ -295,14 +283,10 @@ arma::mat lsOmega(arma::mat B, const arma::mat &Omega,
   do {
     q++;
     eta = eta*pow(beta,q);
-    // Rcpp::Rcout << "eta_2 = " << eta << endl;
-    if (q > q_max) {
+    if (q > qmax) {
       throw std::runtime_error("B-step linesearch had too many iterations. Try adjusting parameters.");
     }
-    // if (eta < eta_min) {
-    //   throw std::runtime_error("B-step linesearch did not find a good learning rate. Try adjusting parameters.");
-    // }
-    Omega_test = ht(gdOmega(B,Omega,X,Y,eta,disp_min_ev),s,true); // non psd step
+    Omega_test = ht(gdOmega(B,Omega,X,Y,eta,disp_min_ev,del),s,true); // non psd step
 
     Omega_diff = Omega_test - Omega;
     g_test = objective(B,Omega_test,X,Y);
@@ -322,9 +306,10 @@ arma::mat updateB(arma::mat B, const arma::mat &Omega,
                   const arma::mat &S, const arma::mat &H,
                   const std::string &type,
                   const int &s,
-                  const double &eta = 0.01,
-                  const double &rho = 1e2,
-                  const double &beta = 0.5)
+                  const double &eta = 0.1,
+                  const double &rho = 1e-6,
+                  const double &beta = 0.5,
+                  const int &qmax = 128)
 {
   /*
   * tsmvrRcpp regressor matrix iterate update via the gradient descent
@@ -339,7 +324,7 @@ arma::mat updateB(arma::mat B, const arma::mat &Omega,
     B = ht( gdB(B, Omega, S, H, X.n_rows, eta), s);
   }
   else if (type == "ls") {
-    B = lsB(B, Omega, S, H, X, Y, s, eta, rho, beta);
+    B = lsB(B, Omega, S, H, X, Y, s, eta, rho, beta, qmax);
   }
   else {
     throw std::range_error("B-step type must be 'gd' or 'ls'.");
@@ -352,10 +337,12 @@ arma::mat updateOmega(const arma::mat &B, arma::mat Omega,
                       const arma::mat &X, const arma::mat &Y,
                       const std::string &type,
                       const int &s,
-                      const double &eta = 0.01,
-                      const double &rho = 1e2,
+                      const double &eta = 0.2,
+                      const double &rho = 1e-6,
                       const double &beta = 0.5,
-                      const bool &disp_min_ev = false) {
+                      const bool &disp_min_ev = false,
+                      const double &del = 1e-6,
+                      const int &qmax = 128) {
   /*
   * tsmvrRcpp covariance matrix iterate update via the gradient descent
   * method.
@@ -367,14 +354,11 @@ arma::mat updateOmega(const arma::mat &B, arma::mat Omega,
   * via the gradient descent method.
   */
   if (type == "gd") {
-    // Rcpp::Rcout << "Omega_t =\n" << Omega << endl;
-    arma::mat Omega_twidle = gdOmega(B,Omega,X,Y,eta,disp_min_ev);
+    arma::mat Omega_twidle = gdOmega(B,Omega,X,Y,eta,disp_min_ev,del);
     Omega = ht(Omega_twidle,s,true);
-    // Rcpp::Rcout << "Omega_twidle =\n" << Omega_twidle << endl;
-    // Rcpp::Rcout << "Omega_t+1 =\n" << Omega << endl;
   }
   else if (type == "ls") {
-    Omega = lsOmega(B,Omega,X,Y,s,eta,rho,beta,1e-6,128,disp_min_ev);
+    Omega = lsOmega(B,Omega,X,Y,s,eta,rho,beta,disp_min_ev,del,qmax);
   }
   else if (type == "min") {
     Omega = ht(minOmega(B,X,Y),s,true);
@@ -482,10 +466,13 @@ List tsmvr_solve(const arma::mat &X,
   const double lam2 = as<double>(x["lam2"]);
   const double del1 = as<double>(x["del1"]);
   const double del2 = as<double>(x["del2"]);
+  const double del3 = as<double>(x["del3"]);
   const double rho1 = as<double>(x["rho1"]);
   const double rho2 = as<double>(x["rho2"]);
   const double beta1 = as<double>(x["beta1"]);
   const double beta2 = as<double>(x["beta2"]);
+  const int qmax1 = as<int>(x["qmax2"]);
+  const int qmax2 = as<int>(x["qmax2"]);
   const double eps1 = as<double>(x["eps1"]);
   const double eps2 = as<double>(x["eps2"]);
   const int max_iter = as<int>(x["max_iter"]);
@@ -493,6 +480,7 @@ List tsmvr_solve(const arma::mat &X,
   const bool quiet = as<bool>(x["quiet"]);
   const bool suppress = as<bool>(x["quiet"]);
   const bool disp_min_ev = as<bool>(x["disp_min_ev"]);
+  const bool save_history = as<bool>(x["save_history"]);
 
   // Print header.
   if (!quiet) {
@@ -523,7 +511,6 @@ List tsmvr_solve(const arma::mat &X,
   int itrs;
   double gamma1 = std::numeric_limits<double>::infinity();
   double gamma2 = std::numeric_limits<double>::infinity();
-  // double gamma = std::numeric_limits<double>::infinity();
 
   // For keeping time.
   double time;
@@ -547,9 +534,9 @@ List tsmvr_solve(const arma::mat &X,
 
     // Update current iterate.
     B = updateB(B, Omega, X, Y, S, H, B_type, s1,
-                eta1, rho1, beta1);
+          eta1, rho1, beta1, qmax1);
     Omega = updateOmega(B, Omega, X, Y, Omega_type, s2,
-                        eta2, rho2, beta2, disp_min_ev);
+              eta2, rho2, beta2, disp_min_ev, del3, qmax2);
     obj = objective(B,Omega,X,Y);
 
     // Throw error if solution diverges.
@@ -558,8 +545,8 @@ List tsmvr_solve(const arma::mat &X,
     }
 
     // Norms of differences.
-    gamma1 = pow(norm((B-BOld)/eta1,"fro"),2);
-    gamma2 = pow(norm((Omega-OmegaOld)/eta2,"fro"),2);
+    // gamma1 = pow(norm((B-BOld)/eta1,"fro"),2);
+    // gamma2 = pow(norm((Omega-OmegaOld)/eta2,"fro"),2);
     gamma1 = norm((B-BOld)/eta1,"fro");
     gamma2 = norm((Omega-OmegaOld)/eta2,"fro");
 
@@ -574,9 +561,11 @@ List tsmvr_solve(const arma::mat &X,
     }
 
     // Save iterates to history.
-    BHist(k-1) = B;
-    OmegaHist(k-1) = Omega;
-    objHist(k-1) = obj;
+    if (save_history) {
+      BHist(k-1) = B;
+      OmegaHist(k-1) = Omega;
+      objHist(k-1) = obj;
+    }
 
     // Test for convergence.
     itrs = k;
@@ -588,6 +577,13 @@ List tsmvr_solve(const arma::mat &X,
   // Time duration
   time = ( clock() - start ) / (double) CLOCKS_PER_SEC;
 
+  // Warn if maximum number of iterations was reached.
+  if (itrs == max_iter) {
+    if (suppress == false) {
+      Rcpp::warning("warning: Maximum number of iterations achieved without convergence.\n");
+    }
+  }
+
   // Statistics.
   arma::mat Y_hat = X*B;
   arma::mat res = Y-Y_hat;
@@ -598,6 +594,9 @@ List tsmvr_solve(const arma::mat &X,
 
   // Resize fields to return cleaner objects to user. If maximum
   // number of iterations is reached, warn.
+  if (save_history) {
+
+  }
   field<arma::mat> BHist2(itrs);
   field<arma::mat> OmegaHist2(itrs);
   arma::vec objHist2(itrs);

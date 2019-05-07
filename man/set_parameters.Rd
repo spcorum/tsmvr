@@ -4,12 +4,13 @@
 \alias{set_parameters}
 \title{Set parameters for tsmvr_solve}
 \usage{
-set_parameters(B_type = "ls", Omega_type = "ls", eta1 = 0.01,
-  eta2 = 0.01, lam1 = 0.1, lam2 = 0.1, del1 = 0.001,
-  del2 = 0.001, rho1 = 0.001, rho2 = 0.001, beta1 = 0.5,
-  beta2 = 0.5, qmax1 = 128, qmax2 = 128, eps1 = 1e-04,
-  eps2 = Inf, k = 5, reps = 10, max_iter = 2000, skip = 10,
-  quiet = FALSE, suppress = FALSE, disp_min_ev = FALSE)
+set_parameters(B_type = c("gd", "ls"), Omega_type = c("gd", "ls",
+  "min"), eta1 = 0.1, eta2 = 0.2, lam1 = 0.1, lam2 = 0.1,
+  del1 = 1e-06, del2 = 1e-06, del3 = 1e-06, rho1 = 1e-06,
+  rho2 = 1e-06, beta1 = 0.5, beta2 = 0.5, qmax1 = 128,
+  qmax2 = 128, eps1 = 1e-04, eps2 = Inf, k = 5, reps = 10,
+  max_iter = 2000, skip = 10, quiet = FALSE, suppress = FALSE,
+  disp_min_ev = FALSE, save_history = FALSE)
 }
 \arguments{
 \item{B_type}{type of descent for regression steps (string: 'gd' or 'ls')}
@@ -20,13 +21,15 @@ set_parameters(B_type = "ls", Omega_type = "ls", eta1 = 0.01,
 
 \item{eta2}{Omega-step learning rate (positive numeric)}
 
-\item{lam1}{B-step learning rate (positive numeric)}
+\item{lam1}{B-step learning rate (non-negative numeric)}
 
-\item{lam2}{Omega-step learning rate (positive numeric)}
+\item{lam2}{Omega-step learning rate (non-negative numeric)}
 
-\item{del1}{B initialization matrix inversion fudge factor (positive numeric)}
+\item{del1}{B initialization matrix inversion fudge factor (non-negative numeric)}
 
-\item{del2}{Omega initialization matrix inversion fudge factor (positive numeric)}
+\item{del2}{Omega initialization matrix inversion fudge factor (non-negative numeric)}
+
+\item{del3}{Omega step matrix inversion fudge factor (non-negative)}
 
 \item{rho1}{B-step linesearch convergence parameter (positive numeric)}
 
@@ -40,9 +43,9 @@ set_parameters(B_type = "ls", Omega_type = "ls", eta1 = 0.01,
 
 \item{qmax2}{Omega-step linesearch maximum number of iterations (positive integer valued numeric)}
 
-\item{eps1}{B-step convergence parameter (positive numeric)}
+\item{eps1}{B-step convergence parameter (positive numeric or infinity)}
 
-\item{eps2}{Omega-step convergence parameter (positive numeric)}
+\item{eps2}{Omega-step convergence parameter (positive numeric or infinity)}
 
 \item{k}{number of cross-validation folds (positive integer valued numeric greater than 1)}
 
