@@ -493,10 +493,6 @@ List tsmvr_solve(const arma::mat &X,
     Rcpp::Rcout << "t\tobj\t||\u2207B/eta1||\t||\u2207\u03A9/eta2||\ttime (ms)" << endl;
   }
 
-  // Pre-compute constant matrices.
-  const arma::mat S = X.t()*X;
-  const arma::mat H = X.t()*Y;
-
   // For recording history of iterates.
   field<arma::mat> BHist(max_iter);
   field<arma::mat> OmegaHist(max_iter);
@@ -515,9 +511,11 @@ List tsmvr_solve(const arma::mat &X,
   // For keeping time.
   double time;
   long now;
+  clock_t start = clock();  // Start the clock.
 
-  // Start the clock.
-  clock_t start = clock();
+  // Constant matrices.
+  const arma::mat S = X.t()*X;
+  const arma::mat H = X.t()*Y;
 
   // Initial iterates.
   arma::mat B = initialize_B(S,H,s1,lam1,del1);
@@ -537,7 +535,7 @@ List tsmvr_solve(const arma::mat &X,
           eta1, rho1, beta1, qmax1);
     Omega = updateOmega(B, Omega, X, Y, Omega_type, s2,
               eta2, rho2, beta2, disp_min_ev, del3, qmax2);
-    obj = objective(B,Omega,X,Y);
+    obj = objective(B, Omega, X, Y);
 
     // Throw error if solution diverges.
     if (obj > objOld) {
@@ -589,31 +587,35 @@ List tsmvr_solve(const arma::mat &X,
   arma::mat res = Y-Y_hat;
   double ss = trace(res.t()*res);
   // int df = n-(p+q+q^2);    // df = # obs - (coefficents + responses +
-  //  size of precision matrix) [correct ?]
+  // size of precision matrix) [correct ?]
   // double se = ss/std::sqrt(df);  // standard error, not impelented ..
 
-  // Resize fields to return cleaner objects to user. If maximum
-  // number of iterations is reached, warn.
-  if (save_history) {
-
-  }
+  // Clean up history objects by resizing. If maximum number of iterations is
+  // reached, warn.
   field<arma::mat> BHist2(itrs);
   field<arma::mat> OmegaHist2(itrs);
   arma::vec objHist2(itrs);
-  if (itrs == max_iter) {
-    BHist2 = BHist;
-    OmegaHist2 = OmegaHist;
-    objHist2 = objHist;
-    if (suppress == false) {
-      Rcpp::warning("warning: Maximum number of iterations achieved without convergence.\n");
+  if (save_history) {
+    if (itrs == max_iter) {
+      BHist2 = BHist;
+      OmegaHist2 = OmegaHist;
+      objHist2 = objHist;
+      if (suppress == false) {
+        Rcpp::warning("warning: Maximum number of iterations achieved without convergence.\n");
+      }
     }
-  }
-  else {
-    for (int k=0; k<itrs; k=k+1) {
-      BHist2(k) = BHist(k);
-      OmegaHist2(k) = OmegaHist(k);
-      objHist2(k) = objHist(k);
+    else {
+      for (int k=0; k<itrs; k=k+1) {
+        BHist2(k) = BHist(k);
+        OmegaHist2(k) = OmegaHist(k);
+        objHist2(k) = objHist(k);
+      }
     }
+
+  } else {
+    BHist2.reset();
+    OmegaHist2.reset();
+    objHist2.reset();
   }
 
   // Return.
