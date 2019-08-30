@@ -126,14 +126,14 @@ test_that("s2 cannot greater than (dim(Y)[2])^2", {
   )
 })
 
-test_that("k cannot be a character string", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, k = "", quiet = T
-    )
-  )
-})
+# test_that("k cannot be a character string", {
+#   expect_error(
+#     tsmvr_replicate(
+#       X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
+#       s1 = 2, s2 = 2, k = "", quiet = T
+#     )
+#   )
+# })
 
 test_that("s2 cannot be a list()", {
   expect_error(
@@ -162,247 +162,18 @@ test_that("s2 cannot be non-integer numeric", {
   )
 })
 
-test_that("k cannot be non-integer valued", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, k = 2.5, quiet = T
-    )
-  )
-})
-
-test_that("k cannot be negative", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, k = -1, quiet = T
-    )
-  )
-})
-
-
-test_that("k cannot be 0", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, k = 2.5, quiet = T
-    )
-  )
-})
-
-test_that("k cannot be 1", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, k = 2.5, quiet = T
-    )
-  )
-})
-
-
-test_that("reps cannot be non-integer valued", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, reps = 2.5, quiet = T
-    )
-  )
-})
-
-test_that("reps cannot be negative", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, reps = -1, quiet = T
-    )
-  )
-})
-
-
-test_that("reps cannot be 0", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, reps = 0, quiet = T
-    )
-  )
-})
-
-
-
-test_that("B_type cannot numeric", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 2), 2, 2),
-      s1 = 2, s2 = 2, B_type = 1, quiet = T
-    )
-  )
-})
-
-test_that("B_type cannot be a list", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 2), 2, 2),
-      s1 = 2, s2 = 2, B_type = list(), quiet = T
-    )
-  )
-})
-
-test_that("B_type cannot be some random character string", {
-  library(stringi)
-  test_string <- ""
-  while (!(test_string %in% c("gd"))) {
-    test_string <- stri_rand_strings(
-      n = 1,
-      length = sample.int(n = 10, size = 1),
-      pattern = "[A-Za-z0-9]"
-    )
-  }
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 2), 2, 2),
-      s1 = 2, s2 = 2, B_type = test_string, quiet = T
-    )
-  )
-})
-
-test_that("Omega_type cannot numeric", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 2), 2, 2),
-      s1 = 2, s2 = 2, Omega_type = 1, quiet = T
-    )
-  )
-})
-
-test_that("Omega_type cannot be a list", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 2), 2, 2),
-      s1 = 2, s2 = 2, Omega_type = list(), quiet = T
-    )
-  )
-})
-
-test_that("Omega_type cannot be some random character string", {
-  library(stringi)
-  test_string <- ""
-  while (!(test_string %in% c("gd"))) {
-    test_string <- stri_rand_strings(
-      n = 1,
-      length = sample.int(n = 10, size = 1),
-      pattern = "[A-Za-z0-9]"
-    )
-  }
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 2), 2, 2),
-      s1 = 2, s2 = 2, Omega_type = test_string, quiet = T
-    )
-  )
-})
-
-
-test_that("epsilon cannot be a character string", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, epsilon = "", quiet = T
-    )
-  )
-})
-
-test_that("epsilon cannot be a list", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, epsilon = list(), quiet = T
-    )
-  )
-})
-
-test_that("epsilon cannot be zero", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, epsilon = 0, quiet = T
-    )
-  )
-})
-
-test_that("epsilon cannot be less than zero", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, epsilon = -1e-32, quiet = T
-    )
-  )
-})
-
-test_that("max_iter cannot be a list", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, max_iter = list(), quiet = T
-    )
-  )
-})
-
-test_that("max_iter cannot be a character string", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, max_iter = "", quiet = T
-    )
-  )
-})
-
-test_that("max_iter cannot non-integer valued", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, max_iter = 1.5, quiet = T
-    )
-  )
-})
-
-test_that("max_iter cannot be zero", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, max_iter = 0, quiet = T
-    )
-  )
-})
-
-test_that("max_iter cannot be less than zero", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, max_iter = -1, quiet = T
-    )
-  )
-})
-
-test_that("seed cannot be a character string", {
-  expect_error(
-    tsmvr_replicate(
-      X = matrix(rep(0, 4), 2, 2), Y = matrix(rep(0, 4), 2, 2),
-      s1 = 2, s2 = 2, seed = "", quiet = T
-    )
-  )
-})
-
 test_that("tsmvr_replicate returns a list, the length of that list is 7,
           and the labels of that list are as expected", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_replicate(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1 = round(0.5 * 4 * 3), s2 = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(
     all(
@@ -417,134 +188,152 @@ test_that("tsmvr_replicate returns a list, the length of that list is 7,
 })
 
 test_that("from the returned list, the item labeled 'rep_error_mean' is numeric", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_replicate(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1 = round(0.5 * 4 * 3), s2 = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(is.numeric(z$rep_error_mean))
 })
 
 test_that("the listed item labeled 'rep_error_sd' is numeric", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_replicate(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1 = round(0.5 * 4 * 3), s2 = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(is.numeric(z$rep_error_sd))
 })
 
 test_that("the listed item labeled 'fold_error_means' has length reps", {
-  num_reps <- sample.int(5, 1)
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  z <- tsmvr_replicate(
-    X = X, Y = Y, k = 2, reps = num_reps,
-    s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
-  expect_equal(length(z$fold_error_means), num_reps)
+  z <- tsmvr_replicate(
+    X = X, Y = Y, s1 = round(0.5 * 4 * 3), s2 = 7, pars = parameters,
+    seed = 1729
+  )
+  expect_equal(length(z$fold_error_means), 2)
 })
 
 test_that("the listed item labeled 'fold_error_sds' has length reps", {
-  num_reps <- sample.int(5, 1)
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  z <- tsmvr_replicate(
-    X = X, Y = Y, k = 2, reps = num_reps,
-    s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
-  expect_equal(length(z$fold_error_sds), num_reps)
+  z <- tsmvr_replicate(
+    X = X, Y = Y, s1 = round(0.5 * 4 * 3), s2 = 7, pars = parameters,
+    seed = 1729
+  )
+  expect_equal(length(z$fold_error_sds), 2)
 })
 
 
 test_that("the listed item labeled 'folds' is numeric", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_replicate(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1 = round(0.5 * 4 * 3), s2 = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(is.numeric(z$folds))
 })
 
 test_that("the listed item labeled 'fold_error_sds' is numeric", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_replicate(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1 = round(0.5 * 4 * 3), s2 = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(is.numeric(z$reps))
 })
 
 test_that("the listed item labeled 'folds' is integer valued", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_replicate(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1 = round(0.5 * 4 * 3), s2 = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(z$folds %% 1 == 0)
 })
 
 test_that("the listed item labeled 'reps' is integer valued", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_replicate(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1 = round(0.5 * 4 * 3), s2 = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(z$reps %% 1 == 0)
 })
 
 test_that("lines covered by quiet = F can execute", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_replicate(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1 = round(0.5 * 4 * 3), s2 = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(is.list(z))
 })
 
 test_that("the returned sublist labeled 'num_folds' is numeric", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_replicate(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1 = round(0.5 * 4 * 3), s2 = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = F, suppress = T
+    X = X, Y = Y, s1 = round(0.5 * 4 * 3), s2 = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(is.numeric(z$folds))
 })

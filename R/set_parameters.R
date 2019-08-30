@@ -55,8 +55,8 @@ set_parameters = function(B_type = c('gd','ls'),
                           disp_min_ev = FALSE, save_history = FALSE) {
 
   stopifnot(
-    is.character(B_type), B_type %in% c("gd", "ls"),
-    is.character(Omega_type), Omega_type %in% c("gd", "ls", "min"),
+    is.character(B_type),
+    is.character(Omega_type),
     is.numeric(eta1), eta1 > 0,
     is.numeric(eta2), eta2 > 0,
     is.numeric(lam1), lam1 >= 0,

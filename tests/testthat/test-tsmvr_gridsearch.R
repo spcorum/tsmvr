@@ -394,210 +394,256 @@ test_that("seed cannot be a character string", {
   )
 })
 
-test_that("tsmvr_replicate returns a list, the length of that list is 7,
+test_that("tsmvr_replicate returns a list, the length of that list is 10,
           and the labels of that list are as expected", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_gridsearch(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(
     all(
-      is.list(z), length(z) == 9,
+      is.list(z), length(z) == 10,
       all(labels(z) == c(
+        "solution",
         "error_min", "error_min_sd",
-        "s1_min", "s2_min", "error", "error_sd",
-        "folds", "reps", "time"
+        "s1_min", "s2_min", "s1_vec", "s2_vec",
+        "folds", "reps", "gs_time"
       ))
     )
   )
 })
 
-test_that("the listed item labeled 'rep_error_mean' is numeric", {
+test_that("the listed item labeled 'solution' is a list", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_gridsearch(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7, pars = parameters,
+    seed = 1729
+  )
+  expect_true(is.list(z$solution))
+})
+
+test_that("the listed item labeled 'error_min' is numeric", {
+  set.seed(1)
+  X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
+  Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
+  z <- tsmvr_gridsearch(
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(is.numeric(z$error_min))
 })
 
-test_that("the listed item labeled 'rep_error_sd' is numeric", {
+test_that("the listed item labeled 'error_min_sd' is numeric", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_gridsearch(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(is.numeric(z$error_min_sd))
 })
 
 
 test_that("the listed item labeled 's1_min' is numeric", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_gridsearch(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(is.numeric(z$s1_min))
 })
 
 test_that("the listed item labeled 's2_min' is numeric", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_gridsearch(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(is.numeric(z$s2_min))
 })
 
-test_that("the listed item labeled 'error' is numeric", {
+test_that("the listed item labeled 'error_min' is numeric", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  z <- tsmvr_gridsearch(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
-  expect_true(is.numeric(z$error))
+  z <- tsmvr_gridsearch(
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7, pars = parameters,
+    seed = 1729
+  )
+  expect_true(is.numeric(z$error_min))
 })
 
-test_that("the listed item labeled 'error_sd' is numeric", {
+test_that("the listed item labeled 'error_min_sd' is numeric", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  z <- tsmvr_gridsearch(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
-  expect_true(is.numeric(z$error_sd))
+  z <- tsmvr_gridsearch(
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7, pars = parameters,
+    seed = 1729
+  )
+  expect_true(is.numeric(z$error_min_sd))
 })
 
-test_that("the listed item labeled 'time' is numeric", {
+test_that("the listed item labeled 'gs_time' is numeric", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  z <- tsmvr_gridsearch(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
-  expect_true(is.numeric(z$time))
+  z <- tsmvr_gridsearch(
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7, pars = parameters,
+    seed = 1729
+  )
+  expect_true(is.numeric(z$gs_time))
 })
 
 
 test_that("the listed item labeled 'folds' is numeric", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_gridsearch(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(is.numeric(z$folds))
 })
 
 test_that("the listed item labeled 'reps' is numeric", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_gridsearch(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(is.numeric(z$reps))
 })
 
-test_that("the listed item labeled 'error' is a matrix", {
+test_that("the listed item labeled 'error_min' is a vector", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  z <- tsmvr_gridsearch(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
-  expect_true(is.matrix(z$error))
+  z <- tsmvr_gridsearch(
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7 , pars = parameters,
+    seed = 1729
+  )
+  expect_true(is.vector(z$error_min))
 })
 
-test_that("the listed item labeled 'error_sd' is a matrix", {
+test_that("the listed item labeled 'error_min_sd' is a vector", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  z <- tsmvr_gridsearch(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
-  expect_true(is.matrix(z$error_sd))
+  z <- tsmvr_gridsearch(
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7, pars = parameters,
+    seed = 1729
+  )
+  expect_true(is.vector(z$error_min_sd))
 })
 
 test_that("the listed item labeled 'k' is integer valued", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_gridsearch(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(z$folds %% 1 == 0)
 })
 
 
 test_that("the listed item labeled 'reps' is integer valued", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
+  )
   z <- tsmvr_gridsearch(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = T, suppress = T
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(z$reps %% 1 == 0)
 })
 
 test_that("lines covered by quiet = F can execute", {
+  set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
+  parameters = set_parameters(
+    B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
+    k = 2, reps = 2, max_iter = 1, quiet = F, suppress = T
+  )
   z <- tsmvr_gridsearch(
-    X = X, Y = Y, k = 2, reps = 2,
-    s1_grid = round(0.5 * 4 * 3), s2_grid = 7,
-    B_type = "ls", Omega_type = "ls",
-    rho1 = 1, rho2 = 1,
-    max_iter = 1, quiet = F, suppress = T
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7, pars = parameters,
+    seed = 1729
   )
   expect_true(is.list(z))
 })

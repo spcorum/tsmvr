@@ -466,7 +466,7 @@ List tsmvr_solve(const arma::mat &X,
   const double lam2 = as<double>(x["lam2"]);
   const double del1 = as<double>(x["del1"]);
   const double del2 = as<double>(x["del2"]);
-  const double del3 = as<double>(x["del3"]);
+  const double del3 = 0;
   const double rho1 = as<double>(x["rho1"]);
   const double rho2 = as<double>(x["rho2"]);
   const double beta1 = as<double>(x["beta1"]);

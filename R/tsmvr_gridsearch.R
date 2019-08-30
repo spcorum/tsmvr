@@ -89,6 +89,9 @@ tsmvr_gridsearch <- function(X, Y, s1_vec, s2_vec, pars, quiet = F, seed = NULL)
   error_min_sd <- error_sd[error_min_idx]
   s1_min <- s1_vec[error_min_idx[1]]
   s2_min <- s2_vec[error_min_idx[2]]
+  solution <- tsmvr_solve(
+    X = X, Y = Y, s1 = s1_min, s2 = s2_min, pars = pars
+  )
 
   # Print final result to screen.
   if (!quiet) {
@@ -99,6 +102,7 @@ tsmvr_gridsearch <- function(X, Y, s1_vec, s2_vec, pars, quiet = F, seed = NULL)
 
   # Return result.
   return(list(
+    solution = solution,
     error_min = error_min, error_min_sd = error_min_sd,
     s1_min = s1_min, s2_min = s2_min,
     s1_vec = s1_vec, s2_vec = s2_vec,
