@@ -20,7 +20,9 @@
 #' @param s2 sparsity for q-by-q precision matrix \code{Omega} (positive integer or NULL)
 #' @param s1_vec \code{s1} values for gridsearch (vector of integer valued numerics or NULL)
 #' @param s2_vec \code{s2} values for gridsearch (vector of integer valued numerics or NULL)
+#' @param method method of solver ('single' is to solve a single problem, 'gs' is to perform gridsearch)
 #' @param pars list of algorithm parameters as constructed by the \code{set_parameters} function
+#' @param quiet whether not to print statuses to the screen (bool)
 #' @param seed set random seed (integer or NULL)
 #'
 #' @return A list containing the \code{mean} and \code{sd} of the

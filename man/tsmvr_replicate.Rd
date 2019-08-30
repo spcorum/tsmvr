@@ -17,11 +17,9 @@ tsmvr_replicate(X, Y, s1, s2, pars, quiet = F, seed = NULL)
 
 \item{pars}{list of algorithm parameters; output of \code{set_parameters}}
 
+\item{quiet}{whether or not to print replicate statuses to the screen (bool)}
+
 \item{seed}{set random seed (integer)}
-
-\item{k}{number of k-folds (integer greater than 1)}
-
-\item{reps}{number of replications (positive integer)}
 }
 \value{
 A list containing the \code{mean} and \code{sd} of the
@@ -36,9 +34,8 @@ error between the true response and the predicted response
 on a given cross-validation set.
 }
 \note{
-See also \code{\link{squared_error}},
-\code{\link{k_folds}},
-\code{\link{tsmvr_solve}},
+See also \code{\link{k_folds}},
+\code{\link{tsmvr}},
 \code{\link{tsmvr_cv}}, and
 \code{\link{set_parameters}}.
 }

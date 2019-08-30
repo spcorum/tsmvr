@@ -6,7 +6,7 @@
 #' @param tsmvr_list output list from tsmvr_solve
 #' @param X the design matrix the response is predicted from
 #'
-#' @note \code{\link{tsmvr_solve}}.
+#' @note \code{\link{tsmvr}}.
 #'
 #' @export
 

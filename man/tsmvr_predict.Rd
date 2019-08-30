@@ -16,5 +16,5 @@ Given a design matrix \code{X}, predicts a response using the
 the model found by \code{tsmvr_solve}.
 }
 \note{
-\code{\link{tsmvr_solve}}.
+\code{\link{tsmvr}}.
 }

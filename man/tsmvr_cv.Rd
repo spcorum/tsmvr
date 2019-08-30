@@ -20,8 +20,6 @@ tsmvr_cv(X, Y, s1, s2, pars, quiet = F, seed = NULL)
 \item{quiet}{(logical)}
 
 \item{seed}{set random seed (integer)}
-
-\item{k}{number of k-folds (integer greater than 1)}
 }
 \value{
 A list of the mean and standard deviation of the errors
@@ -35,8 +33,7 @@ error between the true response and the predicted response
 on a given cross-validation set.
 }
 \note{
-See also \code{\link{squared_error}},
-\code{\link{k_folds}},
-\code{\link{tsmvr_solve}}, and
+See also \code{\link{k_folds}},
+\code{\link{tsmvr}}, and
 \code{\link{set_parameters}}.
 }

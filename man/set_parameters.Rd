@@ -59,15 +59,14 @@ set_parameters(B_type = c("gd", "ls"), Omega_type = c("gd", "ls",
 
 \item{suppress}{whether or not to suppress warnings (bool)}
 
-\item{seed}{sets random seed}
+\item{disp_min_ev}{display the minimum value of the Omega iterate for each iteration (bool)}
+
+\item{save_history}{whethor or not to save and return the histories of the B and Omega iterates (bool)}
 }
 \value{
 Returns a named list of input parameters.
 
-See also \code{\link{tsmvr_solve}},
-\code{\link{tsmvr_cv}},
-\code{\link{tsmvr_replicate}}, and
-\code{\link{tsmvr_gridsearch}}.
+See also \code{\link{tsmvr}}
 }
 \description{
 Sets paramters for tsmvr_solve and functions that call tsmvr_solve

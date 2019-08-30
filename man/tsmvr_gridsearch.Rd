@@ -17,11 +17,9 @@ tsmvr_gridsearch(X, Y, s1_vec, s2_vec, pars, quiet = F, seed = NULL)
 
 \item{pars}{list of algorithm parameters; output of \code{set_parameters}}
 
+\item{quiet}{whether or not to print gridsearch statuses to the screen (bool)}
+
 \item{seed}{set random seed (integer)}
-
-\item{k}{number of k-folds (integer valued numerics greater than 1)}
-
-\item{reps}{number of replications (positive integer valued numeric)}
 }
 \value{
 A list containing the \code{mean} and \code{sd} of the
@@ -36,9 +34,8 @@ error between the true response and the predicted response
 on a given cross-validation set.
 }
 \note{
-See also \code{\link{squared_error}},
-\code{\link{k_folds}},
-\code{\link{tsmvr_solve}},
+See also \code{\link{k_folds}},
+\code{\link{tsmvr}},
 \code{\link{tsmvr_cv}},
 \code{\link{tsmvr_replicate}}, and
 \code{\link{set_parameters}}.

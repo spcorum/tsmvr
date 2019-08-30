@@ -26,14 +26,12 @@
 #' @param skip iteration skip frequency for output to screen (positive integer)
 #' @param quiet whether or not to operate   (bool)
 #' @param suppress whether or not to suppress warnings (bool)
-#' @param seed sets random seed
+#' @param disp_min_ev display the minimum value of the Omega iterate for each iteration (bool)
+#' @param save_history whethor or not to save and return the histories of the B and Omega iterates (bool)
 #'
 #' @return Returns a named list of input parameters.
 #'
-#' See also \code{\link{tsmvr_solve}},
-#' \code{\link{tsmvr_cv}},
-#' \code{\link{tsmvr_replicate}}, and
-#' \code{\link{tsmvr_gridsearch}}.
+#' See also \code{\link{tsmvr}}
 #'
 #' @references
 #' \insertRef{chen2016high}{tsmvr}

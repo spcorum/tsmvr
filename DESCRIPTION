@@ -28,8 +28,7 @@ Imports:
     ggplot2,
     igraph,
     pROC,
-    reshape,
-    prettydoc
+    reshape
 Suggests: 
     covr,
     testthat,

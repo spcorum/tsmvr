@@ -10,7 +10,6 @@
 #' @param Y response matrix (n-by-q)
 #' @param s1 regressor matrix sparsity (positive integer)
 #' @param s2 covariance matrix sparsity (positive integer)
-#' @param k number of k-folds (integer greater than 1)
 #' @param pars list of algorithm parameters; output of \code{set_parameters}
 #' @param quiet (logical)
 #' @param seed set random seed (integer)
@@ -18,9 +17,8 @@
 #' @return A list of the mean and standard deviation of the errors
 #' across the \code{K} folds.
 #'
-#' @note See also \code{\link{squared_error}},
-#' \code{\link{k_folds}},
-#' \code{\link{tsmvr_solve}}, and
+#' @note See also \code{\link{k_folds}},
+#' \code{\link{tsmvr}}, and
 #' \code{\link{set_parameters}}.
 #'
 #' @importFrom stats sd

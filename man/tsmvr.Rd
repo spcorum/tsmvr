@@ -20,7 +20,11 @@ tsmvr(X, Y, s1 = NULL, s2 = NULL, s1_vec = NULL, s2_vec = NULL,
 
 \item{s2_vec}{\code{s2} values for gridsearch (vector of integer valued numerics or NULL)}
 
+\item{method}{method of solver ('single' is to solve a single problem, 'gs' is to perform gridsearch)}
+
 \item{pars}{list of algorithm parameters as constructed by the \code{set_parameters} function}
+
+\item{quiet}{whether not to print statuses to the screen (bool)}
 
 \item{seed}{set random seed (integer or NULL)}
 }

@@ -10,18 +10,16 @@
 #' @param Y response matrix (n-by-q)
 #' @param s1 regressor matrix sparsity (positive integer)
 #' @param s2 covariance matrix sparsity (positive integer)
-#' @param k number of k-folds (integer greater than 1)
-#' @param reps number of replications (positive integer)
 #' @param pars list of algorithm parameters; output of \code{set_parameters}
+#' @param quiet whether or not to print replicate statuses to the screen (bool)
 #' @param seed set random seed (integer)
 #'
 #' @return A list containing the \code{mean} and \code{sd} of the
 #' error over the replicates as well as the means and standard
 #' deviations of the errors across each fold.
 #'
-#' @note See also \code{\link{squared_error}},
-#' \code{\link{k_folds}},
-#' \code{\link{tsmvr_solve}},
+#' @note See also \code{\link{k_folds}},
+#' \code{\link{tsmvr}},
 #' \code{\link{tsmvr_cv}}, and
 #' \code{\link{set_parameters}}.
 #'
