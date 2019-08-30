@@ -26,13 +26,12 @@
 #'
 # #' @export
 tsmvr_replicate <- function(X, Y, s1, s2, pars, quiet = F, seed = NULL) {
-
   stopifnot(
     is.numeric(X), is.matrix(X),
     is.numeric(Y), is.matrix(Y),
     dim(X)[1] == dim(Y)[1],
-    is.numeric(s1), s1%%1 == 0, s1 > 0, s1 <= dim(X)[2] * dim(Y)[2],
-    is.numeric(s2), s2%%1 == 0, s2 > 0, s2 <= (dim(Y)[2])^2,
+    is.numeric(s1), s1 %% 1 == 0, s1 > 0, s1 <= dim(X)[2] * dim(Y)[2],
+    is.numeric(s2), s2 %% 1 == 0, s2 > 0, s2 <= (dim(Y)[2])^2,
     is.list(pars),
     is.null(seed) || is.numeric(seed)
   )
@@ -45,8 +44,11 @@ tsmvr_replicate <- function(X, Y, s1, s2, pars, quiet = F, seed = NULL) {
   # Header
   if (!quiet) {
     cat("Solver mode ", pars$B_type, "-", pars$Omega_type, " with eta1 = ", pars$eta1, sep = "")
-    if (pars$Omega_type == 'min') cat(".\n", sep = '')
-    else cat(" and eta2 = ", pars$eta2,  ".\n", sep = '')
+    if (pars$Omega_type == "min") {
+      cat(".\n", sep = "")
+    } else {
+      cat(" and eta2 = ", pars$eta2, ".\n", sep = "")
+    }
     cat("rep\terror\t\ttime (s)\n")
   }
 
@@ -56,8 +58,11 @@ tsmvr_replicate <- function(X, Y, s1, s2, pars, quiet = F, seed = NULL) {
   for (r in 1:pars$reps) {
 
     # For each rep, iterate over folds.
-    if(is.null(seed)) temp_seed = NULL
-    else temp_seed = seed + 10*(r - 1)
+    if (is.null(seed)) {
+      temp_seed <- NULL
+    } else {
+      temp_seed <- seed + 10 * (r - 1)
+    }
     # print(temp_seed)
     fold_result <- tsmvr_cv(
       X = X, Y = Y, s1 = s1, s2 = s2,

@@ -30,7 +30,7 @@ test_that("Omega_type is not a list", {
 
 test_that("eta1 is not a string", {
   expect_error(
-    set_parameters(eta1 = '')
+    set_parameters(eta1 = "")
   )
 })
 
@@ -42,7 +42,7 @@ test_that("eta1 is not a list", {
 
 test_that("eta2 is not a string", {
   expect_error(
-    set_parameters(eta2 = '')
+    set_parameters(eta2 = "")
   )
 })
 
@@ -54,7 +54,7 @@ test_that("eta2 is not a list", {
 
 test_that("lam1 is not a string", {
   expect_error(
-    set_parameters(lam1 = '')
+    set_parameters(lam1 = "")
   )
 })
 
@@ -66,7 +66,7 @@ test_that("lam1 is not a list", {
 
 test_that("lam2 is not a string", {
   expect_error(
-    set_parameters(lam2 = '')
+    set_parameters(lam2 = "")
   )
 })
 
@@ -78,7 +78,7 @@ test_that("lam2 is not a list", {
 
 test_that("del1 is not a string", {
   expect_error(
-    set_parameters(del1 = '')
+    set_parameters(del1 = "")
   )
 })
 
@@ -90,7 +90,7 @@ test_that("del1 is not a list", {
 
 test_that("del2 is not a string", {
   expect_error(
-    set_parameters(del2 = '')
+    set_parameters(del2 = "")
   )
 })
 
@@ -102,7 +102,7 @@ test_that("del2 is not a list", {
 
 test_that("del3 is not a string", {
   expect_error(
-    set_parameters(del2 = '')
+    set_parameters(del2 = "")
   )
 })
 
@@ -114,7 +114,7 @@ test_that("del3 is not a list", {
 
 test_that("rho1 is not a string", {
   expect_error(
-    set_parameters(rho1 = '')
+    set_parameters(rho1 = "")
   )
 })
 
@@ -126,7 +126,7 @@ test_that("rho1 is not a list", {
 
 test_that("rho2 is not a string", {
   expect_error(
-    set_parameters(rho2 = '')
+    set_parameters(rho2 = "")
   )
 })
 
@@ -138,7 +138,7 @@ test_that("rho2 is not a list", {
 
 test_that("beta1 is not a string", {
   expect_error(
-    set_parameters(beta1 = '')
+    set_parameters(beta1 = "")
   )
 })
 
@@ -150,7 +150,7 @@ test_that("beta2 is not a list()", {
 
 test_that("beta2 is not a string", {
   expect_error(
-    set_parameters(beta2 = '')
+    set_parameters(beta2 = "")
   )
 })
 
@@ -162,7 +162,7 @@ test_that("beta2 is not a list", {
 
 test_that("qmax1 is not a string", {
   expect_error(
-    set_parameters(qmax1 = '')
+    set_parameters(qmax1 = "")
   )
 })
 
@@ -174,13 +174,13 @@ test_that("qmax1 is not a list", {
 
 test_that("qmax2 is not a string", {
   expect_error(
-    set_parameters(qmax2 = '')
+    set_parameters(qmax2 = "")
   )
 })
 
 test_that("eps1 is not a string", {
   expect_error(
-    set_parameters(eps1 = '')
+    set_parameters(eps1 = "")
   )
 })
 
@@ -192,7 +192,7 @@ test_that("eps1 is not a list()", {
 
 test_that("eps2 is not a string", {
   expect_error(
-    set_parameters(eps2 = '')
+    set_parameters(eps2 = "")
   )
 })
 
@@ -204,7 +204,7 @@ test_that("eps2 is not a list", {
 
 test_that("max_iter is not a string", {
   expect_error(
-    set_parameters(max_iter = '')
+    set_parameters(max_iter = "")
   )
 })
 
@@ -216,7 +216,7 @@ test_that("max_iter is not a list", {
 
 test_that("skip is not a string", {
   expect_error(
-    set_parameters(skip = '')
+    set_parameters(skip = "")
   )
 })
 
@@ -234,7 +234,7 @@ test_that("quiet is not numeric", {
 
 test_that("quiet is not a string", {
   expect_error(
-    set_parameters(quiet = '')
+    set_parameters(quiet = "")
   )
 })
 
@@ -252,7 +252,7 @@ test_that("suppress is not numeric", {
 
 test_that("suppress is not a string", {
   expect_error(
-    set_parameters(suppress = '')
+    set_parameters(suppress = "")
   )
 })
 
@@ -270,7 +270,7 @@ test_that("disp_min_ev is not numeric", {
 
 test_that("disp_min_ev is not a string", {
   expect_error(
-    set_parameters(disp_min_ev = '')
+    set_parameters(disp_min_ev = "")
   )
 })
 
@@ -288,7 +288,7 @@ test_that("save_history is not numeric", {
 
 test_that("save_history is not a string", {
   expect_error(
-    set_parameters(save_history = '')
+    set_parameters(save_history = "")
   )
 })
 
@@ -300,22 +300,21 @@ test_that("save_history is not a list", {
 
 test_that("set_parameters returns a list, the length of that list is 10,
           and the labels of that list are as expected", {
-    z <- set_parameters()
-    expect_true(
-      all(
-          is.list(z), length(z) == 25,
-          all(labels(z) == c(
-            "B_type", "Omega_type", "eta1", "eta2",
-            "lam1", "lam2", "del1", "del2", "del3",
-            "rho1", "rho2", "beta1", "beta2",
-            "qmax1", "qmax2", "eps1", "eps2",
-            "k", "reps", "max_iter", "skip", "quiet",
-            "suppress", "disp_min_ev",
-            "save_history"
-           )
-        )
-      )
+  z <- set_parameters()
+  expect_true(
+    all(
+      is.list(z), length(z) == 25,
+      all(labels(z) == c(
+        "B_type", "Omega_type", "eta1", "eta2",
+        "lam1", "lam2", "del1", "del2", "del3",
+        "rho1", "rho2", "beta1", "beta2",
+        "qmax1", "qmax2", "eps1", "eps2",
+        "k", "reps", "max_iter", "skip", "quiet",
+        "suppress", "disp_min_ev",
+        "save_history"
+      ))
     )
+  )
 })
 
 test_that("B_type is a string", {

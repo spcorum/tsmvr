@@ -35,21 +35,20 @@
 #' @importFrom Rcpp sourceCpp
 #'
 #' @export
-tsmvr = function(X, Y, s1 = NULL, s2 = NULL, s1_vec = NULL,
-                 s2_vec = NULL, method = c("single", "gs"),
-                 pars, quiet = FALSE, seed = NULL) {
-
+tsmvr <- function(X, Y, s1 = NULL, s2 = NULL, s1_vec = NULL,
+                  s2_vec = NULL, method = c("single", "gs"),
+                  pars, quiet = FALSE, seed = NULL) {
   stopifnot(
     is.numeric(X), is.matrix(X),
     is.numeric(Y), is.matrix(Y),
     dim(X)[1] == dim(Y)[1],
-    is.null(s1) || (is.numeric(s1) && s1%%1 == 0),
+    is.null(s1) || (is.numeric(s1) && s1 %% 1 == 0),
     s1 <= dim(X)[2] * dim(Y)[2],
-    is.null(s2) || (is.numeric(s2) && s2%%1 == 0),
+    is.null(s2) || (is.numeric(s2) && s2 %% 1 == 0),
     s2 <= dim(Y)[2]^2,
-    is.null(s1_vec) || (is.numeric(s1_vec) && s1_vec%%1 == 0),
+    is.null(s1_vec) || (is.numeric(s1_vec) && s1_vec %% 1 == 0),
     s1_vec <= dim(X)[2] * dim(Y)[2],
-    is.null(s2_vec) || (is.numeric(s2_vec) && s2_vec%%1 == 0),
+    is.null(s2_vec) || (is.numeric(s2_vec) && s2_vec %% 1 == 0),
     s2 <= dim(Y)[2]^2,
     is.list(pars),
     is.null(seed) || is.numeric(seed),
@@ -58,38 +57,37 @@ tsmvr = function(X, Y, s1 = NULL, s2 = NULL, s1_vec = NULL,
   )
 
   if (method == "single") {
-
-    output2 = list()
-    output2$error_min = NULL
-    output2$error_min_sd = NULL
-    output2$s1_min = NULL
-    output2$s2_min = NULL
-    output2$s1_vec = NULL
-    output2$s2_vec = NULL
-    output2$folds = NULL
-    output2$reps = NULL
-    output2$gs_time = NULL
+    output2 <- list()
+    output2$error_min <- NULL
+    output2$error_min_sd <- NULL
+    output2$s1_min <- NULL
+    output2$s2_min <- NULL
+    output2$s1_vec <- NULL
+    output2$s2_vec <- NULL
+    output2$folds <- NULL
+    output2$reps <- NULL
+    output2$gs_time <- NULL
 
     tic <- Sys.time()
-    output1 = tsmvr_solve(X = X, Y = Y, s1 = s1, s2 = s2, pars = pars)
-    output2$model_time = (Sys.time() - tic)[[1]]
+    output1 <- tsmvr_solve(X = X, Y = Y, s1 = s1, s2 = s2, pars = pars)
+    output2$model_time <- (Sys.time() - tic)[[1]]
 
-    output = c(pars, output1, output2)
+    output <- c(pars, output1, output2)
   }
 
 
   else if (method == "gs") {
-    output2 = tsmvr_gridsearch(
+    output2 <- tsmvr_gridsearch(
       X = X, Y = Y, s1_vec = s1_vec, s2_vec = s2_vec, pars = pars,
       quiet = pars$quiet, seed = seed
     )
-    pars$quiet = T
+    pars$quiet <- T
     tic <- Sys.time()
-    output1 = tsmvr_solve(
+    output1 <- tsmvr_solve(
       X = X, Y = Y, s1 = output2$s1_min, s2 = output2$s2_min, pars = pars
     )
-    output2$model_time = (Sys.time() - tic)[[1]]
-    output = c(pars, output1,output2)
+    output2$model_time <- (Sys.time() - tic)[[1]]
+    output <- c(pars, output1, output2)
   }
 
   return(output)

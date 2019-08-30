@@ -167,7 +167,7 @@ test_that("tsmvr_replicate returns a list, the length of that list is 7,
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -191,7 +191,7 @@ test_that("from the returned list, the item labeled 'rep_error_mean' is numeric"
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -206,7 +206,7 @@ test_that("the listed item labeled 'rep_error_sd' is numeric", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -221,7 +221,7 @@ test_that("the listed item labeled 'fold_error_means' has length reps", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -236,7 +236,7 @@ test_that("the listed item labeled 'fold_error_sds' has length reps", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -252,7 +252,7 @@ test_that("the listed item labeled 'folds' is numeric", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -267,7 +267,7 @@ test_that("the listed item labeled 'fold_error_sds' is numeric", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -282,7 +282,7 @@ test_that("the listed item labeled 'folds' is integer valued", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -297,7 +297,7 @@ test_that("the listed item labeled 'reps' is integer valued", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -312,7 +312,7 @@ test_that("lines covered by quiet = F can execute", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -327,7 +327,7 @@ test_that("the returned sublist labeled 'num_folds' is numeric", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )

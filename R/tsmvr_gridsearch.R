@@ -30,10 +30,10 @@ tsmvr_gridsearch <- function(X, Y, s1_vec, s2_vec, pars, quiet = F, seed = NULL)
     is.numeric(X), is.matrix(X),
     is.numeric(Y), is.matrix(Y),
     dim(X)[1] == dim(Y)[1],
-    is.numeric(s1_vec), s1_vec%%1 == 0,
+    is.numeric(s1_vec), s1_vec %% 1 == 0,
     s1_vec >= 0, s1_vec <= dim(X)[2] * dim(Y)[2],
-    is.numeric(s2_vec), s2_vec%%1 == 0,
-    s2_vec >= dim(Y)[2], s2_vec <=(dim(Y)[2])^2,
+    is.numeric(s2_vec), s2_vec %% 1 == 0,
+    s2_vec >= dim(Y)[2], s2_vec <= (dim(Y)[2])^2,
     is.list(pars),
     is.null(seed) || is.numeric(seed)
   )
@@ -47,13 +47,16 @@ tsmvr_gridsearch <- function(X, Y, s1_vec, s2_vec, pars, quiet = F, seed = NULL)
   # Header
   if (!quiet) {
     cat("Solver mode ", pars$B_type, "-", pars$Omega_type, " with eta1 = ", pars$eta1, sep = "")
-    if (pars$Omega_type == 'min') cat(".\n", sep = '')
-    else cat(" and eta2 = ", pars$eta2,  ".\n", sep = '')
+    if (pars$Omega_type == "min") {
+      cat(".\n", sep = "")
+    } else {
+      cat(" and eta2 = ", pars$eta2, ".\n", sep = "")
+    }
     cat("s1\ts2\terror\t\tsd\ttime\n")
   }
 
   # Iterate over reps.
-  pars$quiet = T
+  pars$quiet <- T
   set.seed(seed)
   tic <- Sys.time()
   for (i in 1:m) {
@@ -74,7 +77,8 @@ tsmvr_gridsearch <- function(X, Y, s1_vec, s2_vec, pars, quiet = F, seed = NULL)
       # Print this result to screen.
       if (!quiet) {
         cat(s1_vec[i], "\t", s2_vec[j], "\t", error[i, j], "\t",
-            error_sd[i, j], "\t", round(toc, 3), "\n", sep = ""
+          error_sd[i, j], "\t", round(toc, 3), "\n",
+          sep = ""
         )
       }
     }

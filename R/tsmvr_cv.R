@@ -29,8 +29,8 @@ tsmvr_cv <- function(X, Y, s1, s2, pars, quiet = F, seed = NULL) {
     is.numeric(X), is.matrix(X),
     is.numeric(Y), is.matrix(Y),
     dim(X)[1] == dim(Y)[1],
-    is.numeric(s1), s1%%1 == 0, s1 > 0, s1 <= dim(X)[2] * dim(Y)[2],
-    is.numeric(s2), s2%%1 == 0, s2 > 0, s2 <= (dim(Y)[2])^2,
+    is.numeric(s1), s1 %% 1 == 0, s1 > 0, s1 <= dim(X)[2] * dim(Y)[2],
+    is.numeric(s2), s2 %% 1 == 0, s2 > 0, s2 <= (dim(Y)[2])^2,
     is.list(pars),
     is.logical(quiet),
     is.null(seed) || is.numeric(seed)
@@ -41,8 +41,11 @@ tsmvr_cv <- function(X, Y, s1, s2, pars, quiet = F, seed = NULL) {
   # Print header.
   if (!quiet) {
     cat("Solver mode ", pars$B_type, "-", pars$Omega_type, " with eta1 = ", pars$eta1, sep = "")
-    if (pars$Omega_type == 'min') cat(".\n", sep = '')
-    else cat(" and eta2 = ", pars$eta2,  ".\n", sep = '')
+    if (pars$Omega_type == "min") {
+      cat(".\n", sep = "")
+    } else {
+      cat(" and eta2 = ", pars$eta2, ".\n", sep = "")
+    }
     cat("Fold\terror\t\ttime (s)\n")
   }
 
@@ -51,7 +54,7 @@ tsmvr_cv <- function(X, Y, s1, s2, pars, quiet = F, seed = NULL) {
 
   # For each fold, solve and compute result.
   tic <- Sys.time()
-  pars$quiet = T
+  pars$quiet <- T
   for (i in 1:pars$k) {
     X_train <- X[fold_list$train[[i]], ]
     Y_train <- Y[fold_list$train[[i]], ]
@@ -63,8 +66,8 @@ tsmvr_cv <- function(X, Y, s1, s2, pars, quiet = F, seed = NULL) {
     )$B_hat
 
     Y_pred <- X_val %*% B_hat
-    A = Y_val - Y_pred
-    error[i] <- sum(A*A)
+    A <- Y_val - Y_pred
+    error[i] <- sum(A * A)
     toc <- (Sys.time() - tic)
 
     # Print fold result to screen.

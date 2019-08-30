@@ -399,7 +399,7 @@ test_that("tsmvr_replicate returns a list, the length of that list is 10,
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -424,7 +424,7 @@ test_that("the listed item labeled 'solution' is a list", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -439,7 +439,7 @@ test_that("the listed item labeled 'error_min' is numeric", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -454,7 +454,7 @@ test_that("the listed item labeled 'error_min_sd' is numeric", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -470,7 +470,7 @@ test_that("the listed item labeled 's1_min' is numeric", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -485,7 +485,7 @@ test_that("the listed item labeled 's2_min' is numeric", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -500,7 +500,7 @@ test_that("the listed item labeled 'error_min' is numeric", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -515,7 +515,7 @@ test_that("the listed item labeled 'error_min_sd' is numeric", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -530,7 +530,7 @@ test_that("the listed item labeled 'gs_time' is numeric", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -546,7 +546,7 @@ test_that("the listed item labeled 'folds' is numeric", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -561,7 +561,7 @@ test_that("the listed item labeled 'reps' is numeric", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -576,12 +576,12 @@ test_that("the listed item labeled 'error_min' is a vector", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
   z <- tsmvr_gridsearch(
-    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7 , pars = parameters,
+    X = X, Y = Y, s1_vec = round(0.5 * 4 * 3), s2_vec = 7, pars = parameters,
     seed = 1729
   )
   expect_true(is.vector(z$error_min))
@@ -591,7 +591,7 @@ test_that("the listed item labeled 'error_min_sd' is a vector", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -606,7 +606,7 @@ test_that("the listed item labeled 'k' is integer valued", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -622,7 +622,7 @@ test_that("the listed item labeled 'reps' is integer valued", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = T, suppress = T
   )
@@ -637,7 +637,7 @@ test_that("lines covered by quiet = F can execute", {
   set.seed(1)
   X <- matrix(rnorm(n = 40, sd = 0.1), 10, 4)
   Y <- matrix(rnorm(n = 30, mean = 1), 10, 3)
-  parameters = set_parameters(
+  parameters <- set_parameters(
     B_type = "ls", Omega_type = "ls", rho1 = 1, rho2 = 1,
     k = 2, reps = 2, max_iter = 1, quiet = F, suppress = T
   )
